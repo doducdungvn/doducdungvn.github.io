@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+    <title>Bảng với chức năng tính tổng</title>
+ <style type="text/css">
+        p {
+	text-align: center;
+	font-weight: bold;
+	font-size: 24px;
+        }
+
+        #totalCol1 {
+            font-size: 29px;
+            font-weight: bold;
+            color: green;
+        }
+    #myTable tbody tr .row-number {
+	text-align: center;
+}
+
+ #myTable tfoot tr td {
+	font-weight: bold;
+	text-align: center;
+}
+ </style>
+</head>
+<body>
+    <p>Tính tổng </p>
+    <table align="center" id="myTable">
+        <thead>
+            <tr>
+                <th>Cột </th>
+                <th>Giá trị</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dòng 1 -->
+            <tr>
+                <td class="row-number">1</td>
+                <td><input type="number" class="col1" oninput="calculateNSum()" onkeydown="handleKeyDown(event)" /></td>
+            </tr>
+            <!-- Các dòng khác (tự thêm) -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <p><td>Tổng:</td></P>
+                <td id="totalCol1">0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <p><a href="index.html">&lt;&lt; Quay lại</a></p>
+    <p>&nbsp; </p>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstInput = document.querySelector('tbody tr:first-child .col1');
+        firstInput.focus();
+    });
+
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            const numberCell = row.querySelector('.row-number');
+            numberCell.textContent = index + 1;
+        });
+    }
+
+    function calculateNSum() {
+        const rows = document.querySelectorAll('tbody tr');
+        let sum = 0;
+
+        rows.forEach((row) => {
+            const input = row.querySelector('.col1');
+            const inputValue = parseInt(input.value) || 0;
+            sum += inputValue;
+        });
+
+        const formattedSum = sum.toLocaleString('en-US');
+        const totalCell = document.getElementById('totalCol1');
+        totalCell.textContent = formattedSum;
+    }
+
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addNewRow();
+            setTimeout(() => {
+                const newRowInput = document.querySelector('tbody tr:last-child .col1');
+                newRowInput.focus();
+            }, 0);
+        }
+    }
+
+    function addNewRow() {
+        const tableBody = document.querySelector('tbody');
+        const newRow = document.createElement('tr');
+
+        const numberCell = document.createElement('td');
+        numberCell.classList.add('row-number');
+        numberCell.textContent = tableBody.children.length + 1;
+        newRow.appendChild(numberCell);
+
+        const newCell = document.createElement('td');
+        const newInput = document.createElement('input');
+        newInput.type = 'number';
+        newInput.classList.add('col1');
+        newInput.oninput = function () {
+            calculateNSum();
+        };
+        newInput.onkeydown = function (event) {
+            handleKeyDown(event);
+        };
+        newCell.appendChild(newInput);
+        newRow.appendChild(newCell);
+
+        tableBody.appendChild(newRow);
+
+        updateRowNumbers();
+    }
+</script>
+</body>
+</html>
