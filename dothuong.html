@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cân đối</title>
+    <style>
+        /* CSS để trang trí giao diện */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: left;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .pair {
+            margin-bottom: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .pair.red {
+            border-color: red;
+        }
+    .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Đọ thưởng</h1>
+    
+    <div style="text-align: left;">
+        <label for="numbers">Nhập số:</label>
+        <textarea id="numbers" placeholder="Ví dụ: 12.23.343.12x10"></textarea>
+    </div>
+
+    <div style="text-align: left;">
+        <label for="charMapping">Bảng ký tự nhập tắt:</label>
+        <textarea id="charMapping" placeholder="Ví dụ: A=12 B=23 C=34"></textarea>
+    </div>
+    
+    <div style="text-align: left;">
+        <label for="matching">27 giải:</label>
+        <textarea id="matching" placeholder="Ví dụ: 12 23 34"></textarea>
+    </div>
+
+    <button onclick="calculatePairs()">Đọ thưởng</button>
+    <button onclick="normalizeMatching()">Chuẩn hóa 27 giải</button>
+    
+    <div id="result"></div>
+        <div id="totalSum"></div>
+        <div id="matchingTotalSum"></div>
+    
+
+    <script>
+        // Lấy dữ liệu đã lưu từ Local Storage khi tải lại trang
+        var charMappingInput = localStorage.getItem("charMapping");
+        if (charMappingInput) {
+            document.getElementById("charMapping").value = charMappingInput;
+        }
+
+
+function calculatePairs() {
+    // Lưu dữ liệu vào Local Storage để duy trì sau khi tải lại trang
+    var charMappingInput = document.getElementById("charMapping").value;
+    localStorage.setItem("charMapping", charMappingInput);
+
+    var numbersInput = document.getElementById("numbers").value.toLowerCase(); // Chuyển sang chữ thường
+    numbersInput = numbersInput.replace(/[,_-]/g, "."); // Thay thế các dấu phân tách
+    numbersInput = numbersInput.replace(/[=x]/g, "+"); // Thay thế dấu "=" và "x" bằng "+"
+    var numbersArray = numbersInput.split("\n");
+
+    var charMappingInput = document.getElementById("charMapping").value;
+    var charMappings = charMappingInput.split("\n");
+
+    var mapping = {};
+    charMappings.forEach(function (mappingLine) {
+        var parts = mappingLine.split("=");
+        if (parts.length === 2) {
+            mapping[parts[0].trim()] = parts[1].trim();
+        }
+    });
+
+    var matchingInput = document.getElementById("matching").value;
+    var matchingNumbers = matchingInput.toLowerCase().split(" "); // Chuyển sang chữ thường
+
+    var result = document.getElementById("result");
+    result.innerHTML = "";
+
+    var totalSum = 0; // Tổng giá trị của các cặp số
+    var matchingTotalSum = 0; // Tổng giá trị tất cả các số khi trùng khớp
+
+    var pairs = [];
+    for (var i = 0; i < numbersArray.length; i++) {
+        var parts = numbersArray[i].replace(/\s+/g, "").split(/[+]/); // Loại bỏ khoảng trắng và phân tách bằng "+"
+        var number = parts[0];
+
+        if (mapping[number]) {
+            number = mapping[number];
+        }
+
+        var numberParts = number.split(".");
+        for (var k = 0; k < numberParts.length; k++) {
+            var numberPart = numberParts[k];
+            for (var j = 0; j < numberPart.length - 1; j++) {
+                var pair = numberPart.slice(j, j + 2);
+                var sum = parseInt(parts[1]);
+
+                pairs.push({ pair: pair, value: sum });
+            }
+        }
+    }
+
+    var pairCounts = {}; // Đếm số lần trùng khớp
+    var resultPairs = [];
+    for (var i = 0; i < pairs.length; i++) {
+        var div = document.createElement("div");
+        div.className = "pair";
+
+        var pairValue = pairs[i].pair + " = " + pairs[i].value;
+
+        if (matchingNumbers.includes(pairs[i].pair.toLowerCase())) { // So sánh chữ thường
+            var span = document.createElement("span");
+            span.className = "red"; // Thêm lớp red cho màu chữ đỏ
+            var matchingCount = matchingNumbers.filter(match => match === pairs[i].pair.toLowerCase()).length;
+            var matchingSum = matchingCount * pairs[i].value;
+            totalSum += pairs[i].value; // Cộng tổng giá trị của cặp số
+            matchingTotalSum += matchingSum; // Cộng tổng giá trị khi trùng khớp
+            span.textContent = "Trúng " + matchingCount + " lần: " + matchingSum;
+            div.appendChild(document.createTextNode(pairValue + " "));
+            div.appendChild(span);
+
+            if (!pairCounts[pairs[i].pair]) {
+                pairCounts[pairs[i].pair] = matchingSum;
+            } else {
+                pairCounts[pairs[i].pair] += matchingSum;
+            }
+        } else {
+            totalSum += pairs[i].value; // Cộng tổng giá trị của cặp số
+            div.textContent = pairValue;
+        }
+
+        resultPairs.push(div);
+    }
+
+    resultPairs.forEach(function (pairDiv) {
+        result.appendChild(pairDiv);
+    });
+
+    var totalSumElement = document.getElementById("totalSum");
+    totalSumElement.textContent = "Tổng cược: " + totalSum; // Hiển thị tổng
+
+    var matchingTotalSumElement = document.getElementById("matchingTotalSum");
+    matchingTotalSumElement.textContent = "Tổng ăn: " + matchingTotalSum; // Hiển thị tổng
+
+    var resultHeader = document.createElement("h2");
+    resultHeader.textContent = "Kết quả: " + totalSum + "/" + matchingTotalSum ;
+    resultHeader.style.color = "red"; // Đặt màu đỏ cho tiêu đề
+    result.insertBefore(resultHeader, result.firstChild); // Chèn tiêu đề vào đầu kết quả
+}
+
+
+
+        function normalizeMatching() {
+            var matchingInput = document.getElementById("matching").value;
+            var matchingLines = matchingInput.split("\n");
+
+            var normalizedNumbers = [];
+            for (var i = 0; i < matchingLines.length; i++) {
+                var line = matchingLines[i];
+                var numbers = line.match(/\d+/g);
+                if (numbers) {
+                    for (var j = 1; j < numbers.length; j++) {
+                        if (numbers[j].length === 2) {
+                            normalizedNumbers.push(numbers[j]);
+                        }
+                    }
+                }
+            }
+
+            var normalizedMatching = normalizedNumbers.join(" ");
+            document.getElementById("matching").value = normalizedMatching;
+        }
+
+        var matchTextarea = document.getElementById("matching");
+        matchTextarea.addEventListener("touchstart", function (e) {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>
