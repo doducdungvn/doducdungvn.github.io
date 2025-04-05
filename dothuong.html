@@ -1,85 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cân đối</title>
-    <style>
-        /* CSS để trang trí giao diện */
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đọ thưởng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            danger: '#ef4444',
+          }
         }
-        h1 {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            text-align: left;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            margin-bottom: 10px;
-            padding: 5px;
-        }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #result {
-            font-weight: bold;
-            margin-top: 20px;
-            text-align: left;
-        }
-        .pair {
-            margin-bottom: 5px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .pair.red {
-            border-color: red;
-        }
-    .red {
-            color: red;
-        }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body>
-    <h1>Đọ thưởng</h1>
+<body class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+    <h1 class="text-2xl font-bold text-center mb-6 text-primary">Đọ thưởng</h1>
     
-    <div style="text-align: left;">
-        <label for="numbers">Nhập số:</label>
-        <textarea id="numbers" placeholder="Ví dụ: 12.23.343.12x10"></textarea>
-    </div>
+    <div class="space-y-6">
+      <div>
+        <label for="numbers" class="block text-sm font-medium text-gray-700 mb-1">Nhập số:</label>
+        <textarea id="numbers" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent" 
+                  placeholder="Ví dụ: 12.23.343.12x10" rows="4"></textarea>
+      </div>
 
-    <div style="text-align: left;">
-        <label for="charMapping">Bảng ký tự nhập tắt:</label>
-        <textarea id="charMapping" placeholder="Ví dụ: A=12 B=23 C=34"></textarea>
-    </div>
-    
-    <div style="text-align: left;">
-        <label for="matching">27 giải:</label>
-        <textarea id="matching" placeholder="Ví dụ: 12 23 34"></textarea>
-    </div>
+      <div>
+        <label for="charMapping" class="block text-sm font-medium text-gray-700 mb-1">Bảng ký tự nhập tắt:</label>
+        <textarea id="charMapping" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent" 
+                  placeholder="Ví dụ: A=12 B=23 C=34" rows="4"></textarea>
+      </div>
+      
+      <div>
+        <label for="matching" class="block text-sm font-medium text-gray-700 mb-1">27 giải:</label>
+        <textarea id="matching" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent" 
+                  placeholder="Ví dụ: 12 23 34" rows="4"></textarea>
+      </div>
 
-    <button onclick="calculatePairs()">Đọ thưởng</button>
-    <button onclick="normalizeMatching()">Chuẩn hóa 27 giải</button>
-    
-    <div id="result"></div>
-        <div id="totalSum"></div>
-        <div id="matchingTotalSum"></div>
-    
+      <div class="flex gap-4">
+        <button onclick="calculatePairs()" class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg transition-colors">
+          Đọ thưởng
+        </button>
+        <button onclick="normalizeMatching()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
+          Chuẩn hóa 27 giải
+        </button>
+      </div>
+      
+      <div id="result" class="space-y-2 mt-4"></div>
+      <div id="totalSum" class="font-bold mt-2"></div>
+      <div id="matchingTotalSum" class="font-bold text-danger"></div>
+    </div>
+  </div>
+
+
 
     <script>
         // Lấy dữ liệu đã lưu từ Local Storage khi tải lại trang
