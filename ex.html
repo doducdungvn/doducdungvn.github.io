@@ -1,58 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi" class="scroll-smooth">
 <head>
- <meta charset="UTF-8">
-    <title>Bảng với chức năng tính tổng</title>
- <style type="text/css">
-        p {
-	text-align: center;
-	font-weight: bold;
-	font-size: 24px;
-        }
-
-        #totalCol1 {
-            font-size: 29px;
-            font-weight: bold;
-            color: green;
-        }
-    #myTable tbody tr .row-number {
-	text-align: center;
-}
-
- #myTable tfoot tr td {
-	font-weight: bold;
-	text-align: center;
-}
- </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tính tổng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <p>Tính tổng </p>
-    <table align="center" id="myTable">
-        <thead>
-            <tr>
-                <th>Cột </th>
-                <th>Giá trị</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dòng 1 -->
-            <tr>
-                <td class="row-number">1</td>
-                <td><input type="number" class="col1" oninput="calculateNSum()" onkeydown="handleKeyDown(event)" /></td>
-            </tr>
-            <!-- Các dòng khác (tự thêm) -->
-        </tbody>
-        <tfoot>
-            <tr>
-                <p><td>Tổng:</td></P>
-                <td id="totalCol1">0</td>
-            </tr>
-        </tfoot>
+<body class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+    <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Tính tổng</h1>
+    
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="p-2 border border-gray-300">Cột</th>
+          <th class="p-2 border border-gray-300">Giá trị</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- Dòng 1 -->
+        <tr>
+          <td class="p-2 border border-gray-300 text-center row-number">1</td>
+          <td class="p-2 border border-gray-300">
+            <input type="number" class="col1 w-full p-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" 
+                   oninput="calculateNSum()" onkeydown="handleKeyDown(event)">
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="p-2 border border-gray-300 font-bold">Tổng:</td>
+          <td id="totalCol1" class="p-2 border border-gray-300 font-bold text-green-600 text-xl text-center">0</td>
+        </tr>
+      </tfoot>
     </table>
 
-    <p><a href="index.html">&lt;&lt; Quay lại</a></p>
-    <p>&nbsp; </p>
-<script>
+    <div class="mt-6 text-center">
+      <a href="index.html" class="text-blue-600 hover:text-blue-800">&lt;&lt; Quay lại</a>
+    </div>
+  </div>
+
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
         const firstInput = document.querySelector('tbody tr:first-child .col1');
         firstInput.focus();
@@ -97,14 +85,15 @@
         const newRow = document.createElement('tr');
 
         const numberCell = document.createElement('td');
-        numberCell.classList.add('row-number');
+        numberCell.classList.add('row-number', 'p-2', 'border', 'border-gray-300', 'text-center');
         numberCell.textContent = tableBody.children.length + 1;
         newRow.appendChild(numberCell);
 
         const newCell = document.createElement('td');
+        newCell.classList.add('p-2', 'border', 'border-gray-300');
         const newInput = document.createElement('input');
         newInput.type = 'number';
-        newInput.classList.add('col1');
+        newInput.classList.add('col1', 'w-full', 'p-1', 'border', 'border-gray-300', 'rounded', 'focus:ring-2', 'focus:ring-blue-500');
         newInput.oninput = function () {
             calculateNSum();
         };
@@ -118,6 +107,6 @@
 
         updateRowNumbers();
     }
-</script>
+  </script>
 </body>
 </html>
