@@ -120,9 +120,121 @@ function calculateSum() {
   inputList.innerHTML = "";
   
   numbersArray.forEach(number => {
-    const li = document.createElement("li");
-    li.textContent = number;
-    inputList.appendChild(li);
+    const parts = number.split(/[+x,\s]+/);
+    let numberText = parts[0]?.trim().toLowerCase();
+    let originalNumber = numberText;
+    
+    // Áp dụng shortcut nếu có
+    if (shortcuts[numberText]) {
+      numberText = shortcuts[numberText];
+    }
+    
+    // Lấy số tiền từ input
+    const amount = parts[1] || "0";
+    
+    // Tạo nội dung chi tiết
+    if (shortcuts[originalNumber]) {
+      // Nếu có shortcut, hiển thị từng số và số tiền
+      const shortcutNumbers = numberText.split(".");
+      shortcutNumbers.forEach(num => {
+        // Nếu số có 3 chữ số, tách thành 2 số 2 chữ số
+        if (num.length === 3) {
+          const firstNum = num.substring(0, 2);
+          const secondNum = num.substring(1, 3);
+          
+          // Kiểm tra số lần xuất hiện của từng số
+          const firstOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === firstNum).length;
+          const secondOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === secondNum).length;
+          
+          // Hiển thị số đầu tiên
+          const li1 = document.createElement("li");
+          if (firstOccurrences > 0) {
+            li1.innerHTML = `<span class="matching-number">${firstNum}x${amount}</span>`;
+            if (firstOccurrences > 1) {
+              li1.innerHTML += ` <span class="matching-number">(${firstOccurrences} nháy)</span>`;
+            }
+          } else {
+            li1.textContent = `${firstNum}x${amount}`;
+          }
+          inputList.appendChild(li1);
+          
+          // Hiển thị số thứ hai
+          const li2 = document.createElement("li");
+          if (secondOccurrences > 0) {
+            li2.innerHTML = `<span class="matching-number">${secondNum}x${amount}</span>`;
+            if (secondOccurrences > 1) {
+              li2.innerHTML += ` <span class="matching-number">(${secondOccurrences} nháy)</span>`;
+            }
+          } else {
+            li2.textContent = `${secondNum}x${amount}`;
+          }
+          inputList.appendChild(li2);
+        } else {
+          const li = document.createElement("li");
+          // Kiểm tra số lần xuất hiện trong 27 giải
+          const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === num.trim().toLowerCase()).length;
+          
+          if (occurrences > 0) {
+            li.innerHTML = `<span class="matching-number">${num}x${amount}</span>`;
+            if (occurrences > 1) {
+              li.innerHTML += ` <span class="matching-number">(${occurrences} nháy)</span>`;
+            }
+          } else {
+            li.textContent = `${num}x${amount}`;
+          }
+          inputList.appendChild(li);
+        }
+      });
+    } else {
+      // Nếu không có shortcut, xử lý số trực tiếp
+      const li = document.createElement("li");
+      
+      // Nếu số có 3 chữ số, tách thành 2 số 2 chữ số
+      if (numberText.length === 3) {
+        const firstNum = numberText.substring(0, 2);
+        const secondNum = numberText.substring(1, 3);
+        
+        // Kiểm tra số lần xuất hiện của từng số
+        const firstOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === firstNum).length;
+        const secondOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === secondNum).length;
+        
+        // Hiển thị số đầu tiên
+        if (firstOccurrences > 0) {
+          li.innerHTML = `<span class="matching-number">${firstNum}x${amount}</span>`;
+          if (firstOccurrences > 1) {
+            li.innerHTML += ` <span class="matching-number">(${firstOccurrences} nháy)</span>`;
+          }
+        } else {
+          li.textContent = `${firstNum}x${amount}`;
+        }
+        inputList.appendChild(li);
+        
+        // Tạo li mới cho số thứ hai
+        const li2 = document.createElement("li");
+        if (secondOccurrences > 0) {
+          li2.innerHTML = `<span class="matching-number">${secondNum}x${amount}</span>`;
+          if (secondOccurrences > 1) {
+            li2.innerHTML += ` <span class="matching-number">(${secondOccurrences} nháy)</span>`;
+          }
+        } else {
+          li2.textContent = `${secondNum}x${amount}`;
+        }
+        inputList.appendChild(li2);
+      } else {
+        // Nếu số không phải 3 chữ số, xử lý bình thường
+        const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === numberText).length;
+        
+        if (occurrences > 0) {
+          li.innerHTML = `<span class="matching-number">${numberText}x${amount}</span>`;
+          if (occurrences > 1) {
+            li.innerHTML += ` <span class="matching-number">(${occurrences} nháy)</span>`;
+          }
+        } else {
+          li.textContent = `${numberText}x${amount}`;
+        }
+        inputList.appendChild(li);
+      }
+    }
   });
   
   // Xử lý giữ lại
@@ -140,7 +252,17 @@ function calculateSum() {
     
     if (modifiedSum >= 1) {
       modifiedSum = Math.trunc(modifiedSum);
-      modifiedResultText += `${key}x${modifiedSum}<br>`;
+      // Kiểm tra nếu số này có trong 27 giải
+      const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === key).length;
+      if (occurrences > 0) {
+        modifiedResultText += `<div class="matching-number">${key}x${modifiedSum}`;
+        if (occurrences > 1) {
+          modifiedResultText += ` (${occurrences} nháy)`;
+        }
+        modifiedResultText += `</div>`;
+      } else {
+        modifiedResultText += `<div>${key}x${modifiedSum}</div>`;
+      }
       modifiedTotalSum += modifiedSum;
     }
   }
@@ -157,14 +279,14 @@ function calculateSum() {
   
   document.getElementById("totalSum").textContent = totalSumText;
   
-  // Đánh dấu số trùng
+  // Đánh dấu số trùng trong kết quả
   const resultDivs = result.querySelectorAll("div");
   resultDivs.forEach(div => {
     const resultNumber = div.textContent.split(" = ")[0];
     if (matchingNumbers[resultNumber]) {
       div.classList.add("matching-number");
       if (matchingNumbers[resultNumber] > 1) {
-        div.textContent += ` (${matchingNumbers[resultNumber]} nhay)`;
+        div.textContent += ` (${matchingNumbers[resultNumber]} nháy)`;
       }
     }
   });
