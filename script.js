@@ -137,100 +137,43 @@ function calculateSum() {
       // Nếu có shortcut, hiển thị từng số và số tiền
       const shortcutNumbers = numberText.split(".");
       shortcutNumbers.forEach(num => {
-        // Nếu số có 3 chữ số, tách thành 2 số 2 chữ số
-        if (num.length === 3) {
-          const firstNum = num.substring(0, 2);
-          const secondNum = num.substring(1, 3);
-          
-          // Kiểm tra số lần xuất hiện của từng số
-          const firstOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === firstNum).length;
-          const secondOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === secondNum).length;
-          
-          // Hiển thị số đầu tiên
-          const li1 = document.createElement("li");
-          if (firstOccurrences > 0) {
-            li1.innerHTML = `<span class="matching-number">${firstNum}x${amount}</span>`;
-            if (firstOccurrences > 1) {
-              li1.innerHTML += ` <span class="matching-number">(${firstOccurrences} nháy)</span>`;
-            }
-          } else {
-            li1.textContent = `${firstNum}x${amount}`;
-          }
-          inputList.appendChild(li1);
-          
-          // Hiển thị số thứ hai
-          const li2 = document.createElement("li");
-          if (secondOccurrences > 0) {
-            li2.innerHTML = `<span class="matching-number">${secondNum}x${amount}</span>`;
-            if (secondOccurrences > 1) {
-              li2.innerHTML += ` <span class="matching-number">(${secondOccurrences} nháy)</span>`;
-            }
-          } else {
-            li2.textContent = `${secondNum}x${amount}`;
-          }
-          inputList.appendChild(li2);
-        } else {
+        // Tách số thành các cặp 2 chữ số
+        for (let i = 0; i < num.length - 1; i++) {
+          const pair = num.substring(i, i + 2);
           const li = document.createElement("li");
+          
           // Kiểm tra số lần xuất hiện trong 27 giải
-          const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === num.trim().toLowerCase()).length;
+          const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === pair).length;
           
           if (occurrences > 0) {
-            li.innerHTML = `<span class="matching-number">${num}x${amount}</span>`;
+            li.innerHTML = `<span class="matching-number">${pair}x${amount}</span>`;
             if (occurrences > 1) {
               li.innerHTML += ` <span class="matching-number">(${occurrences} nháy)</span>`;
             }
           } else {
-            li.textContent = `${num}x${amount}`;
+            li.textContent = `${pair}x${amount}`;
           }
           inputList.appendChild(li);
         }
       });
     } else {
       // Nếu không có shortcut, xử lý số trực tiếp
-      const li = document.createElement("li");
-      
-      // Nếu số có 3 chữ số, tách thành 2 số 2 chữ số
-      if (numberText.length === 3) {
-        const firstNum = numberText.substring(0, 2);
-        const secondNum = numberText.substring(1, 3);
+      // Loại bỏ dấu chấm và tách thành các cặp 2 chữ số
+      const cleanNumber = numberText.replace(/\./g, '');
+      for (let i = 0; i < cleanNumber.length - 1; i++) {
+        const pair = cleanNumber.substring(i, i + 2);
+        const li = document.createElement("li");
         
-        // Kiểm tra số lần xuất hiện của từng số
-        const firstOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === firstNum).length;
-        const secondOccurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === secondNum).length;
-        
-        // Hiển thị số đầu tiên
-        if (firstOccurrences > 0) {
-          li.innerHTML = `<span class="matching-number">${firstNum}x${amount}</span>`;
-          if (firstOccurrences > 1) {
-            li.innerHTML += ` <span class="matching-number">(${firstOccurrences} nháy)</span>`;
-          }
-        } else {
-          li.textContent = `${firstNum}x${amount}`;
-        }
-        inputList.appendChild(li);
-        
-        // Tạo li mới cho số thứ hai
-        const li2 = document.createElement("li");
-        if (secondOccurrences > 0) {
-          li2.innerHTML = `<span class="matching-number">${secondNum}x${amount}</span>`;
-          if (secondOccurrences > 1) {
-            li2.innerHTML += ` <span class="matching-number">(${secondOccurrences} nháy)</span>`;
-          }
-        } else {
-          li2.textContent = `${secondNum}x${amount}`;
-        }
-        inputList.appendChild(li2);
-      } else {
-        // Nếu số không phải 3 chữ số, xử lý bình thường
-        const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === numberText).length;
+        // Kiểm tra số lần xuất hiện trong 27 giải
+        const occurrences = twentySevenNumbersArray.filter(n => n.trim().toLowerCase() === pair).length;
         
         if (occurrences > 0) {
-          li.innerHTML = `<span class="matching-number">${numberText}x${amount}</span>`;
+          li.innerHTML = `<span class="matching-number">${pair}x${amount}</span>`;
           if (occurrences > 1) {
             li.innerHTML += ` <span class="matching-number">(${occurrences} nháy)</span>`;
           }
         } else {
-          li.textContent = `${numberText}x${amount}`;
+          li.textContent = `${pair}x${amount}`;
         }
         inputList.appendChild(li);
       }
@@ -489,3 +432,116 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   checkDarkModePreference();
 });
+
+// Các hàm cho trang ex.html
+function updateRowNumbers() {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach((row, index) => {
+        const numberCell = row.querySelector('.row-number');
+        numberCell.textContent = index + 1;
+    });
+}
+
+function calculateNSum() {
+    const rows = document.querySelectorAll('tbody tr');
+    let sum = 0;
+
+    rows.forEach((row) => {
+        const input = row.querySelector('.col1');
+        // Thay thế dấu phẩy bằng dấu chấm và chuyển đổi thành số
+        const inputValue = parseFloat(input.value.replace(',', '.')) || 0;
+        sum += inputValue;
+    });
+
+    // Format số với 3 chữ số thập phân
+    const formattedSum = sum.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 3
+    });
+    const totalCell = document.getElementById('totalCol1');
+    totalCell.textContent = formattedSum;
+}
+
+function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        const currentInput = event.target;
+        const currentValue = currentInput.value.trim();
+        
+        // Kiểm tra nếu ô hiện tại có giá trị (bao gồm cả số âm)
+        if (currentValue !== '') {
+            // Kiểm tra xem có phải là ô cuối cùng không
+            const currentRow = currentInput.closest('tr');
+            const isLastRow = currentRow === document.querySelector('tbody tr:last-child');
+            
+            // Chỉ tạo dòng mới nếu là ô cuối cùng
+            if (isLastRow) {
+                addNewRow();
+                setTimeout(() => {
+                    const newRowInput = document.querySelector('tbody tr:last-child .col1');
+                    newRowInput.focus();
+                }, 0);
+            } else {
+                // Nếu không phải ô cuối cùng, focus vào ô tiếp theo
+                const nextRow = currentRow.nextElementSibling;
+                if (nextRow) {
+                    const nextInput = nextRow.querySelector('.col1');
+                    nextInput.focus();
+                }
+            }
+        }
+    }
+}
+
+function addNewRow() {
+    const tableBody = document.querySelector('tbody');
+    const newRow = document.createElement('tr');
+
+    const numberCell = document.createElement('td');
+    numberCell.classList.add('row-number', 'p-2', 'border', 'border-gray-300', 'text-center');
+    numberCell.textContent = tableBody.children.length + 1;
+    newRow.appendChild(numberCell);
+
+    const newCell = document.createElement('td');
+    newCell.classList.add('p-2', 'border', 'border-gray-300');
+    const newInput = document.createElement('input');
+    newInput.type = 'number';
+    newInput.classList.add('col1', 'w-full', 'p-1', 'border', 'border-gray-300', 'rounded', 'focus:ring-2', 'focus:ring-blue-500');
+    newInput.oninput = function () {
+        calculateNSum();
+    };
+    newInput.onkeydown = function (event) {
+        handleKeyDown(event);
+    };
+    newCell.appendChild(newInput);
+    newRow.appendChild(newCell);
+
+    tableBody.appendChild(newRow);
+
+    updateRowNumbers();
+}
+
+// Khởi tạo khi tải trang ex.html
+if (document.querySelector('tbody')) {
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstInput = document.querySelector('tbody tr:first-child .col1');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    });
+}
+
+function resetTable() {
+    const tableBody = document.querySelector('tbody');
+    // Xóa tất cả các dòng trừ dòng đầu tiên
+    while (tableBody.children.length > 1) {
+        tableBody.removeChild(tableBody.lastChild);
+    }
+    // Reset giá trị của dòng đầu tiên
+    const firstInput = tableBody.querySelector('.col1');
+    firstInput.value = '';
+    // Reset tổng
+    document.getElementById('totalCol1').textContent = '0';
+    // Focus vào ô input đầu tiên
+    firstInput.focus();
+}
