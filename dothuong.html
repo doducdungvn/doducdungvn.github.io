@@ -1,197 +1,149 @@
 <!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đọ thưởng</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#3b82f6',
-            danger: '#ef4444',
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đọ Thưởng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
         }
-      }
-    }
-  </script>
+        .matching-number {
+            color: #ef4444;
+            font-weight: 500;
+        }
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-    <h1 class="text-2xl font-bold text-center mb-6 text-primary">Đọ thưởng</h1>
-    
-    <div class="space-y-6">
-      <div>
-        <label for="numbers" class="block text-sm font-medium text-gray-700 mb-1">Nhập số:</label>
-        <textarea id="numbers" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent" 
-                  placeholder="Ví dụ: 12.23.343.12x10" rows="4"></textarea>
-      </div>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900">Đọ Thưởng</h1>
+                <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Back
+                </button>
+            </div>
+        </div>
+    </header>
 
-      <div>
-        <label for="charMapping" class="block text-sm font-medium text-gray-700 mb-1">Bảng ký tự nhập tắt:</label>
-        <textarea id="charMapping" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent" 
-                  placeholder="Ví dụ: A=12 B=23 C=34" rows="4"></textarea>
-      </div>
-      
-      <div>
-        <label for="matching" class="block text-sm font-medium text-gray-700 mb-1">27 giải:</label>
-        <textarea id="matching" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent" 
-                  placeholder="Ví dụ: 12 23 34" rows="4"></textarea>
-      </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- Input Section -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Numbers Input -->
+                    <div>
+                        <label for="numbers" class="block text-sm font-medium text-gray-700 mb-2">Nhập số</label>
+                        <textarea id="numbers" rows="6" class="input-field w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Nhập số theo định dạng:&#10;123 100&#10;456 200"></textarea>
+                    </div>
+                    <!-- Shortcuts Section -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 27 Numbers Input -->
+                        <div>
+                            <label for="twentySevenNumbers" class="block text-sm font-medium text-gray-700 mb-2">27 giải</label>
+                            <textarea id="twentySevenNumbers" rows="4" class="input-field w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Nhập 27 giải"></textarea>
+                        </div>
+                        <!-- Shortcuts Input -->
+                        <div>
+                            <label for="shortcuts" class="block text-sm font-medium text-gray-700 mb-2">Nhập tắt</label>
+                            <textarea id="shortcuts" rows="4" class="input-field w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Định dạng:&#10;kl=123.456&#10;mn=789.012"></textarea>
+                        </div>
+                    </div>
+                </div>
 
-      <div class="flex gap-4">
-        <button onclick="calculatePairs()" class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg transition-colors">
-          Đọ thưởng
-        </button>
-        <button onclick="normalizeMatching()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
-          Chuẩn hóa 27 giải
-        </button>
-      </div>
-      
-      <div id="result" class="space-y-2 mt-4"></div>
-      <div id="totalSum" class="font-bold mt-2"></div>
-      <div id="matchingTotalSum" class="font-bold text-danger"></div>
-    </div>
-  </div>
+                <!-- Retain Section -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-end gap-4">
+                        <div class="w-32">
+                            <label for="retainNumber" class="block text-sm font-medium text-gray-700 mb-2">Số giữ lại</label>
+                            <input type="number" id="retainNumber" value="0" class="input-field w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center">
+                                <input type="radio" id="retainMoney" name="retainType" value="money" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                                <label for="retainMoney" class="ml-2 block text-sm text-gray-700">Giữ tiền</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="retainPercent" name="retainType" value="percent" class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                                <label for="retainPercent" class="ml-2 block text-sm text-gray-700">Giữ %</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Action Buttons -->
+                <div class="mt-4 flex flex-wrap gap-4">
+                    <button id="calculateButton" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                        </svg>
+                        Tính toán
+                    </button>
+                    <button id="normalizeButton" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                        </svg>
+                        Chuẩn hóa
+                    </button>
+                    <button id="copyButton" class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                        </svg>
+                        Copy kết quả
+                    </button>
+                    <button id="copyInputListButton" class="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                        </svg>
+                        Copy input
+                    </button>
+                </div>
+            </div>
 
+            <!-- Results Section -->
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Results -->
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Kết quả</h2>
+                        <div id="result" class="bg-gray-50 p-4 rounded-lg border border-gray-200 min-h-[200px]"></div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Tổng số: <span id="numResults" class="font-medium">0 con</span></span>
+                            <span class="text-lg font-bold text-gray-900">Tổng: <span id="totalSum" class="text-blue-600">0</span></span>
+                        </div>
+                    </div>
 
-    <script>
-        // Lấy dữ liệu đã lưu từ Local Storage khi tải lại trang
-        var charMappingInput = localStorage.getItem("charMapping");
-        if (charMappingInput) {
-            document.getElementById("charMapping").value = charMappingInput;
-        }
+                    <!-- Modified Results -->
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Kết quả đã giữ</h2>
+                        <div id="modifiedResult" class="bg-gray-50 p-4 rounded-lg border border-gray-200 min-h-[200px]"></div>
+                        <div class="mt-4 text-right">
+                            <span class="text-lg font-bold text-gray-900">Tổng: <span id="modifiedTotalSum" class="text-green-600">0</span></span>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Input List -->
+                <div class="mt-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Chi tiết input</h2>
+                    <div id="inputList" class="bg-gray-50 p-4 rounded-lg border border-gray-200 min-h-[100px]"></div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-function calculatePairs() {
-    // Lưu dữ liệu vào Local Storage để duy trì sau khi tải lại trang
-    var charMappingInput = document.getElementById("charMapping").value;
-    localStorage.setItem("charMapping", charMappingInput);
-
-    var numbersInput = document.getElementById("numbers").value.toLowerCase(); // Chuyển sang chữ thường
-    numbersInput = numbersInput.replace(/[,_-]/g, "."); // Thay thế các dấu phân tách
-    numbersInput = numbersInput.replace(/[=x]/g, "+"); // Thay thế dấu "=" và "x" bằng "+"
-    var numbersArray = numbersInput.split("\n");
-
-    var charMappingInput = document.getElementById("charMapping").value;
-    var charMappings = charMappingInput.split("\n");
-
-    var mapping = {};
-    charMappings.forEach(function (mappingLine) {
-        var parts = mappingLine.split("=");
-        if (parts.length === 2) {
-            mapping[parts[0].trim()] = parts[1].trim();
-        }
-    });
-
-    var matchingInput = document.getElementById("matching").value;
-    var matchingNumbers = matchingInput.toLowerCase().split(" "); // Chuyển sang chữ thường
-
-    var result = document.getElementById("result");
-    result.innerHTML = "";
-
-    var totalSum = 0; // Tổng giá trị của các cặp số
-    var matchingTotalSum = 0; // Tổng giá trị tất cả các số khi trùng khớp
-
-    var pairs = [];
-    for (var i = 0; i < numbersArray.length; i++) {
-        var parts = numbersArray[i].replace(/\s+/g, "").split(/[+]/); // Loại bỏ khoảng trắng và phân tách bằng "+"
-        var number = parts[0];
-
-        if (mapping[number]) {
-            number = mapping[number];
-        }
-
-        var numberParts = number.split(".");
-        for (var k = 0; k < numberParts.length; k++) {
-            var numberPart = numberParts[k];
-            for (var j = 0; j < numberPart.length - 1; j++) {
-                var pair = numberPart.slice(j, j + 2);
-                var sum = parseInt(parts[1]);
-
-                pairs.push({ pair: pair, value: sum });
-            }
-        }
-    }
-
-    var pairCounts = {}; // Đếm số lần trùng khớp
-    var resultPairs = [];
-    for (var i = 0; i < pairs.length; i++) {
-        var div = document.createElement("div");
-        div.className = "pair";
-
-        var pairValue = pairs[i].pair + " = " + pairs[i].value;
-
-        if (matchingNumbers.includes(pairs[i].pair.toLowerCase())) { // So sánh chữ thường
-            var span = document.createElement("span");
-            span.className = "red"; // Thêm lớp red cho màu chữ đỏ
-            var matchingCount = matchingNumbers.filter(match => match === pairs[i].pair.toLowerCase()).length;
-            var matchingSum = matchingCount * pairs[i].value;
-            totalSum += pairs[i].value; // Cộng tổng giá trị của cặp số
-            matchingTotalSum += matchingSum; // Cộng tổng giá trị khi trùng khớp
-            span.textContent = "Trúng " + matchingCount + " lần: " + matchingSum;
-            div.appendChild(document.createTextNode(pairValue + " "));
-            div.appendChild(span);
-
-            if (!pairCounts[pairs[i].pair]) {
-                pairCounts[pairs[i].pair] = matchingSum;
-            } else {
-                pairCounts[pairs[i].pair] += matchingSum;
-            }
-        } else {
-            totalSum += pairs[i].value; // Cộng tổng giá trị của cặp số
-            div.textContent = pairValue;
-        }
-
-        resultPairs.push(div);
-    }
-
-    resultPairs.forEach(function (pairDiv) {
-        result.appendChild(pairDiv);
-    });
-
-    var totalSumElement = document.getElementById("totalSum");
-    totalSumElement.textContent = "Tổng cược: " + totalSum; // Hiển thị tổng
-
-    var matchingTotalSumElement = document.getElementById("matchingTotalSum");
-    matchingTotalSumElement.textContent = "Tổng ăn: " + matchingTotalSum; // Hiển thị tổng
-
-    var resultHeader = document.createElement("h2");
-    resultHeader.textContent = "Kết quả: " + totalSum + "/" + matchingTotalSum ;
-    resultHeader.style.color = "red"; // Đặt màu đỏ cho tiêu đề
-    result.insertBefore(resultHeader, result.firstChild); // Chèn tiêu đề vào đầu kết quả
-}
-
-
-
-        function normalizeMatching() {
-            var matchingInput = document.getElementById("matching").value;
-            var matchingLines = matchingInput.split("\n");
-
-            var normalizedNumbers = [];
-            for (var i = 0; i < matchingLines.length; i++) {
-                var line = matchingLines[i];
-                var numbers = line.match(/\d+/g);
-                if (numbers) {
-                    for (var j = 1; j < numbers.length; j++) {
-                        if (numbers[j].length === 2) {
-                            normalizedNumbers.push(numbers[j]);
-                        }
-                    }
-                }
-            }
-
-            var normalizedMatching = normalizedNumbers.join(" ");
-            document.getElementById("matching").value = normalizedMatching;
-        }
-
-        var matchTextarea = document.getElementById("matching");
-        matchTextarea.addEventListener("touchstart", function (e) {
-            e.stopPropagation();
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
