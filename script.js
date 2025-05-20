@@ -30,16 +30,14 @@ function loadShortcuts() {
 
 // Hàm tính toán chính
 function calculateSum() {
-  const numbersInput = document.getElementById("numbers").value;
-  const convertedInput = convertInputFormat(numbersInput)
-    .replace(/=/g, "x")
-    .replace(/\+/g, "x");
-  
-  const numbersArray = convertedInput.split("\n").filter(line => line.trim() !== "");
-  const retainNumber = parseInt(document.getElementById("retainNumber").value) || 0;
-  const result = document.getElementById("result");
-  const modifiedResult = document.getElementById("modifiedResult");
+  // Lưu shortcuts vào localStorage
   const shortcutsInput = document.getElementById("shortcuts").value;
+  localStorage.setItem("shortcutsData", shortcutsInput);
+
+  const numbersInput = document.getElementById("numbers").value.toLowerCase();
+  const convertedInput = numbersInput.replace(/[,_-]/g, ".").replace(/[=x]/g, "+");
+  const numbersArray = convertedInput.split("\n").filter(line => line.trim() !== "");
+  
   const shortcutsArray = shortcutsInput.split("\n");
   const shortcuts = {};
   
@@ -76,21 +74,11 @@ function calculateSum() {
         sums[pair] = (sums[pair] || 0) + sum;
       }
     }
-    
-    // Xử lý các phép toán + và x
-    for (let m = 2; m < parts.length; m++) {
-      const operation = parts[m]?.charAt(0);
-      const operand = parseInt(parts[m]?.substring(1)) || 0;
-      
-      if (operation === "+") {
-        sums[number] = (sums[number] || 0) + operand;
-      } else if (operation === "x") {
-        sums[number] = (sums[number] || 0) * operand;
-      }
-    }
   }
   
   // Hiển thị kết quả
+  const result = document.getElementById("result");
+  const modifiedResult = document.getElementById("modifiedResult");
   result.innerHTML = "";
   modifiedResult.innerHTML = "";
   
@@ -118,6 +106,8 @@ function calculateSum() {
   // Hiển thị chi tiết input
   const inputList = document.getElementById("inputList");
   inputList.innerHTML = "";
+  let inputListCount = 0;
+  let inputListTotal = 0;
   
   numbersArray.forEach(number => {
     const parts = number.split(/[+x,\s]+/);
@@ -130,7 +120,7 @@ function calculateSum() {
     }
     
     // Lấy số tiền từ input
-    const amount = parts[1] || "0";
+    const amount = parseInt(parts[1]) || 0;
     
     // Tạo nội dung chi tiết
     if (shortcuts[originalNumber]) {
@@ -154,11 +144,12 @@ function calculateSum() {
             li.textContent = `${pair}x${amount}`;
           }
           inputList.appendChild(li);
+          inputListCount++;
+          inputListTotal += amount;
         }
       });
     } else {
       // Nếu không có shortcut, xử lý số trực tiếp
-      // Loại bỏ dấu chấm và tách thành các cặp 2 chữ số
       const cleanNumber = numberText.replace(/\./g, '');
       for (let i = 0; i < cleanNumber.length - 1; i++) {
         const pair = cleanNumber.substring(i, i + 2);
@@ -176,14 +167,18 @@ function calculateSum() {
           li.textContent = `${pair}x${amount}`;
         }
         inputList.appendChild(li);
+        inputListCount++;
+        inputListTotal += amount;
       }
     }
   });
   
   // Xử lý giữ lại
+  const retainNumber = parseInt(document.getElementById("retainNumber").value) || 0;
   const retainType = document.querySelector('input[name="retainType"]:checked').value;
   let modifiedResultText = "";
   let modifiedTotalSum = 0;
+  let modifiedMatchingSum = 0;
   
   for (const [key, value] of Object.entries(sums)) {
     let modifiedSum;
@@ -203,6 +198,7 @@ function calculateSum() {
           modifiedResultText += ` (${occurrences} nháy)`;
         }
         modifiedResultText += `</div>`;
+        modifiedMatchingSum += modifiedSum;
       } else {
         modifiedResultText += `<div>${key}x${modifiedSum}</div>`;
       }
@@ -211,7 +207,22 @@ function calculateSum() {
   }
   
   modifiedResult.innerHTML = modifiedResultText;
-  document.getElementById("modifiedTotalSum").textContent = modifiedTotalSum.toLocaleString("vi-VN");
+  let modifiedTotalSumText = modifiedTotalSum.toLocaleString("vi-VN");
+  if (modifiedMatchingSum > 0) {
+    modifiedTotalSumText += `/${modifiedMatchingSum.toLocaleString("vi-VN")}`;
+  }
+  document.getElementById("modifiedTotalSum").textContent = modifiedTotalSumText;
+  
+  // Đếm số lượng dự thưởng trong phần Chuyển
+  const modifiedCount = Object.entries(sums).filter(([key, value]) => {
+    let modifiedSum;
+    if (retainType === "money") {
+      modifiedSum = value - retainNumber;
+    } else {
+      modifiedSum = value - (value * (retainNumber / 100));
+    }
+    return modifiedSum >= 1;
+  }).length;
   
   const totalSum = Object.values(sums).reduce((a, b) => a + b, 0);
   let totalSumText = totalSum.toLocaleString("vi-VN");
@@ -220,7 +231,10 @@ function calculateSum() {
     totalSumText += `/${matchingSum.toLocaleString("vi-VN")}`;
   }
   
+  // Hiển thị tổng số và tổng
+  document.getElementById("numResults").textContent = `${sortedSums.length} con`;
   document.getElementById("totalSum").textContent = totalSumText;
+  document.getElementById("modifiedNumResults").textContent = `${modifiedCount} con`;
   
   // Đánh dấu số trùng trong kết quả
   const resultDivs = result.querySelectorAll("div");
@@ -233,14 +247,16 @@ function calculateSum() {
       }
     }
   });
-  
-  document.getElementById("numResults").textContent = `${sortedSums.length} con`;
+
+  // Hiển thị tổng số và tổng cho phần Chi tiết
+  document.getElementById("inputListCount").textContent = `${inputListCount} con`;
+  document.getElementById("inputListTotal").textContent = inputListTotal.toLocaleString("vi-VN");
 }
 
 // Hàm sao chép text
 function copyText() {
   const textToCopy = document.getElementById("modifiedResult").innerText;
-  copyToClipboard(textToCopy, "Đã sao chép thành công!");
+  copyToClipboard(textToCopy, "Đã sao chép kết quả thành công!");
 }
 
 // Hàm sao chép input list
@@ -544,4 +560,21 @@ function resetTable() {
     document.getElementById('totalCol1').textContent = '0';
     // Focus vào ô input đầu tiên
     firstInput.focus();
+}
+
+// Khởi tạo khi tải trang dothuong.html
+if (document.getElementById('calculateButton')) {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load shortcuts từ localStorage
+        const shortcutsData = localStorage.getItem("shortcutsData");
+        if (shortcutsData) {
+            document.getElementById("shortcuts").value = shortcutsData;
+        }
+
+        // Thêm event listeners cho các nút
+        document.getElementById('calculateButton').addEventListener('click', calculateSum);
+        document.getElementById('normalizeButton').addEventListener('click', normalizeTwentySevenNumbers);
+        document.getElementById('copyButton').addEventListener('click', copyText);
+        document.getElementById('copyInputListButton').addEventListener('click', copyInputList);
+    });
 }

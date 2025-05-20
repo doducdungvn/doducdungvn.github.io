@@ -38,6 +38,7 @@
       }
       .matching-number {
         @apply text-danger font-bold;
+        color: #ef4444 !important;
       }
     }
   </style>
@@ -135,43 +136,58 @@
 
       <!-- Cột phải -->
       <div class="flex-1 space-y-4">
-        <!-- Tổng hợp -->
-        <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 text-center transition-all hover:shadow-lg">
-          <h3 class="font-medium underline mb-2 animate-pulse-slow">Tổng hợp:</h3>
-          <div id="totalSum2" class="text-lg font-bold text-danger"></div>
-          <div id="numResults" class="text-sm text-gray-500 dark:text-gray-400"></div>
-        </div>
-
         <!-- Kết quả -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Kết quả chính -->
-          <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 transition-all hover:shadow-lg">
-            <h3 class="font-medium mb-2 flex items-center gap-2">
+          <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 transition-all hover:shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 class="font-medium flex items-center gap-2 mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
               <span class="animate-bounce-slow">📊</span>
               <span>Kết quả:</span>
             </h3>
-            <div id="totalSum" class="text-danger font-bold mb-2"></div>
-            <div id="result" class="space-y-1 max-h-96 overflow-y-auto"></div>
+            <div class="flex flex-col gap-2 mb-2">
+              <div class="border border-gray-200 dark:border-gray-700 rounded p-2">
+                <span class="text-sm text-gray-600">Tổng số: <span id="numResults" class="font-medium">0 con</span></span>
+              </div>
+              <div class="border border-gray-200 dark:border-gray-700 rounded p-2">
+                <span class="text-lg font-bold text-danger">Tổng: <span id="totalSum">0</span></span>
+              </div>
+            </div>
+            <div class="h-[calc(100%-8rem)]">
+              <div id="result" class="space-y-1 h-full overflow-y-auto p-2"></div>
+            </div>
           </div>
 
           <!-- Kết quả chuyển -->
-          <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 transition-all hover:shadow-lg">
-            <h3 class="font-medium mb-2 flex items-center gap-2">
+          <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 transition-all hover:shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 class="font-medium flex items-center gap-2 mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
               <span class="animate-bounce-slow">🔄</span>
               <span>Chuyển:</span>
             </h3>
-            <div id="modifiedTotalSum" class="text-danger font-bold mb-2"></div>
-            <div id="modifiedResult" class="space-y-1 max-h-96 overflow-y-auto"></div>
-            <div id="totalSum3" class="mt-2 text-sm"></div>
+            <div class="flex flex-col gap-2 mb-2">
+              <div class="border border-gray-200 dark:border-gray-700 rounded p-2">
+                <span class="text-sm text-gray-600">Tổng số: <span id="modifiedNumResults" class="font-medium">0 con</span></span>
+              </div>
+              <div class="border border-gray-200 dark:border-gray-700 rounded p-2">
+                <span class="text-lg font-bold text-danger">Tổng: <span id="modifiedTotalSum">0</span></span>
+              </div>
+            </div>
+            <div class="h-[calc(100%-8rem)]">
+              <div id="modifiedResult" class="space-y-1 h-full overflow-y-auto p-2"></div>
+            </div>
           </div>
 
           <!-- Chi tiết -->
-          <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 transition-all hover:shadow-lg">
-            <h3 class="font-medium mb-2 flex items-center gap-2">
+          <div class="bg-white dark:bg-dark-800 rounded-lg shadow-md p-4 transition-all hover:shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 class="font-medium flex items-center gap-2 mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">
               <span class="animate-bounce-slow">🔍</span>
               <span>Chi tiết:</span>
             </h3>
-            <ul id="inputList" class="space-y-1 max-h-96 overflow-y-auto"></ul>
+            <div class="border border-gray-200 dark:border-gray-700 rounded p-2 mb-2">
+              <span class="text-sm text-gray-600">Theo Input</span>
+            </div>
+            <div class="h-[calc(100%-8rem)]">
+              <ul id="inputList" class="space-y-1 h-full overflow-y-auto p-2"></ul>
+            </div>
           </div>
         </div>
 
