@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Tính Lô Đề Nâng Cao</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Adjust alignment to prevent overflow */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 900px; /* Slightly wider for more inputs */
+            width: 100%;
+        }
+        input[type="text"], input[type="number"], textarea {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+            outline: none;
+            border-color: #6366f1; /* Indigo-500 */
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #6366f1;
+            padding-bottom: 8px;
+        }
+        .btn {
+            background-color: #6366f1; /* Indigo-500 */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            border: none;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+        .btn:hover {
+            background-color: #4f46e5; /* Indigo-600 */
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            background-color: #3f36a5; /* Indigo-700 */
+            transform: translateY(0);
+        }
+        .result-box {
+            background-color: #f8faff; /* Light blue background */
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db; /* Gray-300 */
+            margin-top: 25px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e0e0e0;
+            font-weight: 500;
+            color: #4b5563; /* Gray-700 */
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-value-pair {
+            font-weight: 700;
+            color: #1f2937; /* Gray-900 */
+            text-align: right;
+        }
+        .result-bet-display { /* New style for bet amount */
+            color: #4299e1; /* Blue-500 */
+            font-weight: 600;
+        }
+        .result-cost-display { /* Existing style for actual cost (gốc) */
+            color: #f59e0b; /* Amber-500 */
+            font-weight: 600;
+        }
+        .result-winnings-display {
+            color: #22c55e; /* Green-500 */
+            font-weight: 600;
+        }
+        .total-summary {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .summary-profit {
+            color: #22c55e; /* Green for profit */
+        }
+        .summary-loss {
+            color: #ef4444; /* Red for loss */
+        }
+        .summary-breakeven {
+            color: #4b5563; /* Gray for breakeven */
+        }
+        .error-message {
+            color: #ef4444; /* Red-500 */
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .grid-cols-custom {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+        @media (max-width: 640px) {
+            .grid-cols-custom {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center p-4 min-h-screen">
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Công Cụ Tính Lô Đề Nâng Cao</h1>
+        <p class="text-center text-gray-600 mb-8">Nhập thông tin cược, kết quả xổ số và tính toán! </p>
+
+        <div class="mb-6">
+            <h2 class="section-title">Cấu hình tỷ lệ</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                <!-- Đề Rates -->
+                <div>
+                    <label for="deCostPercentage" class="block text-gray-700 text-sm font-bold mb-2">Đề: Tiền gốc (%)</label>
+                    <input type="number" id="deCostPercentage" value="82" min="0" max="100" class="w-full">
+                </div>
+                <div>
+                    <label for="dePayoutRate" class="block text-gray-700 text-sm font-bold mb-2">Đề: Thưởng (lần)</label>
+                    <input type="number" id="dePayoutRate" value="80" min="0" class="w-full">
+                </div>
+                <!-- Lô Rates -->
+                <div>
+                    <label for="loCostPerPoint" class="block text-gray-700 text-sm font-bold mb-2">Lô: Tiền gốc (Giá nhập)</label>
+                    <input type="number" id="loCostPerPoint" value="2165" min="0" class="w-full">
+                </div>
+                <div>
+                    <label for="loPayoutRate" class="block text-gray-700 text-sm font-bold mb-2">Lô: Thưởng (lần)</label>
+                    <input type="number" id="loPayoutRate" value="80" min="0" class="w-full">
+                </div>
+                <!-- Xiên Rates -->
+                <div>
+                    <label for="xienCostPercentage" class="block text-gray-700 text-sm font-bold mb-2">Xiên: Tiền gốc (%)</label>
+                    <input type="number" id="xienCostPercentage" value="65" min="0" max="100" class="w-full">
+                </div>
+                <div>
+                    <label for="xien2PayoutRate" class="block text-gray-700 text-sm font-bold mb-2">Xiên 2: Thưởng (lần)</label>
+                    <input type="number" id="xien2PayoutRate" value="11" min="0" class="w-full">
+                </div>
+                <div>
+                    <label for="xien3PayoutRate" class="block text-gray-700 text-sm font-bold mb-2">Xiên 3: Thưởng (lần)</label>
+                    <input type="number" id="xien3PayoutRate" value="45" min="0" class="w-full">
+                </div>
+                <div>
+                    <label for="xien4PayoutRate" class="block text-gray-700 text-sm font-bold mb-2">Xiên 4: Thưởng (lần)</label>
+                    <input type="number" id="xien4PayoutRate" value="140" min="0" class="w-full">
+                </div>
+                <!-- 3 Càng Rates -->
+                <div>
+                    <label for="baCangCostPercentage" class="block text-gray-700 text-sm font-bold mb-2">3 Càng: Tiền gốc (%)</label>
+                    <input type="number" id="baCangCostPercentage" value="75" min="0" max="100" class="w-full">
+                </div>
+                <div>
+                    <label for="baCangPayoutRate" class="block text-gray-700 text-sm font-bold mb-2">3 Càng: Thưởng (lần)</label>
+                    <input type="number" id="baCangPayoutRate" value="400" min="0" class="w-full">
+                </div>
+                <div>
+                    <label for="apMaPayoutRate" class="block text-gray-700 text-sm font-bold mb-2">Áp Má: Thưởng (lần)</label>
+                    <input type="number" id="apMaPayoutRate" value="5" min="0" class="w-full">
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="section-title">Nhập liệu cược</h2>
+            <label for="combinedBetInput" class="block text-gray-700 text-sm font-bold mb-2">
+                Nhập các lượt cược (mỗi dòng một loại, ví dụ: Đề 23.45.65.676x100):
+            </label>
+            <textarea id="combinedBetInput" rows="10" placeholder="Đề 23.45.65.676x100&#10;Lô 23.45.65.676x100&#10;Xiên 23.45x100&#10;3c 345x100" class="w-full"></textarea>
+            <p class="text-gray-500 text-xs mt-1">
+                **Định dạng:** [Loại cược] [Các số]x[Số tiền/điểm]<br>
+                **Các loại cược:** Đề, Lô, Xiên, 3c (hoặc 3C)<br>
+                **Quy tắc:**
+                - **Đề/Lô:** Hỗ trợ 2 hoặc 3 chữ số (ví dụ: `676` sẽ được tách thành `67` và `76`).
+                - **Xiên:** Tự động nhận diện Xiên 2, 3, 4 dựa trên số lượng số bạn nhập (chỉ hỗ trợ 2 chữ số). Ví dụ: `Xiên 23.45x100` là Xiên 2 cho cặp `(23, 45)`.
+                - **3 Càng:** Chỉ hỗ trợ 3 chữ số.
+            </p>
+        </div>
+
+        <div class="mb-6">
+            <label for="specialPrize" class="block text-gray-700 text-sm font-bold mb-2">Kết quả Giải Đặc Biệt (ví dụ: 12345):</label>
+            <input type="text" id="specialPrize" placeholder="Nhập số cuối Giải Đặc Biệt (ví dụ: 12345)" class="w-full">
+            <p class="text-gray-500 text-xs mt-1">Chỉ lấy 2 hoặc 3 số cuối tùy loại hình.</p>
+        </div>
+
+        <div class="mb-6">
+            <label for="allPrizes" class="block text-gray-700 text-sm font-bold mb-2">Tất cả các giải (ví dụ: 01, 12, 23, 34, ...):</label>
+            <input type="text" id="allPrizes" placeholder="Nhập các số cuối của 27 giải, cách nhau bởi dấu phẩy" class="w-full">
+            <p class="text-gray-500 text-xs mt-1">Dùng để tính Lô, Xiên. Ví dụ: 01,12,23,45,67,...</p>
+        </div>
+
+        <button id="calculateBtn" class="btn">Tính Toán</button>
+
+        <div id="results" class="result-box hidden">
+            <h2 class="section-title !border-b-0 text-center">Kết Quả</h2>
+            <div id="resultDetails">
+                <!-- Results will be displayed here -->
+            </div>
+            <div id="totalSummary" class="total-summary">
+                <!-- Total summary will be displayed here -->
+            </div>
+        </div>
+
+        <div id="messageBox" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+                <h3 class="text-xl font-bold mb-4" id="messageTitle"></h3>
+                <p class="text-gray-700 mb-6" id="messageContent"></p>
+                <button id="messageCloseBtn" class="btn w-full">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const combinedBetInput = document.getElementById('combinedBetInput');
+            const specialPrizeInput = document.getElementById('specialPrize');
+            const allPrizesInput = document.getElementById('allPrizes');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resultsDiv = document.getElementById('results');
+            const resultDetailsDiv = document.getElementById('resultDetails');
+            const totalSummaryDiv = document.getElementById('totalSummary');
+            const messageBox = document.getElementById('messageBox');
+            const messageTitle = document.getElementById('messageTitle');
+            const messageContent = document.getElementById('messageContent');
+            const messageCloseBtn = document.getElementById('messageCloseBtn');
+
+            // Input fields for custom rates
+            const deCostPercentageInput = document.getElementById('deCostPercentage');
+            const dePayoutRateInput = document.getElementById('dePayoutRate');
+            const loCostPerPointInput = document.getElementById('loCostPerPoint');
+            const loPayoutRateInput = document.getElementById('loPayoutRate');
+            const xienCostPercentageInput = document.getElementById('xienCostPercentage');
+            const xien2PayoutRateInput = document.getElementById('xien2PayoutRate');
+            const xien3PayoutRateInput = document.getElementById('xien3PayoutRate');
+            const xien4PayoutRateInput = document.getElementById('xien4PayoutRate');
+            const baCangCostPercentageInput = document.getElementById('baCangCostPercentage');
+            const baCangPayoutRateInput = document.getElementById('baCangPayoutRate');
+            const apMaPayoutRateInput = document.getElementById('apMaPayoutRate');
+
+            let parsedBets = {
+                de: [],
+                lo: [],
+                xien2: [],
+                xien3: [],
+                xien4: [],
+                bacang: []
+            };
+
+            // Hàm hiển thị thông báo tùy chỉnh
+            function showMessage(title, content) {
+                messageTitle.textContent = title;
+                messageContent.textContent = content;
+                messageBox.classList.remove('hidden');
+                resultsDiv.classList.add('hidden'); // Ensure results are hidden if an error occurs
+            }
+
+            // Đóng hộp thoại thông báo
+            messageCloseBtn.addEventListener('click', () => {
+                messageBox.classList.add('hidden');
+            });
+
+            // Hàm lấy N số cuối của một chuỗi số
+            function getLastNDigits(numberString, n) {
+                if (!numberString || numberString.length < n) {
+                    return null;
+                }
+                return numberString.slice(-n);
+            }
+
+            // Hàm kiểm tra xem một số có xuất hiện trong danh sách kết quả lô không
+            function isNumberInPrizes(number, prizes) {
+                return prizes.includes(number);
+            }
+
+            // Hàm tạo tất cả các tổ hợp Xiên từ một mảng số
+            function getCombinations(arr, k) {
+                const result = [];
+                function backtrack(start, currentCombination) {
+                    if (currentCombination.length === k) {
+                        result.push([...currentCombination]);
+                        return;
+                    }
+                    for (let i = start; i < arr.length; i++) {
+                        currentCombination.push(arr[i]);
+                        backtrack(i + 1, currentCombination);
+                        currentCombination.pop();
+                    }
+                }
+                backtrack(0, []);
+                return result;
+            }
+
+            // Hàm chuẩn hóa và lấy các số cho Đề/Lô từ chuỗi nhập liệu
+            // Ví dụ: "23.45.65.676" -> ['23', '45', '65', '76', '67']
+            function parseDeLoNumbers(numbersString) {
+                const segments = numbersString.split('.');
+                const uniqueNumbers = new Set();
+                segments.forEach(seg => {
+                    if (seg.length === 2 && /^\d+$/.test(seg)) {
+                        uniqueNumbers.add(seg);
+                    } else if (seg.length === 3 && /^\d+$/.test(seg)) {
+                        uniqueNumbers.add(seg.slice(-2)); // Lấy 2 số cuối (ví dụ: '76' từ '676')
+                        uniqueNumbers.add(seg.slice(0, 2)); // Lấy 2 số đầu (ví dụ: '67' từ '676')
+                    }
+                });
+                return Array.from(uniqueNumbers);
+            }
+
+            // Hàm chuẩn hóa và lấy các số cho Xiên (phải là 2 chữ số)
+            function parseXienNumbers(numbersString) {
+                const segments = numbersString.split('.');
+                const numbers = [];
+                for (const seg of segments) {
+                    if (seg.length === 2 && /^\d+$/.test(seg)) {
+                        numbers.push(seg);
+                    } else {
+                        // Nếu có số không hợp lệ cho Xiên, trả về mảng rỗng hoặc xử lý lỗi
+                        return [];
+                    }
+                }
+                // Loại bỏ các số trùng lặp để đảm bảo Xiên là các số riêng biệt
+                return Array.from(new Set(numbers));
+            }
+
+            // Hàm chuẩn hóa và lấy số cho 3 Càng (phải là 3 chữ số)
+            function parse3CangNumber(numberString) {
+                if (numberString.length === 3 && /^\d+$/.test(numberString)) {
+                    return numberString;
+                }
+                return null;
+            }
+
+            // Hàm phân tích toàn bộ chuỗi nhập liệu cược
+            function parseCombinedInput(inputString) {
+                // Reset parsedBets for each calculation
+                parsedBets = {
+                    de: [],
+                    lo: [],
+                    xien2: [],
+                    xien3: [],
+                    xien4: [],
+                    bacang: []
+                };
+
+                const lines = inputString.split('\n');
+                let hasError = false;
+
+                lines.forEach((line, index) => {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) return; // Bỏ qua dòng trống
+
+                    const match = trimmedLine.match(/^(Đề|Lô|Xiên|3c|3C)\s+([0-9\.]+)(x(\d+))?$/i); // Case-insensitive for 3c/3C
+
+                    if (!match) {
+                        showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Định dạng không hợp lệ "${trimmedLine}". Vui lòng nhập đúng cú pháp.`);
+                        hasError = true;
+                        return;
+                    }
+
+                    const betType = match[1].toLowerCase();
+                    const amount = parseFloat(match[4]) || 0; // Số tiền/điểm
+
+                    if (amount <= 0) {
+                        showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Số tiền/điểm cược phải lớn hơn 0.`);
+                        hasError = true;
+                        return;
+                    }
+
+                    // For Đề, Xiên, 3 Càng, xAMOUNT implies X nghìn đồng, so convert to actual VND
+                    // For Lô, xAMOUNT implies points.
+                    let actualBetAmount = amount;
+                    if (['đề', 'xiên', '3c'].includes(betType)) {
+                        actualBetAmount = amount * 1000; // 100 becomes 100,000 VND
+                    }
+                    // For Lô, amount is already in points, so no multiplication here.
+
+                    const numbersString = match[2];
+
+                    switch (betType) {
+                        case 'đề':
+                            const deNumbers = parseDeLoNumbers(numbersString);
+                            if (deNumbers.length === 0) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Các số Đề không hợp lệ.`);
+                                hasError = true;
+                                return;
+                            }
+                            parsedBets.de.push({ numbers: deNumbers, amount: actualBetAmount });
+                            break;
+                        case 'lô':
+                            const loNumbers = parseDeLoNumbers(numbersString);
+                             if (loNumbers.length === 0) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Các số Lô không hợp lệ.`);
+                                hasError = true;
+                                return;
+                            }
+                            parsedBets.lo.push({ numbers: loNumbers, amount: amount }); // Amount for Lô is points
+                            break;
+                        case 'xiên':
+                            const xienNums = parseXienNumbers(numbersString);
+                            if (xienNums.length === 0) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Các số Xiên không hợp lệ (chỉ chấp nhận 2 chữ số và không trùng lặp).`);
+                                hasError = true;
+                   
