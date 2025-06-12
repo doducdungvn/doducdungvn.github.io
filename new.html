@@ -13,16 +13,26 @@
             justify-content: center;
             align-items: flex-start; /* Adjust alignment to prevent overflow */
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px; /* Reduced padding for mobile */
             box-sizing: border-box;
         }
         .container {
             background-color: #ffffff;
-            padding: 30px;
+            padding: 24px; /* Slightly reduced padding for mobile */
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            max-width: 900px; /* Slightly wider for more inputs */
+            max-width: 900px; /* Max width for larger screens */
             width: 100%;
+            margin-left: auto;
+            margin-right: auto; /* Center the container */
+        }
+        @media (min-width: 768px) { /* Medium screens and up */
+            body {
+                padding: 20px;
+            }
+            .container {
+                padding: 30px;
+            }
         }
         input[type="text"], input[type="number"], textarea {
             border: 1px solid #e0e0e0;
@@ -134,8 +144,8 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center p-4 min-h-screen">
-
+<body>
+    <script>console.log("Script loaded at body start.");</script>
     <div class="container">
         <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Công Cụ Tính Lô Đề Nâng Cao</h1>
         <p class="text-center text-gray-600 mb-8">Nhập thông tin cược, kết quả xổ số và tính toán! </p>
@@ -197,17 +207,12 @@
         <div class="mb-6">
             <h2 class="section-title">Nhập liệu cược</h2>
             <label for="combinedBetInput" class="block text-gray-700 text-sm font-bold mb-2">
-                Nhập các lượt cược (mỗi dòng một loại, ví dụ: Đề 23.45.65.676x100):
+                Nhập các lượt cược (mỗi dòng một loại, ví dụ: Đề 23.45.65.676x100)<br>
+                Hỗ trợ dấu phân cách số: chấm (.), phẩy (,), gạch ngang (-), khoảng trắng ( )<br>
+                Hỗ trợ nhiều cách viết cho loại cược (ví dụ: 'd', 'đề', 'De', 'D', 'de' cho Đề)<br>
+                **Ví dụ nhập nhiều lượt cược trên cùng 1 dòng:** `Đề 101.23*10 242.21+10`
             </label>
-            <textarea id="combinedBetInput" rows="10" placeholder="Đề 23.45.65.676x100&#10;Lô 23.45.65.676x100&#10;Xiên 23.45x100&#10;3c 345x100" class="w-full"></textarea>
-            <p class="text-gray-500 text-xs mt-1">
-                **Định dạng:** [Loại cược] [Các số]x[Số tiền/điểm]<br>
-                **Các loại cược:** Đề, Lô, Xiên, 3c (hoặc 3C)<br>
-                **Quy tắc:**
-                - **Đề/Lô:** Hỗ trợ 2 hoặc 3 chữ số (ví dụ: `676` sẽ được tách thành `67` và `76`).
-                - **Xiên:** Tự động nhận diện Xiên 2, 3, 4 dựa trên số lượng số bạn nhập (chỉ hỗ trợ 2 chữ số). Ví dụ: `Xiên 23.45x100` là Xiên 2 cho cặp `(23, 45)`.
-                - **3 Càng:** Chỉ hỗ trợ 3 chữ số.
-            </p>
+            <textarea id="combinedBetInput" rows="10" placeholder="Đề 101.23*10 242.21+10&#10;lô 12 34 x5&#10;Xien 55-66*20&#10;3C 123.456*50, 345x50" class="w-full"></textarea>
         </div>
 
         <div class="mb-6">
@@ -244,7 +249,9 @@
     </div>
 
     <script>
+        console.log("Script execution started."); // DEBUG
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOMContentLoaded event fired."); // DEBUG
             const combinedBetInput = document.getElementById('combinedBetInput');
             const specialPrizeInput = document.getElementById('specialPrize');
             const allPrizesInput = document.getElementById('allPrizes');
@@ -281,6 +288,7 @@
 
             // Hàm hiển thị thông báo tùy chỉnh
             function showMessage(title, content) {
+                console.log(`Displaying message: ${title} - ${content}`); // DEBUG
                 messageTitle.textContent = title;
                 messageContent.textContent = content;
                 messageBox.classList.remove('hidden');
@@ -295,7 +303,7 @@
             // Hàm lấy N số cuối của một chuỗi số
             function getLastNDigits(numberString, n) {
                 if (!numberString || numberString.length < n) {
-                    return null;
+                    return ''; // Return empty string for safety
                 }
                 return numberString.slice(-n);
             }
@@ -323,48 +331,42 @@
                 return result;
             }
 
-            // Hàm chuẩn hóa và lấy các số cho Đề/Lô từ chuỗi nhập liệu
-            // Ví dụ: "23.45.65.676" -> ['23', '45', '65', '76', '67']
-            function parseDeLoNumbers(numbersString) {
-                const segments = numbersString.split('.');
-                const uniqueNumbers = new Set();
+            // Hàm chuẩn hóa và lấy các số từ chuỗi nhập liệu cho Đề/Lô/Xiên/3C
+            // Handles multiple separators (., -, space, comma)
+            // Handles 3-digit numbers splitting into two 2-digit numbers (e.g. 101 -> 10, 01)
+            // For 3c, also allows multiple 3-digit numbers separated by separators
+            function parseNumbersFromBetString(numbersString, betType) {
+                const segments = numbersString.split(/[.,\-\s]+/).filter(s => s.length > 0);
+                const numbers = []; 
+
                 segments.forEach(seg => {
-                    if (seg.length === 2 && /^\d+$/.test(seg)) {
-                        uniqueNumbers.add(seg);
-                    } else if (seg.length === 3 && /^\d+$/.test(seg)) {
-                        uniqueNumbers.add(seg.slice(-2)); // Lấy 2 số cuối (ví dụ: '76' từ '676')
-                        uniqueNumbers.add(seg.slice(0, 2)); // Lấy 2 số đầu (ví dụ: '67' từ '676')
+                    if (!/^\d+$/.test(seg)) { // Ensure segment is purely numeric
+                        return; // Skip non-numeric segments
+                    }
+
+                    if (betType === 'de' || betType === 'lo') {
+                        if (seg.length === 2) {
+                            numbers.push(seg);
+                        } else if (seg.length === 3) {
+                            numbers.push(seg.substring(0, 2)); // e.g., '10' from '101'
+                            numbers.push(seg.substring(1, 3)); // e.g., '01' from '101'
+                        }
+                    } else if (betType === 'xien') {
+                        if (seg.length === 2) {
+                            numbers.push(seg);
+                        }
+                    } else if (betType === 'bacang') {
+                        if (seg.length === 3) {
+                            numbers.push(seg);
+                        }
                     }
                 });
-                return Array.from(uniqueNumbers);
-            }
-
-            // Hàm chuẩn hóa và lấy các số cho Xiên (phải là 2 chữ số)
-            function parseXienNumbers(numbersString) {
-                const segments = numbersString.split('.');
-                const numbers = [];
-                for (const seg of segments) {
-                    if (seg.length === 2 && /^\d+$/.test(seg)) {
-                        numbers.push(seg);
-                    } else {
-                        // Nếu có số không hợp lệ cho Xiên, trả về mảng rỗng hoặc xử lý lỗi
-                        return [];
-                    }
-                }
-                // Loại bỏ các số trùng lặp để đảm bảo Xiên là các số riêng biệt
-                return Array.from(new Set(numbers));
-            }
-
-            // Hàm chuẩn hóa và lấy số cho 3 Càng (phải là 3 chữ số)
-            function parse3CangNumber(numberString) {
-                if (numberString.length === 3 && /^\d+$/.test(numberString)) {
-                    return numberString;
-                }
-                return null;
+                return numbers; // Return all parsed numbers
             }
 
             // Hàm phân tích toàn bộ chuỗi nhập liệu cược
             function parseCombinedInput(inputString) {
+                console.log("Starting parseCombinedInput for:", inputString); // DEBUG
                 // Reset parsedBets for each calculation
                 parsedBets = {
                     de: [],
@@ -378,59 +380,556 @@
                 const lines = inputString.split('\n');
                 let hasError = false;
 
-                lines.forEach((line, index) => {
+                // Regex để khớp với các biến thể của loại hình cược
+                const typeRegex = {
+                    de: /^(đề|d|de)$/i,
+                    lo: /^(lô|l|lo)$/i,
+                    xien: /^(xiên|x|xien2|xien3|xien4|x2|x3|x4)$/i, 
+                    bacang: /^(3càng|3cang|3c)$/i
+                };
+
+                for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) { // Change to for loop for error breaking
+                    const line = lines[lineIndex];
                     const trimmedLine = line.trim();
-                    if (!trimmedLine) return; // Bỏ qua dòng trống
+                    if (!trimmedLine) continue; // Bỏ qua dòng trống
 
-                    const match = trimmedLine.match(/^(Đề|Lô|Xiên|3c|3C)\s+([0-9\.]+)(x(\d+))?$/i); // Case-insensitive for 3c/3C
+                    // Tách loại cược (từ đầu dòng đến khoảng trắng đầu tiên) và phần còn lại của nội dung cược
+                    const initialMatch = trimmedLine.match(/^(\S+)\s*(.*)$/); 
 
-                    if (!match) {
-                        showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Định dạng không hợp lệ "${trimmedLine}". Vui lòng nhập đúng cú pháp.`);
+                    if (!initialMatch) {
+                         showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Định dạng không hợp lệ, không tìm thấy loại cược hoặc nội dung cược. Vui lòng nhập đúng cú pháp.`);
+                         hasError = true;
+                         break; // Break from for loop
+                    }
+
+                    const rawBetType = initialMatch[1].toLowerCase().trim(); // Lấy loại cược thô
+                    const betContentString = initialMatch[2]; // Phần còn lại của dòng (ví dụ: "101.23*10 242.21+10")
+                    console.log(`Line ${lineIndex + 1}: Raw Type: '${rawBetType}', Content: '${betContentString}'`); // DEBUG
+
+                    let normalizedType = '';
+                    if (typeRegex.de.test(rawBetType)) {
+                        normalizedType = 'de';
+                    } else if (typeRegex.lo.test(rawBetType)) {
+                        normalizedType = 'lo';
+                    } else if (typeRegex.xien.test(rawBetType)) {
+                        normalizedType = 'xien';
+                    } else if (typeRegex.bacang.test(rawBetType)) {
+                        normalizedType = 'bacang';
+                    } else {
+                        showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Loại cược "${rawBetType}" không được hỗ trợ.`);
                         hasError = true;
+                        break; // Break from for loop
+                    }
+                    console.log(`Normalized Type: ${normalizedType}`); // DEBUG
+                    
+                    // Now, parse the betContentString for multiple bet groups
+                    // Each group is: (numbers_string)(operator)(amount)
+                    const betGroupSplitRegex = /([0-9.,\-\s]+)([x+*])(\d+)(?:\s*|$)/gi; 
+                    let groupMatch;
+                    let lineHasValidBets = false;
+
+                    // Ensure previous match state is cleared for global regex
+                    betGroupSplitRegex.lastIndex = 0; 
+
+                    while ((groupMatch = betGroupSplitRegex.exec(betContentString)) !== null) {
+                        const numbersStringSegment = groupMatch[1].trim(); 
+                        const amountValue = parseFloat(groupMatch[3]); 
+                        console.log(`  Segment: '${numbersStringSegment}', Amount: ${amountValue}`); // DEBUG
+
+                        if (amountValue <= 0 || isNaN(amountValue)) {
+                            showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Số tiền/điểm cược (${amountValue}) không hợp lệ.`);
+                            hasError = true;
+                            break; // Break from while loop
+                        }
+
+                        // Parse individual numbers from this segment string
+                        const individualNumbersFromSegment = parseNumbersFromBetString(numbersStringSegment, normalizedType);
+                        console.log(`    Parsed Individual Numbers:`, individualNumbersFromSegment); // DEBUG
+
+                        // --- Validation of parsed numbers for specific types ---
+                        let currentBetIsValid = true;
+                        if (individualNumbersFromSegment.length === 0) {
+                            showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Không tìm thấy số hợp lệ nào trong "${numbersStringSegment}".`);
+                            currentBetIsValid = false;
+                        } else if (normalizedType === 'bacang') {
+                            if (individualNumbersFromSegment.some(n => n.length !== 3)) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Số 3 Càng (${numbersStringSegment}) không hợp lệ (mỗi số phải là 3 chữ số).`);
+                                currentBetIsValid = false;
+                            }
+                        } else if (normalizedType === 'xien') {
+                            if (individualNumbersFromSegment.some(n => n.length !== 2)) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Số Xiên (${numbersStringSegment}) không hợp lệ (mỗi số phải là 2 chữ số).`);
+                                currentBetIsValid = false;
+                            } else if (new Set(individualNumbersFromSegment).size !== individualNumbersFromSegment.length) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Số Xiên (${numbersStringSegment}) có số trùng lặp.`);
+                                currentBetIsValid = false;
+                            } else if (individualNumbersFromSegment.length < 2 || individualNumbersFromSegment.length > 4) {
+                                showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Xiên (${numbersStringSegment}) chỉ hỗ trợ 2, 3 hoặc 4 số. ${individualNumbersFromSegment.length} số được tìm thấy.`);
+                                currentBetIsValid = false;
+                            }
+                        } else if (normalizedType === 'de' || normalizedType === 'lo') { 
+                            if (individualNumbersFromSegment.some(n => n.length !== 2)) {
+                                 showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Số ${normalizedType} (${numbersStringSegment}) không hợp lệ (phải là số 2 hoặc 3 chữ số).`);
+                                 currentBetIsValid = false;
+                            }
+                        }
+
+                        if (!currentBetIsValid) {
+                            hasError = true;
+                            break; // Break from while loop
+                        }
+
+
+                        // Convert amount from 'nghìn đồng' to actual VND for internal calculation (for Đề, Xiên, 3 Càng)
+                        // For Lô, amount is already in points.
+                        let amountToUseForBet = amountValue; 
+                        if (['de', 'xien', 'bacang'].includes(normalizedType)) {
+                            amountToUseForBet = amountValue * 1000; // e.g., 10 (nghìn) -> 10,000 VND
+                        }
+                        console.log(`    Amount for calc: ${amountToUseForBet}`); // DEBUG
+
+                        // Now, push each parsed number/combination to the correct parsedBets array
+                        // The amountToUseForBet applies to EACH individual number if de/lo/bacang, or to the whole combination if xien
+                        if (normalizedType === 'xien') {
+                            if (individualNumbersFromSegment.length >= 2 && individualNumbersFromSegment.length <= 4) {
+                                if (individualNumbersFromSegment.length === 2) {
+                                    parsedBets.xien2.push({ numbers: individualNumbersFromSegment, amount: amountToUseForBet });
+                                } else if (individualNumbersFromSegment.length === 3) {
+                                    parsedBets.xien3.push({ numbers: individualNumbersFromSegment, amount: amountToUseForBet });
+                                } else if (individualNumbersFromSegment.length === 4) {
+                                    parsedBets.xien4.push({ numbers: individualNumbersFromSegment, amount: amountToUseForBet });
+                                }
+                                lineHasValidBets = true; // Mark valid bet found for this line
+                            }
+                        } else { // 'de', 'lo', or 'bacang'
+                            // For Đề/Lô/3C, each parsed number from the segment string becomes a separate bet
+                            if (individualNumbersFromSegment.length > 0) {
+                                individualNumbersFromSegment.forEach(singleNum => {
+                                    // Pushing the single number as an array element for consistency across all bet types
+                                    parsedBets[normalizedType].push({ numbers: [singleNum], amount: amountToUseForBet });
+                                });
+                                lineHasValidBets = true;
+                            }
+                        }
+                    } // End while loop for bet groups
+
+                    if (hasError) break; // Break from outer for loop if error occurred in inner while loop
+
+                    if (!lineHasValidBets) {
+                        showMessage('Lỗi nhập liệu', `Dòng ${lineIndex + 1}: Không tìm thấy lượt cược hợp lệ nào sau loại cược. Vui lòng kiểm tra định dạng số và số tiền.`);
+                        hasError = true;
+                        break; // Break from outer for loop
+                    }
+                } // End for loop for lines
+                console.log("Finished parseCombinedInput. Parsed Bets:", parsedBets); // DEBUG
+                return !hasError;
+            }
+
+            // --- Parsing function for values that are interpreted with an implied thousands component ---
+            // Applies to Lo cost and ALL payout multipliers (since they represent "X nghìn đồng" or "X lần" multiplier)
+            function parseMultiplierOrLoCost(inputValue) {
+                const strValue = String(inputValue).trim();
+                const num = parseFloat(strValue);
+
+                if (isNaN(num)) {
+                    return 0;
+                }
+
+                // If input is 2 digits, it's X (e.g., "80" -> 80, "22" -> 22)
+                if (strValue.length === 2) {
+                    return num;
+                } 
+                // If input is 4 digits, first 2 are integer thousands, last 2 are decimal thousands (e.g., "2165" -> 21.65)
+                else if (strValue.length === 4) {
+                    const integerPart = parseFloat(strValue.slice(0, 2)); // e.g., "21"
+                    const decimalPart = parseFloat(strValue.slice(2));   // e.g., "65"
+                    return integerPart + (decimalPart / 100); // 21 + 65/100 = 21.65
+                }
+                // For other lengths (1, 3, 5+), treat as direct value
+                // e.g., "5" -> 5, "400" -> 400, "80000" -> 80000
+                else {
+                    return num;
+                }
+            }
+
+
+            // --- Calculation Functions ---
+
+            // Hàm tính toán Đề
+            function calculateDeWinnings(deBets, specialPrizeLast2, dePayoutRateMultiplier) { 
+                let winnings = 0;
+                deBets.forEach(bet => {
+                    bet.numbers.forEach(num => { 
+                        if (num === specialPrizeLast2) {
+                            winnings += bet.amount * dePayoutRateMultiplier; 
+                        }
+                    });
+                });
+                return winnings;
+            }
+
+            // Hàm tính toán chi phí Đề (tiền gốc)
+            function calculateDeCost(deBets, deCostPercentage) {
+                let cost = 0;
+                deBets.forEach(bet => {
+                    cost += bet.numbers.length * bet.amount * (deCostPercentage / 100);
+                });
+                return cost;
+            }
+            
+            // Hàm tính tổng tiền cược Đề (tiền user nhập)
+            function calculateDeBetAmount(deBets) {
+                let totalBet = 0;
+                deBets.forEach(bet => {
+                    totalBet += bet.numbers.length * (bet.amount / 1000); // Return in 'nghìn đồng' unit for display
+                });
+                return totalBet;
+            }
+
+            // Hàm tính tiền trúng thô Đề (chưa nhân thưởng)
+            function calculateDeRawWinnings(deBets, specialPrizeLast2) {
+                let rawWinnings = 0;
+                deBets.forEach(bet => {
+                    bet.numbers.forEach(num => { 
+                        if (num === specialPrizeLast2) {
+                            rawWinnings += (bet.amount / 1000); // Return in 'nghìn đồng' unit for display
+                        }
+                    });
+                });
+                return rawWinnings;
+            }
+
+            // Hàm tính toán Lô
+            function calculateLoWinnings(loBets, allPrizesLast2Digits, loPayoutRateMultiplier) { 
+                let winnings = 0;
+                loBets.forEach(bet => {
+                    let matchesForThisBet = 0;
+                    bet.numbers.forEach(num => { 
+                        allPrizesLast2Digits.forEach(prizeNum => {
+                            if (num === prizeNum) {
+                                matchesForThisBet++;
+                            }
+                        });
+                    });
+                    winnings += matchesForThisBet * bet.amount * loPayoutRateMultiplier * 1000; 
+                });
+                return winnings;
+            }
+
+            // Hàm tính toán chi phí Lô (tiền gốc)
+            function calculateLoCost(loBets, loCostPerPointMultiplier) { 
+                let cost = 0;
+                loBets.forEach(bet => {
+                    cost += bet.numbers.length * bet.amount * loCostPerPointMultiplier * 1000; 
+                });
+                return cost;
+            }
+
+            // Hàm tính tổng tiền cược Lô (tổng điểm user nhập)
+            function calculateLoBetPoints(loBets) {
+                let totalPoints = 0;
+                loBets.forEach(bet => {
+                    totalPoints += bet.numbers.length * bet.amount;
+                });
+                return totalPoints;
+            }
+
+            // Hàm tính điểm trúng thô Lô (chưa nhân thưởng)
+            function calculateLoRawWinnings(loBets, allPrizesLast2Digits) {
+                let rawWinnings = 0; // This will be in points
+                loBets.forEach(bet => {
+                    bet.numbers.forEach(num => { 
+                        allPrizesLast2Digits.forEach(prizeNum => {
+                            if (num === prizeNum) {
+                                rawWinnings += bet.amount; // Add the bet amount (points) for each hit
+                            }
+                        });
+                    });
+                });
+                return rawWinnings;
+            }
+
+
+            // Hàm tính toán Xiên (2, 3, 4)
+            function calculateXienWinnings(xienBets, allPrizesLast2Digits, xienType, payoutRateMultiplier) { 
+                let winnings = 0;
+                xienBets.forEach(bet => {
+                    const allNumbersHit = bet.numbers.every(num => isNumberInPrizes(num, allPrizesLast2Digits));
+                    if (allNumbersHit) {
+                        winnings += (bet.amount / 1000) * payoutRateMultiplier * 1000; 
+                    }
+                });
+                return winnings;
+            }
+
+            // Hàm tính toán chi phí Xiên (tiền gốc, chung cho Xiên 2, 3, 4)
+            function calculateXienCost(xienBets, xienCostPercentage) {
+                let cost = 0;
+                xienBets.forEach(bet => {
+                    cost += bet.numbers.length * bet.amount * (xienCostPercentage / 100); 
+                });
+                return cost;
+            }
+
+            // Hàm tính tổng tiền cược Xiên (tiền user nhập)
+            function calculateXienBetAmount(xienBets) {
+                let totalBet = 0;
+                xienBets.forEach(bet => {
+                    totalBet += (bet.amount / 1000); // Return in 'nghìn đồng' unit for display
+                });
+                return totalBet;
+            }
+
+            // Hàm tính toán 3 Càng
+            function calculate3CangWinnings(bacangBets, specialPrizeLast3, specialPrizeLast2, baCangPayoutRateMultiplier, apMaPayoutRateMultiplier) { 
+                let winnings = 0;
+                bacangBets.forEach(bet => {
+                    if (bet.numbers[0] === specialPrizeLast3) { // Access the single number from the numbers array
+                        winnings += (bet.amount / 1000) * baCangPayoutRateMultiplier * 1000;
+                    } else if (bet.numbers[0].slice(-2) === specialPrizeLast2) { // Access the single number from the numbers array
+                        winnings += (bet.amount / 1000) * apMaPayoutRateMultiplier * 1000;
+                    }
+                });
+                return winnings;
+            }
+
+            // Hàm tính toán chi phí 3 Càng (tiền gốc)
+            function calculate3CangCost(bacangBets, baCangCostPercentage) {
+                let cost = 0;
+                bacangBets.forEach(bet => {
+                    cost += bet.numbers.length * bet.amount * (baCangCostPercentage / 100);
+                });
+                return cost;
+            }
+
+            // Hàm tính tổng tiền cược 3 Càng (tiền user nhập)
+            function calculate3CangBetAmount(bacangBets) {
+                let totalBet = 0;
+                bacangBets.forEach(bet => {
+                    totalBet += (bet.amount / 1000); // Return in 'nghìn đồng' unit for display
+                });
+                return totalBet;
+            }
+
+            // Hàm định dạng tiền tệ hiển thị ở dạng "nghìn đồng" với 3 chữ số thập phân
+            const formatMoneyInThousandsDisplay = (valueInVND) => {
+                const valueInThousands = valueInVND / 1000;
+                // Use minimumFractionDigits: 0 to allow integers to be displayed without decimals
+                // Use maximumFractionDigits: 3 to handle cases like 216.5 -> 216,500
+                return valueInThousands.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 3 });
+            };
+
+
+            calculateBtn.addEventListener('click', () => {
+                console.log("Calculate button clicked."); // DEBUG
+                try { // Added try-catch block for overall error handling
+                    const specialPrizeFull = specialPrizeInput.value.trim();
+                    const allPrizesFull = allPrizesInput.value.trim();
+                    console.log("Special Prize Full:", specialPrizeFull); // DEBUG
+                    console.log("All Prizes Full:", allPrizesFull); // DEBUG
+
+                    // Lấy các tỷ lệ từ ô input và áp dụng hàm parseMultiplierOrLoCost cho các trường hợp cần thiết
+                    const deCostPercentage = parseFloat(deCostPercentageInput.value); 
+                    const dePayoutRate = parseMultiplierOrLoCost(dePayoutRateInput.value);
+                    console.log("Rates - De Cost %:", deCostPercentage, "De Payout:", dePayoutRate); // DEBUG
+
+                    const loCostPerPoint = parseMultiplierOrLoCost(loCostPerPointInput.value); // Lô tiền gốc: dùng logic đặc biệt
+                    const loPayoutRate = parseMultiplierOrLoCost(loPayoutRateInput.value); // Lô thưởng: dùng logic đặc biệt
+                    console.log("Rates - Lo Cost:", loCostPerPoint, "Lo Payout:", loPayoutRate); // DEBUG
+                    
+                    const xienCostPercentage = parseFloat(xienCostPercentageInput.value);
+                    const xien2PayoutRate = parseMultiplierOrLoCost(xien2PayoutRateInput.value); 
+                    const xien3PayoutRate = parseMultiplierOrLoCost(xien3PayoutRateInput.value); 
+                    const xien4PayoutRate = parseMultiplierOrLoCost(xien4PayoutRateInput.value); 
+                    console.log("Rates - Xien Cost %:", xienCostPercentage, "Xien2:", xien2PayoutRate, "Xien3:", xien3PayoutRate, "Xien4:", xien4PayoutRate); // DEBUG
+                    
+                    const baCangCostPercentage = parseFloat(baCangCostPercentageInput.value); 
+                    const baCangPayoutRate = parseMultiplierOrLoCost(baCangPayoutRateInput.value); 
+                    const apMaPayoutRate = parseMultiplierOrLoCost(apMaPayoutRateInput.value); 
+                    console.log("Rates - 3Cang Cost %:", baCangCostPercentage, "3Cang Payout:", baCangPayoutRate, "ApMa:", apMaPayoutRate); // DEBUG
+
+                    // Validation for rates
+                    if (isNaN(deCostPercentage) || isNaN(dePayoutRate) || isNaN(loCostPerPoint) || isNaN(loPayoutRate) ||
+                        isNaN(xienCostPercentage) || isNaN(xien2PayoutRate) || isNaN(xien3PayoutRate) || isNaN(xien4PayoutRate) ||
+                        isNaN(baCangCostPercentage) || isNaN(baCangPayoutRate) || isNaN(apMaPayoutRate)) {
+                        showMessage('Lỗi cấu hình', 'Vui lòng nhập đầy đủ và chính xác các tỷ lệ.');
                         return;
                     }
 
-                    const betType = match[1].toLowerCase();
-                    const amount = parseFloat(match[4]) || 0; // Số tiền/điểm
-
-                    if (amount <= 0) {
-                        showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Số tiền/điểm cược phải lớn hơn 0.`);
-                        hasError = true;
+                    if (!specialPrizeFull) {
+                        showMessage('Lỗi nhập liệu', 'Vui lòng nhập kết quả Giải Đặc Biệt.');
+                        return;
+                    }
+                    if (!allPrizesFull) {
+                        showMessage('Lỗi nhập liệu', 'Vui lòng nhập kết quả Tất cả các giải.');
                         return;
                     }
 
-                    // For Đề, Xiên, 3 Càng, xAMOUNT implies X nghìn đồng, so convert to actual VND
-                    // For Lô, xAMOUNT implies points.
-                    let actualBetAmount = amount;
-                    if (['đề', 'xiên', '3c'].includes(betType)) {
-                        actualBetAmount = amount * 1000; // 100 becomes 100,000 VND
+                    // Thực hiện phân tích input trước. Nếu có lỗi, parseCombinedInput sẽ gọi showMessage và return false.
+                    if (!parseCombinedInput(combinedBetInput.value)) {
+                        console.error("Parsing input failed."); // DEBUG
+                        return; // Dừng thực thi nếu có lỗi trong parsing
                     }
-                    // For Lô, amount is already in points, so no multiplication here.
+                    console.log("Input parsed successfully."); // DEBUG
 
-                    const numbersString = match[2];
+                    // Lấy 2 và 3 số cuối của Giải Đặc Biệt (an toàn với fallback chuỗi rỗng)
+                    const specialPrizeLast2 = getLastNDigits(specialPrizeFull, 2); 
+                    const specialPrizeLast3 = getLastNDigits(specialPrizeFull, 3);
+                    console.log("Special Prize Last 2:", specialPrizeLast2, "Last 3:", specialPrizeLast3); // DEBUG
 
-                    switch (betType) {
-                        case 'đề':
-                            const deNumbers = parseDeLoNumbers(numbersString);
-                            if (deNumbers.length === 0) {
-                                showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Các số Đề không hợp lệ.`);
-                                hasError = true;
-                                return;
-                            }
-                            parsedBets.de.push({ numbers: deNumbers, amount: actualBetAmount });
-                            break;
-                        case 'lô':
-                            const loNumbers = parseDeLoNumbers(numbersString);
-                             if (loNumbers.length === 0) {
-                                showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Các số Lô không hợp lệ.`);
-                                hasError = true;
-                                return;
-                            }
-                            parsedBets.lo.push({ numbers: loNumbers, amount: amount }); // Amount for Lô is points
-                            break;
-                        case 'xiên':
-                            const xienNums = parseXienNumbers(numbersString);
-                            if (xienNums.length === 0) {
-                                showMessage('Lỗi nhập liệu', `Dòng ${index + 1}: Các số Xiên không hợp lệ (chỉ chấp nhận 2 chữ số và không trùng lặp).`);
-                                hasError = true;
-                   
+                    // Chuẩn hóa tất cả các giải về 2 số cuối để tính Lô và Xiên
+                    const allPrizesAsNumbers = allPrizesFull.split(/[\s,]+/)
+                                                .filter(s => s.length > 0)
+                                                .map(s => getLastNDigits(s, 2))
+                                                .filter(s => s !== '' && s.length === 2); // Filter out empty or invalid segments
+                    console.log("All Prizes as Numbers:", allPrizesAsNumbers); // DEBUG
+
+                    let overallTotalWinnings = 0;
+                    let overallTotalCostGoc = 0;
+                    let resultsHtml = '';
+
+                    // --- Tính toán và hiển thị kết quả cho Đề ---
+                    const winningsDe = calculateDeWinnings(parsedBets.de, specialPrizeLast2, dePayoutRate); 
+                    const costDeGoc = calculateDeCost(parsedBets.de, deCostPercentage);
+                    const betAmountDe = calculateDeBetAmount(parsedBets.de); // Tiền cược ban đầu (user nhập)
+                    const rawWinningsDe = calculateDeRawWinnings(parsedBets.de, specialPrizeLast2); // Tiền trúng thô (chưa nhân thưởng)
+                    console.log("De - Winnings:", winningsDe, "Cost Goc:", costDeGoc, "Bet Amount:", betAmountDe, "Raw Winnings:", rawWinningsDe); // DEBUG
+
+                    if (parsedBets.de.length > 0) {
+                        resultsHtml += `<div class="result-item">
+                                            <span class="result-label">Đề:</span>
+                                            <span class="result-value-pair">
+                                                <span class="result-bet-display">${Math.round(betAmountDe).toLocaleString('vi-VN')}</span> / 
+                                                <span class="result-winnings-display">${Math.round(rawWinningsDe).toLocaleString('vi-VN')}</span>
+                                            </span>
+                                        </div>`;
+                    }
+                    overallTotalWinnings += winningsDe;
+                    overallTotalCostGoc += costDeGoc;
+
+                    // --- Tính toán và hiển thị kết quả cho Lô ---
+                    const winningsLo = calculateLoWinnings(parsedBets.lo, allPrizesAsNumbers, loPayoutRate);
+                    const costLoGoc = calculateLoCost(parsedBets.lo, loCostPerPoint); 
+                    const betPointsLo = calculateLoBetPoints(parsedBets.lo); // Điểm cược ban đầu (user nhập)
+                    const rawWinningsLo = calculateLoRawWinnings(parsedBets.lo, allPrizesAsNumbers); // Điểm trúng thô (chưa nhân thưởng)
+                    console.log("Lo - Winnings:", winningsLo, "Cost Goc:", costLoGoc, "Bet Points:", betPointsLo, "Raw Winnings:", rawWinningsLo); // DEBUG
+
+                    if (parsedBets.lo.length > 0) {
+                        resultsHtml += `<div class="result-item">
+                                            <span class="result-label">Lô:</span>
+                                            <span class="result-value-pair">
+                                                <span class="result-bet-display">${Math.round(betPointsLo).toLocaleString('vi-VN')}</span> / 
+                                                <span class="result-winnings-display">${Math.round(rawWinningsLo).toLocaleString('vi-VN')}</span>
+                                            </span>
+                                        </div>`;
+                    }
+                    overallTotalWinnings += winningsLo;
+                    overallTotalCostGoc += costLoGoc;
+
+                    // --- Tính toán và hiển thị kết quả cho 3 Càng ---
+                    const winnings3Cang = calculate3CangWinnings(parsedBets.bacang, specialPrizeLast3, specialPrizeLast2, baCangPayoutRate, apMaPayoutRate); 
+                    const cost3CangGoc = calculate3CangCost(parsedBets.bacang, baCangCostPercentage);
+                    const betAmount3Cang = calculate3CangBetAmount(parsedBets.bacang); // Tiền cược ban đầu (user nhập)
+                    console.log("3Cang - Winnings:", winnings3Cang, "Cost Goc:", cost3CangGoc, "Bet Amount:", betAmount3Cang); // DEBUG
+
+                    if (parsedBets.bacang.length > 0) {
+                        resultsHtml += `<div class="result-item">
+                                            <span class="result-label">3 Càng:</span>
+                                            <span class="result-value-pair">
+                                                <span class="result-bet-display">${Math.round(betAmount3Cang).toLocaleString('vi-VN')}</span> / 
+                                                <span class="result-winnings-display">${Math.round(winnings3Cang).toLocaleString('vi-VN')}</span>
+                                            </span>
+                                        </div>`;
+                    }
+                    overallTotalWinnings += winnings3Cang;
+                    overallTotalCostGoc += cost3CangGoc;
+
+                    // --- Tính toán và hiển thị kết quả cho Xiên 2 ---
+                    const winningsXien2 = calculateXienWinnings(parsedBets.xien2, allPrizesAsNumbers, 2, xien2PayoutRate); 
+                    const costXien2Goc = calculateXienCost(parsedBets.xien2, xienCostPercentage);
+                    const betAmountXien2 = calculateXienBetAmount(parsedBets.xien2); // Tiền cược ban đầu (user nhập)
+                    console.log("Xien2 - Winnings:", winningsXien2, "Cost Goc:", costXien2Goc, "Bet Amount:", betAmountXien2); // DEBUG
+
+                    if (parsedBets.xien2.length > 0) {
+                        resultsHtml += `<div class="result-item">
+                                            <span class="result-label">Xiên 2:</span>
+                                            <span class="result-value-pair">
+                                                <span class="result-bet-display">${Math.round(betAmountXien2).toLocaleString('vi-VN')}</span> / 
+                                                <span class="result-winnings-display">${Math.round(winningsXien2).toLocaleString('vi-VN')}</span>
+                                            </span>
+                                        </div>`;
+                    }
+                    overallTotalWinnings += winningsXien2;
+                    overallTotalCostGoc += costXien2Goc;
+
+                    // --- Tính toán và hiển thị kết quả cho Xiên 3 ---
+                    const winningsXien3 = calculateXienWinnings(parsedBets.xien3, allPrizesAsNumbers, 3, xien3PayoutRate); 
+                    const costXien3Goc = calculateXienCost(parsedBets.xien3, xienCostPercentage);
+                    const betAmountXien3 = calculateXienBetAmount(parsedBets.xien3); // Tiền cược ban đầu (user nhập)
+                    console.log("Xien3 - Winnings:", winningsXien3, "Cost Goc:", costXien3Goc, "Bet Amount:", betAmountXien3); // DEBUG
+
+                    if (parsedBets.xien3.length > 0) {
+                        resultsHtml += `<div class="result-item">
+                                            <span class="result-label">Xiên 3:</span>
+                                            <span class="result-value-pair">
+                                                <span class="result-bet-display">${Math.round(betAmountXien3).toLocaleString('vi-VN')}</span> / 
+                                                <span class="result-winnings-display">${Math.round(winningsXien3).toLocaleString('vi-VN')}</span>
+                                            </span>
+                                        </div>`;
+                    }
+                    overallTotalWinnings += winningsXien3;
+                    overallTotalCostGoc += costXien3Goc;
+
+                    // --- Tính toán và hiển thị kết quả cho Xiên 4 ---
+                    const winningsXien4 = calculateXienWinnings(parsedBets.xien4, allPrizesAsNumbers, 4, xien4PayoutRate); 
+                    const costXien4Goc = calculateXienCost(parsedBets.xien4, xienCostPercentage);
+                    const betAmountXien4 = calculateXienBetAmount(parsedBets.xien4); // Tiền cược ban đầu (user nhập)
+                    console.log("Xien4 - Winnings:", winningsXien4, "Cost Goc:", costXien4Goc, "Bet Amount:", betAmountXien4); // DEBUG
+
+                    if (parsedBets.xien4.length > 0) {
+                        resultsHtml += `<div class="result-item">
+                                            <span class="result-label">Xiên 4:</span>
+                                            <span class="result-value-pair">
+                                                <span class="result-bet-display">${Math.round(betAmountXien4).toLocaleString('vi-VN')}</span> / 
+                                                <span class="result-winnings-display">${Math.round(winningsXien4).toLocaleString('vi-VN')}</span>
+                                            </span>
+                                        </div>`;
+                    }
+                    overallTotalWinnings += winningsXien4;
+                    overallTotalCostGoc += costXien4Goc;
+
+                    // Hiển thị kết quả chi tiết
+                    resultDetailsDiv.innerHTML = resultsHtml;
+                    console.log("Results HTML updated."); // DEBUG
+                    
+                    // Tính toán lời/lỗ và hiển thị
+                    const netResult = overallTotalWinnings - overallTotalCostGoc;
+                    let summaryMessage = '';
+                    let summaryClass = '';
+
+                    // Format the final net result in thousands with appropriate decimals
+                    const formattedNetResult = formatMoneyInThousandsDisplay(netResult);
+
+                    if (netResult > 0) {
+                        summaryMessage = `Lấy về: ${formattedNetResult}`;
+                        summaryClass = 'summary-profit';
+                    } else if (netResult < 0) {
+                        summaryMessage = `Số tiền còn phải nộp: ${formatMoneyInThousandsDisplay(Math.abs(netResult))}`;
+                        summaryClass = 'summary-loss';
+                    } else {
+                        summaryMessage = `Hòa vốn: ${formattedNetResult}`;
+                        summaryClass = 'summary-breakeven';
+                    }
+
+                    totalSummaryDiv.innerHTML = `Tổng: <span class="result-cost-display">${formatMoneyInThousandsDisplay(overallTotalCostGoc)}</span> - <span class="result-winnings-display">${formatMoneyInThousandsDisplay(overallTotalWinnings)}</span> = <span class="${summaryClass}">${summaryMessage}</span>`;
+                    resultsDiv.classList.remove('hidden'); // Make sure results div is visible
+                    console.log("Overall summary updated and results div shown."); // DEBUG
+                } catch (error) {
+                    console.error("Lỗi trong quá trình tính toán:", error); // DEBUG: Log full error
+                    showMessage('Lỗi Tính Toán', `Đã xảy ra lỗi trong quá trình tính toán. Chi tiết: ${error.message}. Vui lòng kiểm tra lại dữ liệu nhập. (Xem console để biết thêm chi tiết)`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
