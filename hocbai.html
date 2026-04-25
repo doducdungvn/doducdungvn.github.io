@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siêu Trợ Lý Toán Học - Xuân Lâm V19.0 🚀</title>
+    <style>
+        :root { --primary: #0056b3; --success: #28a745; --error: #dc3545; --warning: #ffc107; --bg: #f0f8ff; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; background-color: var(--bg); margin: 0; padding: 15px; }
+        .container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: inline-block; width: 95%; max-width: 800px; position: relative; overflow: hidden; }
+        .score-board { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .score-info { font-weight: bold; color: var(--primary); font-size: 16px; text-align: left; line-height: 1.6; }
+        .score-highlight { color: var(--success); font-size: 22px; }
+        .timer-box { color: #d81b60; font-family: monospace; font-size: 18px; background: #ffe4e1; padding: 4px 10px; border-radius: 8px; }
+        .btn-capture { background: #0084FF; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; }
+        h2 { color: var(--primary); margin-top: 0; margin-bottom: 20px; }
+        .menu-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
+        select { padding: 12px; font-size: 14px; border-radius: 8px; border: 1px solid #ccc; outline: none; min-width: 150px; }
+        .question-area { background: #f8f9fa; margin: 20px 0; padding: 25px; border-radius: 15px; min-height: 160px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; border: 2px solid #e0e0e0; text-align: left; }
+        #question { font-size: 20px; font-weight: bold; color: #2c3e50; line-height: 1.6; width: 100%; }
+        input[type="text"] { padding: 15px; font-size: 24px; width: 280px; text-align: center; border: 3px solid #ddd; border-radius: 12px; outline: none; margin: 15px 0; }
+        .btn-check, .btn-next, .btn-retry { color: white; padding: 12px 25px; font-size: 17px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 5px; transition: 0.2s; }
+        .btn-check { background: var(--success); } .btn-next { background: var(--primary); } .btn-retry { background: var(--warning); color: #333; }
+        #message { font-size: 18px; margin-top: 15px; font-weight: 600; min-height: 25px; }
+        .explanation-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: left; font-size: 15px; display: none; line-height: 1.5; }
+        #rewardScreen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); z-index: 100; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="rewardScreen">
+        <div style="font-size: 80px;">🏆 🌸 🌟</div>
+        <h1 style="color: #d81b60;">Lâm Quá Xuất Sắc!</h1>
+        <p style="font-size: 20px;">Con đã đạt mốc 100 điểm!</p>
+        <div id="rewardTimeText" style="font-weight: bold; color: #0056b3; margin: 15px 0;"></div>
+        <button class="btn-check" onclick="closeReward()">Học tiếp thôi! 🚀</button>
+    </div>
+
+    <div class="score-board">
+        <div class="score-info">
+            <div class="timer-box">⏱️ <span id="timeText">00:00</span></div>
+            <div>🎯 Tỉ lệ: <span id="ratioText">0/0</span> bài</div>
+            <div>🏆 Điểm: <span id="scoreText" class="score-highlight">0</span></div>
+        </div>
+        <button class="btn-capture" onclick="captureScoreForZalo()">📸 Chụp khoe Ba</button>
+    </div>
+    
+    <h2>Hệ Thống Toán Tiểu Học Vạn Năng 🎓</h2>
+
+    <div class="menu-group">
+        <select id="grade" onchange="loadTypes()">
+            <option value="1">Lớp 1</option>
+            <option value="2">Lớp 2</option>
+            <option value="3">Lớp 3</option>
+            <option value="4">Lớp 4</option>
+            <option value="5" selected>Lớp 5 (Full Thể tích)</option>
+        </select>
+        <select id="type" onchange="newQuestion()"></select>
+    </div>
+
+    <div class="question-area">
+        <div id="question">Đang tải câu hỏi...</div>
+        <div id="formatHint" style="font-size: 13px; color: #666; font-style: italic; margin-top: 8px;"></div>
+    </div>
+
+    <input type="text" id="answer" placeholder="Đáp án..." autocomplete="off">
+    
+    <div id="actionButtons" style="margin-top: 10px;">
+        <button class="btn-check" onclick="check()">Kiểm tra</button>
+        <button class="btn-next" onclick="newQuestion()">Đổi đề bài 📥</button>
+    </div>
+
+    <p id="message"></p>
+    <div class="explanation-box" id="explanationBox"></div>
+</div>
+
+<script>
+    const dataConfig = {
+        "1": [ {n:"Tất cả", id:"all"}, {n:"Cộng trừ phạm vi 100", id:"1_1"}, {n:"Số liền trước - sau", id:"1_2"}, {n:"So sánh số", id:"1_3"} ],
+        "2": [ {n:"Tất cả", id:"all"}, {n:"Bảng nhân/chia 2-5", id:"2_1"}, {n:"Đo lường (m, dm, cm)", id:"2_2"}, {n:"Thời gian & Ngày", id:"2_4"} ],
+        "3": [ {n:"Tất cả", id:"all"}, {n:"Nhân/Chia số lớn", id:"3_1"}, {n:"Chu vi & Diện tích", id:"3_3"}, {n:"Giá trị biểu thức", id:"3_5"} ],
+        "4": [ {n:"Tất cả", id:"all"}, {n:"Toán đố: Tổng-Hiệu-TBC", id:"4_1"}, {n:"Đổi Đơn Vị Đa Năng", id:"4_3"}, {n:"Tổng-Tỉ & Hiệu-Tỉ", id:"4_4"}, {n:"4 phép tính Phân số", id:"4_6"} ],
+        "5": [ {n:"Tất cả", id:"all"}, {n:"Số thập phân (Full)", id:"5_1"}, {n:"Tỉ số phần trăm", id:"5_2"}, {n:"Toán chuyển động", id:"5_3"}, {n:"Hình học: Tròn, Thang", id:"5_4"}, {n:"Thể tích Siêu Cấp", id:"5_6"} ]
+    };
+
+    let currentAnswers = [], currentHint = "", currentTypeId = "";
+    let score = 0, totalQuestions = 0, correctQuestions = 0;
+    let isQuestionAttempted = false, hasReceivedFlower = false, errorTracker = {}; 
+    let totalSeconds = 0, timerInterval = null, questionStartTime = 0;
+
+    function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function gcd(a, b) { a=Math.abs(a); b=Math.abs(b); return b ? gcd(b, a % b) : a; }
+    function formatTime(sec) { let m = Math.floor(sec/60); let s = sec%60; return m > 0 ? `${m}p ${s}s` : `${s}s`; }
+    function updateScoreBoard() { document.getElementById('scoreText').innerText = score; document.getElementById('ratioText').innerText = `${correctQuestions}/${totalQuestions}`; }
+
+    function startGlobalTimer() {
+        if(timerInterval) return;
+        timerInterval = setInterval(() => {
+            totalSeconds++;
+            let m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            let s = (totalSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timeText').innerText = `${m}:${s}`;
+        }, 1000);
+    }
+
+    function loadTypes() {
+        const g = document.getElementById('grade').value;
+        document.getElementById('type').innerHTML = dataConfig[g].map(i => `<option value="${i.id}">${i.n}</option>`).join('');
+        newQuestion();
+    }
+
+    function newQuestion() {
+        let id = document.getElementById('type').value;
+        const grade = document.getElementById('grade').value;
+        if (id === "all") {
+            const types = dataConfig[grade].filter(i => i.id !== "all");
+            let pool = [];
+            types.forEach(t => { let w = 1 + (errorTracker[t.id] || 0) * 3; for(let i=0; i<w; i++) pool.push(t.id); });
+            currentTypeId = pool[r(0, pool.length-1)];
+        } else { currentTypeId = id; }
+
+        let q = "", v = []; isQuestionAttempted = false;
+        document.getElementById('actionButtons').innerHTML = `<button class="btn-check" onclick="check()">Kiểm tra</button><button class="btn-next" onclick="newQuestion()">Đổi đề bài 📥</button>`;
+        document.getElementById('explanationBox').style.display = "none";
+        document.getElementById('formatHint').innerText = "";
+        questionStartTime = Date.now();
+
+        switch(currentTypeId) {
+            // LỚP 1-4 (Tối giản để tập trung Khối 5)
+            case "1_1": { let a=r(10,80), b=r(1,19); if(r(0,1)){ v.push(a+b); q=`${a} + ${b} = ?`; } else { v.push(a-b); q=`${a} - ${b} = ?`; } break; }
+            case "4_1": { let t=r(50,100), d=r(2,20); if((t+d)%2!==0) t++; v.push((t+d)/2); q=`Tổng hai số là ${t}, số này hơn số kia ${d}. Số lớn là?`; break; }
+            case "4_6": { let m=r(2,5), t1=r(1,5), t2=r(1,5); v.push(`${t1+t2}/${m}`); let g=gcd(t1+t2,m); if(g>1) v.push(m/g===1?`${(t1+t2)/g}`:`${(t1+t2)/g}/${m/g}`); q=`${t1}/${m} + ${t2}/${m} = ?`; break; }
+
+            // --- KHỐI 5: PHẦN THỂ TÍCH SIÊU CẤP (V19.0) ---
+            case "5_1": { let a=r(1,9), b=r(1,9); v.push((a+b)/10); q=`Tính: 0,${a} + 0,${b} = ?`; break; }
+            case "5_6": {
+                let type = r(1, 5);
+                if (type === 1) { // Hình lập phương các đơn vị
+                    let units = ["cm", "dm", "m", "mm"];
+                    let u = units[r(0, 3)]; let c = r(2, 6);
+                    v.push(c*c*c);
+                    q = `Một hình lập phương có cạnh dài ${c} ${u}. Tính thể tích của nó theo đơn vị ${u}³?`;
+                    currentHint = `Công thức: Thể tích = Cạnh x Cạnh x Cạnh. Kết quả đơn vị là ${u}³.`;
+                } 
+                else if (type === 2) { // Hình hộp chữ nhật đa dạng
+                    let d = r(6, 10), r_w = r(3, 5), h = r(4, 8);
+                    v.push(d * r_w * h);
+                    q = `Một cái hộp có chiều dài ${d}cm, chiều rộng ${r_w}cm và chiều cao ${h}cm. Thể tích cái hộp là bao nhiêu cm³?`;
+                    currentHint = "V = Dài x Rộng x Cao.";
+                }
+                else if (type === 3) { // Bài toán Bể nước (m3 sang Lít)
+                    let d = r(2, 4), r_w = 2, h = 1;
+                    v.push(d * r_w * h * 1000);
+                    q = `Một bể nước hình hộp chữ nhật có dài ${d}m, rộng ${r_w}m, cao ${h}m. Hỏi bể đó chứa đầy được bao nhiêu LÍT nước? (Biết 1dm³ = 1 lít)`;
+                    currentHint = "Bước 1: Tính thể tích (m³).\nBước 2: 1m³ = 1000 lít. Hãy nhân kết quả với 1000.";
+                }
+                else if (type === 4) { // Biết diện tích đáy
+                    let s = r(10, 30), h = r(5, 10);
+                    v.push(s * h);
+                    q = `Một hình hộp chữ nhật có diện tích mặt đáy là ${s}dm² và chiều cao là ${h}dm. Tính thể tích?`;
+                    currentHint = "V = Diện tích đáy x Chiều cao.";
+                }
+                else { // Đổi đơn vị thể tích (Bẫy 1000)
+                    let m3 = r(1, 5);
+                    v.push(m3 * 1000);
+                    q = `Điền số thích hợp: ${m3} m³ = ... dm³?`;
+                    currentHint = "Ghi nhớ: 1m³ = 1000 dm³; 1dm³ = 1000 cm³.";
+                }
+                break;
+            }
+            case "5_3": { let sp=r(30,60), t=r(2,4); v.push(sp*t); q=`Xe đi ${sp}km/h trong ${t} giờ. Quãng đường là bao nhiêu km?`; break; }
+
+            default: { q="Hãy chọn dạng bài cụ thể ở menu!"; v=["error"]; }
+        }
+
+        currentAnswers = v.map(String).map(s => s.trim().toLowerCase());
+        document.getElementById('question').innerText = q;
+        document.getElementById('answer').value = "";
+        document.getElementById('message').innerText = "";
+        document.getElementById('answer').focus();
+    }
+
+    function check() {
+        let raw = document.getElementById('answer').value.trim().toLowerCase().replace(',', '.');
+        if (!raw) return;
+        let isCorrect = currentAnswers.some(ans => raw === ans.replace(',', '.') || raw.replace(/\s/g,'') === ans.replace(/\s/g,'').replace(',','.'));
+        let time = Math.round((Date.now() - questionStartTime)/1000);
+        
+        if (!isQuestionAttempted) {
+            totalQuestions++; isQuestionAttempted = true;
+            if (isCorrect) { correctQuestions++; if(errorTracker[currentTypeId]>0) errorTracker[currentTypeId]--; }
+            else { errorTracker[currentTypeId] = (errorTracker[currentTypeId] || 0) + 1; }
+        }
+
+        if (isCorrect) {
+            document.getElementById('message').innerText = `Chính xác! 🎉 (${time}s)`;
+            document.getElementById('message').className = "success"; score += 10; updateScoreBoard();
+            if (score >= 100 && !hasReceivedFlower) {
+                hasReceivedFlower = true;
+                document.getElementById('rewardTimeText').innerText = `Thời gian: ${formatTime(totalSeconds)}`;
+                document.getElementById('rewardScreen').style.display = "flex";
+            } else { setTimeout(newQuestion, 2000); }
+        } else {
+            document.getElementById('message').innerText = "Chưa đúng rồi! 👇";
+            document.getElementById('message').className = "error";
+            document.getElementById('explanationBox').innerHTML = `💡 <strong>Gợi ý:</strong> ${currentHint || "Con nháp lại cẩn thận nhé!"}`;
+            document.getElementById('explanationBox').style.display = "block";
+            document.getElementById('actionButtons').innerHTML = `<button class="btn-retry" onclick="retryQuestion()">Làm lại 🔄</button><button class="btn-next" onclick="newQuestion()">Bỏ qua ⏭️</button>`;
+        }
+    }
+
+    async function captureScoreForZalo() {
+        const canvas = document.createElement('canvas'); canvas.width = 500; canvas.height = 200;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f0f8ff'; ctx.fillRect(0,0,500,200);
+        ctx.font = 'bold 24px Arial'; ctx.fillStyle = '#0056b3'; ctx.fillText('📊 Báo Cáo Học Tập Xuân Lâm', 30, 50);
+        ctx.font = '20px Arial'; ctx.fillStyle = '#333'; ctx.fillText(`🎯 Tỉ lệ đúng: ${correctQuestions}/${totalQuestions}`, 30, 100);
+        ctx.fillText(`⏱️ Thời gian: ${formatTime(totalSeconds)}`, 30, 140);
+        ctx.font = 'bold 24px Arial'; ctx.fillStyle = '#28a745'; ctx.fillText(`🏆 Điểm: ${score}`, 30, 180);
+        canvas.toBlob(blob => {
+            const item = new ClipboardItem({ 'image/png': blob });
+            navigator.clipboard.write([item]).then(() => alert('Đã copy ảnh! Hãy Paste vào Zalo.')).catch(() => window.open(canvas.toDataURL(), '_blank'));
+        });
+    }
+
+    function closeReward() { document.getElementById('rewardScreen').style.display = 'none'; newQuestion(); }
+    function retryQuestion() { document.getElementById('answer').value = ""; document.getElementById('message').innerText = ""; document.getElementById('explanationBox').style.display = "none"; document.getElementById('answer').focus(); questionStartTime = Date.now(); }
+
+    window.onload = () => { loadTypes(); startGlobalTimer(); };
+    document.getElementById('answer').addEventListener('keypress', e => { if(e.key==='Enter') check(); });
+</script>
+</body>
+</html>
