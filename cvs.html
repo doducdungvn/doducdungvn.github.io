@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PDF to CVS Extractor - Mobile Friendly</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 15px; 
+            background-color: #f4f7f9; 
+        }
+        .container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
+            margin-top: 10px;
+        }
+        h2 { 
+            color: #1a73e8; 
+            border-bottom: 2px solid #e8f0fe; 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+            font-size: 20px;
+        }
+        .input-group { margin-top: 15px; }
+        label { 
+            font-weight: bold; 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #444; 
+            font-size: 14px;
+        }
+        input[type="text"], input[type="file"] { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 20px; 
+            background-color: #1a73e8; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            touch-action: manipulation; /* Tối ưu chạm trên điện thoại */
+        }
+        button:hover { background-color: #1557b0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        #status { margin-top: 15px; padding: 12px; border-radius: 8px; display: none; line-height: 1.5; font-size: 14px; }
+        .error { background-color: #fdecea; color: #d93025; border: 1px solid #fad2cf; display: block !important; }
+        .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block !important; }
+        .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; display: block !important; }
+        
+        /* Thanh tiến trình */
+        .progress-wrapper { width: 100%; background-color: #e0e0e0; border-radius: 8px; margin-top: 15px; display: none; overflow: hidden; height: 20px; }
+        .progress-bar { width: 0%; height: 100%; background-color: #34a853; text-align: center; line-height: 20px; color: white; font-size: 12px; font-weight: bold; transition: width 0.4s ease; }
+        
+        /* Khung hiển thị code */
+        #output { 
+            white-space: pre; /* Giữ nguyên định dạng trên đt, cuộn ngang thay vì rớt dòng */
+            background: #202124; 
+            color: #fff; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 15px; 
+            display: none; 
+            font-family: 'Consolas', monospace; 
+            font-size: 12px; 
+            max-height: 350px; 
+            overflow: auto; 
+        }
+        
+        #copyBtn { background-color: #ff9800; display: none; margin-top: 15px; }
+        #copyBtn:hover { background-color: #e68a00; }
+
+        /* Media Queries cho màn hình lớn (Máy tính/Tablet) */
+        @media (min-width: 600px) {
+            body { padding: 30px; }
+            .container { padding: 30px; margin-top: 20px; }
+            h2 { font-size: 24px; }
+            label, input[type="text"], input[type="file"], #status { font-size: 15px; }
+            #output { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📊 Tool Trích xuất Báo cáo PDF</h2>
+    
+    <div class="input-group">
+        <label>1. Gemini API Key:</label>
+        <input type="text" id="apiKey" value="AIzaSyBF7_vhHYq-xyWRcsxzlceBNK5W3rdSxxx" placeholder="Nhập API Key...">
+    </div>
+    
+    <div class="input-group">
+        <label>2. Chọn file báo cáo PDF:</label>
+        <input type="file" id="pdfFile" accept="application/pdf">
+    </div>
+    
+    <button id="runBtn" onclick="processPDF()">Bắt đầu chuyển đổi</button>
+    
+    <div id="status"></div>
+    
+    <div class="progress-wrapper" id="progressWrapper">
+        <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+
+    <div id="output"></div>
+    
+    <button id="copyBtn" onclick="copyToClipboard()">📋 Copy Dữ Liệu</button>
+</div>
+
+<script>
+    let progressInterval;
+
+    function updateProgress(percent) {
+        const bar = document.getElementById('progressBar');
+        bar.style.width = percent + '%';
+        bar.innerText = percent + '%';
+    }
+
+    async function processPDF() {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const fileInput = document.getElementById('pdfFile');
+        const status = document.getElementById('status');
+        const output = document.getElementById('output');
+        const runBtn = document.getElementById('runBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const progressWrapper = document.getElementById('progressWrapper');
+
+        // Bỏ focus khỏi các trường nhập liệu để bàn phím điện thoại tự ẩn xuống
+        document.activeElement.blur();
+
+        if (!apiKey || !fileInput.files[0]) {
+            showStatus("Vui lòng kiểm tra API Key và chọn file PDF!", "error");
+            return;
+        }
+
+        runBtn.disabled = true;
+        output.style.display = "none";
+        copyBtn.style.display = "none";
+        progressWrapper.style.display = "block";
+        clearInterval(progressInterval);
+        updateProgress(0);
+        
+        try {
+            updateProgress(10);
+            showStatus("🔍 Đang kiểm tra danh sách Model...", "info");
+            
+            const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+            const listRes = await fetch(listUrl);
+            const listData = await listRes.json();
+
+            updateProgress(30);
+
+            if (listData.error) throw new Error("Lỗi API Key: " + listData.error.message);
+
+            const availableModels = listData.models.filter(m => 
+                m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
+            );
+
+            if (availableModels.length === 0) throw new Error("API Key không có quyền tạo văn bản.");
+
+            let selectedModelName = "";
+            const proModel = availableModels.find(m => m.name.includes("gemini-1.5-pro"));
+            const flashModel = availableModels.find(m => m.name.includes("gemini-1.5-flash"));
+            const newerFlashModel = availableModels.find(m => m.name.includes("gemini-2.5-flash"));
+
+            if (newerFlashModel) { selectedModelName = newerFlashModel.name; }
+            else if (proModel) { selectedModelName = proModel.name; } 
+            else if (flashModel) { selectedModelName = flashModel.name; } 
+            else { selectedModelName = availableModels[0].name; }
+
+            showStatus(`✅ Đang trích xuất bằng ${selectedModelName}...`, "info");
+            updateProgress(40);
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function() {
+                try {
+                    const base64Data = reader.result.split(',')[1];
+                    updateProgress(50);
+                    
+                    let currentPercent = 50;
+                    progressInterval = setInterval(() => {
+                        if (currentPercent < 90) {
+                            currentPercent += Math.floor(Math.random() * 5) + 1;
+                            if (currentPercent > 90) currentPercent = 90;
+                            updateProgress(currentPercent);
+                        }
+                    }, 600);
+
+                    const prompt = `Trích xuất bảng báo cáo doanh thu từ file PDF thành định dạng CSV.
+                    BẮT BUỘC tuân thủ các quy tắc định dạng sau:
+                    1. BAO QUANH MỌI GIÁ TRỊ BẰNG DẤU NGOẶC KÉP "".
+                    2. Dòng 1: Khoảng thời gian, ví dụ: "Từ ngày 26/04/2026 đến ngày 02/05/2026". Không thêm các cột khác ở dòng này.
+                    3. Dòng 2: "Mã ĐL","Ngày","LH","Doanh thu","Hoa hồng","Trả thưởng","Phải nộp"
+                    4. Dữ liệu: Phải gióng đúng theo 7 cột trên.
+                    5. NẾU CỘT TRẢ THƯỞNG TRỐNG HOẶC KHÔNG CÓ SỐ LIỆU, PHẢI ĐIỀN LÀ "0".
+                    6. Dấu thập phân: Dùng dấu phẩy (,), ví dụ: "11,6" hoặc "-466,6".
+                    7. Chỉ in ra kết quả CSV, không thêm mã đánh dấu (markdown) hay bất kỳ chữ nào khác.`;
+
+                    const generateUrl = `https://generativelanguage.googleapis.com/v1beta/${selectedModelName}:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(generateUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inline_data: { mime_type: "application/pdf", data: base64Data } }
+                                ]
+                            }]
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    clearInterval(progressInterval);
+
+                    if (data.error) throw new Error(data.error.message);
+
+                    if (data.candidates && data.candidates[0].content) {
+                        updateProgress(100);
+                        
+                        let csvResult = data.candidates[0].content.parts[0].text;
+                        csvResult = csvResult.replace(/```csv|```/g, "").trim();
+                        
+                        let lines = csvResult.split('\n');
+                        for (let i = 2; i < lines.length; i++) {
+                            let cols = lines[i].split('","');
+                            if (cols.length >= 7) {
+                                if (cols[5] === "") cols[5] = "0";
+                            }
+                            lines[i] = cols.join('","');
+                        }
+                        csvResult = lines.join('\n');
+
+                        output.innerText = csvResult;
+                        output.style.display = "block";
+                        copyBtn.style.display = "block";
+                        window.lastCSV = csvResult;
+                        
+                        showStatus(`🎉 Trích xuất xong! Nhấn nút bên dưới để Copy.`, "success");
+                    } else {
+                        throw new Error("Không tìm thấy dữ liệu.");
+                    }
+
+                } catch (err) {
+                    clearInterval(progressInterval);
+                    progressWrapper.style.display = "none";
+                    showStatus("Lỗi: " + err.message, "error");
+                } finally {
+                    runBtn.disabled = false;
+                }
+            };
+            
+            reader.readAsDataURL(file);
+
+        } catch (error) {
+            clearInterval(progressInterval);
+            progressWrapper.style.display = "none";
+            showStatus(error.message, "error");
+            runBtn.disabled = false;
+        }
+    }
+
+    function showStatus(msg, type) {
+        const s = document.getElementById('status');
+        s.innerText = msg;
+        s.className = type;
+        s.style.display = "block";
+    }
+
+    function copyToClipboard() {
+        if (!window.lastCSV) return;
+        
+        navigator.clipboard.writeText(window.lastCSV).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "✅ Đã Copy!";
+            copyBtn.style.backgroundColor = "#4CAF50"; 
+            
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.style.backgroundColor = "#ff9800"; 
+            }, 2000);
+        }).catch(err => {
+            alert('Lỗi copy: ' + err);
+        });
+    }
+</script>
+
+</body>
+</html>
