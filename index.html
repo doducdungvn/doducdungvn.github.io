@@ -1179,6 +1179,86 @@
     };
 
     // --- DATA HANDLING ---
+    function parseBieu35(ws) {
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
+        if (rows.length < 5) return [];
+
+        let xsktColIndex = -1;
+        let codeColIndex = -1;
+        let headerRowIndex = -1;
+
+        // 1. Scan for XSKT (exact match to avoid title rows containing 'XSKT' in column A)
+        for (let rIdx = 0; rIdx < Math.min(rows.length, 15); rIdx++) {
+            const row = rows[rIdx];
+            for (let cIdx = 0; cIdx < row.length; cIdx++) {
+                const cellVal = String(row[cIdx] || '').trim();
+                const cleanVal = removeVietnameseTones(cellVal).replace(/\s+/g, '').toUpperCase();
+                if (cleanVal === 'XSKT') {
+                    xsktColIndex = cIdx;
+                    headerRowIndex = rIdx;
+                    break;
+                }
+            }
+            if (xsktColIndex !== -1) break;
+        }
+
+        // 2. Scan for Mã ĐL (exact match or standard headers)
+        for (let rIdx = 0; rIdx < Math.min(rows.length, 15); rIdx++) {
+            const row = rows[rIdx];
+            for (let cIdx = 0; cIdx < row.length; cIdx++) {
+                const cellVal = String(row[cIdx] || '').trim();
+                const cleanVal = removeVietnameseTones(cellVal).replace(/\s+/g, '').toUpperCase();
+                if (cleanVal === 'MADL' || cleanVal === 'MADAILY' || cleanVal === 'MAD.LY' || cleanVal === 'MADONVI') {
+                    codeColIndex = cIdx;
+                    break;
+                }
+            }
+            if (codeColIndex !== -1) break;
+        }
+
+        // Fallbacks
+        if (xsktColIndex === -1) {
+            xsktColIndex = 8; 
+            headerRowIndex = 4;
+        }
+        if (codeColIndex === -1) {
+            // If Mã ĐL column not found, fallback to column B (index 1) as a safer default than STT (index 0)
+            codeColIndex = 1;
+        }
+
+        const codeColStr = codeColIndex !== -1 ? XLSX.utils.encode_col(codeColIndex) : "N/A";
+        const xsktColStr = xsktColIndex !== -1 ? XLSX.utils.encode_col(xsktColIndex) : "N/A";
+        console.log(`ZENG Parser: Bieu 35 header row = ${headerRowIndex + 1}, Code Column = ${codeColIndex} (${codeColStr}), XSKT Column = ${xsktColIndex} (${xsktColStr})`);
+
+        const dataList = [];
+        for (let i = headerRowIndex + 1; i < rows.length; i++) {
+            const row = rows[i];
+            let code = '';
+            
+            if (codeColIndex !== -1 && row[codeColIndex] !== undefined && row[codeColIndex] !== null) {
+                code = String(row[codeColIndex]).trim();
+            }
+            
+            if (!code || !/\d/.test(code)) continue;
+            
+            // Skip total rows
+            const upper = code.toUpperCase();
+            if (upper.includes("TỔNG") || upper.includes("CỘNG") || upper.includes("CÔNG") || upper.includes("TOTAL")) {
+                continue;
+            }
+
+            const rawVal = row[xsktColIndex];
+            const xsktVal = parseFloat(rawVal) || 0;
+
+            dataList.push({
+                code: code,
+                xskt: xsktVal
+            });
+        }
+
+        return dataList;
+    }
+
     function handleFile(file, num, inputId) {
         if(!file) return; showLoading(); const reader=new FileReader();
         reader.onload=(e)=>{
@@ -1208,7 +1288,9 @@
                             if(foundDate) break;
                         }
                     } catch(errDate) { console.error("Lỗi quét ngày:", errDate); }
-                } else excelData2=json;
+                } else {
+                    excelData2 = parseBieu35(ws);
+                }
                 document.getElementById(inputId).classList.add('loaded'); showNotification("Đã nạp file!",'success');
             } catch(err) { console.error(err); showNotification("Lỗi đọc file: "+err.message,'error'); } finally { hideLoading(); }
         }; reader.readAsArrayBuffer(file);
@@ -1424,10 +1506,32 @@
                 d.lotoDB += ldb; d.lotoCap += lc; d.c227 += c2; d.c323 += c3; d.thuong += th; 
                 d.totRev += ldb+lc+c2+c3; d.totCom += (ldb*0.08)+(lc*0.1)+(c2*0.1)+(c3*0.1);
             });
-            excelData2.forEach(r => {
-                const c = String(r.__EMPTY||r.__EMPTY_1||'').trim(); if(!c||!/\d/.test(c)) return; 
-                init(c); const d = map.get(c);
-                const x = (parseFloat(r.__EMPTY_7)||0)*1000; 
+            excelData2.forEach(item => {
+                const baseNum = parseInt(getBaseId(item.code), 10);
+                if (isNaN(baseNum)) return;
+
+                let targetKey = "";
+                if (map.has(item.code)) {
+                    targetKey = item.code;
+                } else {
+                    let matches = [];
+                    map.forEach((v, k) => {
+                        if (parseInt(getBaseId(k), 10) === baseNum) {
+                            matches.push(k);
+                        }
+                    });
+                    if (matches.length > 0) {
+                        const pureNumeric = matches.find(k => /^\d+$/.test(k));
+                        targetKey = pureNumeric || matches[0];
+                    }
+                }
+
+                if (!targetKey) {
+                    targetKey = item.code;
+                }
+
+                init(targetKey); const d = map.get(targetKey);
+                const x = item.xskt * 1000; 
                 d.xskt += x; d.xsktCom += x*0.1; d.totRev += x; d.totCom += x*0.1;
             });
             debtData.forEach((v,k) => { init(k); map.get(k).debt = v; });
@@ -1694,9 +1798,9 @@
             };
             
             // Xử lý loại bỏ XSKT
-            const filterXSKT = (r) => { 
+            const filterXSKT = (item) => { 
                 if (isExcludeXSKT) return false;
-                const c = String(r.__EMPTY || r.__EMPTY_1 || '').trim(); 
+                const c = String(item.code).trim(); 
                 const match = c.match(/(\d+)$/); 
                 if (!match || parseInt(match[1], 10) !== targetNum) return false;
                 if (selectedBranchMode !== 'all') {
@@ -1746,9 +1850,22 @@
                 const name = String(r.__EMPTY).trim(); if(name) state.accountCodes.add(name);
                 t.lotoDB += (parseFloat(r.__EMPTY_2) || 0); t.loCap += (parseFloat(r.__EMPTY_6) || 0); t.c227 += (parseFloat(r.__EMPTY_8) || 0); t.c323 += (parseFloat(r.__EMPTY_10) || 0); t.thuong += (parseFloat(r.__EMPTY_14) || 0); 
             });
-            f2.forEach(r => { 
-                const name = String(r.__EMPTY || r.__EMPTY_1).trim(); if(name) state.accountCodes.add(name); 
-                t.xskt += (parseFloat(r.__EMPTY_7) || 0) * 1000; 
+            f2.forEach(item => { 
+                const baseNum = parseInt(getBaseId(item.code), 10);
+                let name = item.code;
+                
+                // Find if there is a matching code name in f1 (from Biểu 31)
+                let matchingF1 = f1.find(r => {
+                    const c = String(r.__EMPTY || '').trim();
+                    return parseInt(getBaseId(c), 10) === baseNum;
+                });
+                
+                if (matchingF1) {
+                    name = String(matchingF1.__EMPTY).trim();
+                }
+                
+                if(name) state.accountCodes.add(name); 
+                t.xskt += item.xskt * 1000; 
             });
             t.veBoc = veBocStats.rev;
             const c = { ldb: t.lotoDB * 0.08, lc: t.loCap * 0.1, c2: t.c227 * 0.1, c3: t.c323 * 0.1, x: t.xskt * 0.1, vb: veBocStats.com };
