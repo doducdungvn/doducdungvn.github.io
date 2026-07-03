@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPUB VoiceReader™ - Trình Đọc Sách Nói Cao Cấp 🎧</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- JSZip -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    :root {
+      --spotify-green: #1DB954;
+      --spotify-green-hover: #1ed760;
+      --burgundy: #800020;
+      --burgundy-light: #9a1a35;
+      --bg-dark: #121212;
+      --panel-dark: #181818;
+      --panel-light: #282828;
+      --text-muted: #b3b3b3;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #181818;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3e3e3e;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Reading Themes */
+    .theme-reader-dark {
+      background-color: #1a1a1a !important;
+      color: #e0e0e0 !important;
+    }
+    .theme-reader-light {
+      background-color: #fbf9f4 !important;
+      color: #2b2b2b !important;
+    }
+    .theme-reader-sepia {
+      background-color: #f4ecd8 !important;
+      color: #433422 !important;
+    }
+
+    /* Active Block Highlight */
+    .active-read-block {
+      border-left: 4px solid var(--spotify-green);
+      background-color: rgba(29, 185, 84, 0.08);
+      padding-left: 12px;
+      border-radius: 0 8px 8px 0;
+      transition: all 0.3s ease;
+    }
+    .theme-reader-sepia .active-read-block {
+      border-left: 4px solid var(--burgundy);
+      background-color: rgba(128, 0, 32, 0.06);
+    }
+    .theme-reader-light .active-read-block {
+      border-left: 4px solid var(--spotify-green);
+      background-color: rgba(29, 185, 84, 0.05);
+    }
+
+    /* Paragraph hover read button */
+    .read-block {
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .read-block:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    .theme-reader-light .read-block:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    .theme-reader-sepia .read-block:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Equalizer Animation */
+    .eq-bar {
+      width: 3px;
+      height: 3px;
+      background-color: var(--spotify-green);
+      animation: bounce 0.8s ease-in-out infinite alternate;
+      border-radius: 1px;
+    }
+    .eq-bar:nth-child(2) { animation-delay: 0.15s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.3s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.45s; }
+    .eq-bar:nth-child(5) { animation-delay: 0.05s; }
+
+    @keyframes bounce {
+      0% { height: 4px; }
+      100% { height: 24px; }
+    }
+
+    /* Glassmorphism overlays */
+    .glass-effect {
+      background: rgba(24, 24, 24, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col justify-between select-none">
+
+  <!-- Top Navigation Header -->
+  <header class="h-16 border-b border-neutral-800 bg-[#0c0c0c] px-6 flex items-center justify-between z-10 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-950/20">
+        <i data-lucide="headphones" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-base font-bold tracking-tight">EPUB VoiceReader<span class="text-emerald-500 text-xs">™</span></h1>
+        <p class="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">Trình Đọc Sách Nói Cao Cấp</p>
+      </div>
+    </div>
+    
+    <div id="currentBookTitleHeader" class="hidden md:flex items-center gap-2 bg-neutral-900 border border-neutral-800 px-4 py-1.5 rounded-full text-xs font-semibold max-w-md truncate text-neutral-300">
+      <i data-lucide="book-open" class="w-3.5 h-3.5 text-emerald-500 shrink-0"></i>
+      <span id="headerBookTitle">Chưa có sách</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="flex bg-neutral-900 rounded-lg p-0.5 border border-neutral-800">
+        <button onclick="setReaderTheme('light')" class="px-2.5 py-1 rounded text-xs font-bold transition-all hover:text-white text-neutral-400">Sáng</button>
+        <button onclick="setReaderTheme('sepia')" class="px-2.5 py-1 rounded text-xs font-bold transition-all hover:text-white text-neutral-400">Sepia</button>
+        <button onclick="setReaderTheme('dark')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-neutral-800 text-white shadow">Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Workspace -->
+  <main class="flex-1 flex overflow-hidden">
+    
+    <!-- LEFT SIDEBAR: Library & Chapters -->
+    <section class="w-80 border-r border-neutral-800 bg-[#121212] flex flex-col justify-between shrink-0">
+      
+      <!-- Upload area or cover image -->
+      <div class="p-5 border-b border-neutral-800 shrink-0">
+        <div id="uploadDropzone" class="border-2 border-dashed border-neutral-800 rounded-2xl p-6 text-center hover:border-emerald-500 transition-all cursor-pointer bg-neutral-900/40 relative group">
+          <input type="file" id="epubInput" accept=".epub" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleFileSelect(this)">
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center group-hover:bg-emerald-950 transition-colors">
+              <i data-lucide="upload-cloud" class="w-6 h-6 text-neutral-400 group-hover:text-emerald-500 transition-colors"></i>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-neutral-200">Tải tệp tin EPUB</p>
+              <p class="text-xs text-neutral-500 mt-1">Kéo thả hoặc nhấp để chọn tệp</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book metadata showcase (hidden initially) -->
+        <div id="bookMetaContainer" class="hidden flex gap-4 items-center">
+          <div class="w-16 h-24 bg-neutral-900 rounded-lg overflow-hidden border border-neutral-800 shrink-0 flex items-center justify-center relative shadow-md">
+            <img id="bookCover" class="w-full h-full object-cover hidden" alt="Bìa sách">
+            <i id="bookCoverPlaceholder" data-lucide="book" class="w-8 h-8 text-neutral-700"></i>
+          </div>
+          <div class="overflow-hidden">
+            <h2 id="bookTitle" class="text-sm font-extrabold text-white truncate">Tên Sách</h2>
+            <p id="bookAuthor" class="text-xs text-neutral-400 truncate mt-1">Tác giả</p>
+            <button onclick="triggerNewUpload()" class="mt-2.5 flex items-center gap-1.5 text-[10px] font-bold text-neutral-400 hover:text-emerald-500 uppercase tracking-widest transition-colors">
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Đổi sách
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter Index navigation -->
+      <div class="flex-1 flex flex-col min-h-0">
+        <div class="px-5 py-3 flex items-center justify-between text-xs font-bold text-neutral-400 uppercase tracking-wider shrink-0 bg-neutral-900/20">
+          <span>Mục lục</span>
+          <span id="chapterCount" class="text-[10px] bg-neutral-800 px-1.5 py-0.5 rounded text-neutral-500">0 chương</span>
+        </div>
+        <div id="chaptersList" class="flex-1 overflow-y-auto px-2 py-2 flex flex-col gap-1 text-sm text-neutral-400">
+          <div class="text-center py-12 text-xs text-neutral-600">
+            <i data-lucide="book-open" class="w-8 h-8 text-neutral-800 mx-auto mb-2"></i>
+            Chưa có nội dung chương sách.<br>Vui lòng tải lên file EPUB.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CENTER PANEL: Elegant Book Reader -->
+    <section id="readerPanel" class="flex-1 bg-[#1a1a1a] flex flex-col relative overflow-hidden theme-reader-dark transition-all duration-300">
+      
+      <!-- Text formatting controls at top of reader -->
+      <div class="h-12 border-b border-black/10 flex items-center justify-between px-8 text-xs font-semibold shrink-0 bg-black/5">
+        <div class="flex items-center gap-2">
+          <button onclick="adjustFontSize(-2)" class="w-7 h-7 rounded border border-neutral-700/30 flex items-center justify-center hover:bg-black/10 transition-colors" title="Thu nhỏ chữ">
+            <span class="font-bold">A-</span>
+          </button>
+          <span id="fontSizeDisplay" class="px-1 font-mono text-neutral-500">100%</span>
+          <button onclick="adjustFontSize(2)" class="w-7 h-7 rounded border border-neutral-700/30 flex items-center justify-center hover:bg-black/10 transition-colors" title="Phóng to chữ">
+            <span class="font-bold">A+</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleFontSerif(true)" id="btnFontSerif" class="px-2.5 py-1 rounded border border-neutral-700/30 hover:bg-black/10 transition-all font-serif">Serif</button>
+          <button onclick="toggleFontSerif(false)" id="btnFontSans" class="px-2.5 py-1 rounded bg-neutral-800/80 text-white font-sans">Sans</button>
+        </div>
+      </div>
+
+      <!-- Book content viewer -->
+      <div id="readerContent" class="flex-1 overflow-y-auto px-8 py-10 md:px-16 lg:px-24 scroll-smooth">
+        <div class="max-w-2xl mx-auto flex flex-col items-center justify-center h-full text-center" id="emptyStateReader">
+          <div class="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6">
+            <i data-lucide="book-open" class="w-10 h-10 text-emerald-500"></i>
+          </div>
+          <h2 class="text-xl font-bold mb-2">Trình phát sách nói chuyên nghiệp</h2>
+          <p class="text-sm text-neutral-500 max-w-sm leading-relaxed">Hãy chọn file sách EPUB từ thiết bị của bạn để hệ thống tự động trích xuất chương và phát âm thanh giọng đọc tiếng Việt.</p>
+        </div>
+        <div id="bookTextDisplay" class="max-w-2xl mx-auto hidden font-sans leading-relaxed text-lg flex flex-col gap-6">
+          <!-- Text blocks dynamically generated here -->
+        </div>
+      </div>
+
+      <!-- Bottom mini status -->
+      <div class="h-8 border-t border-black/10 px-8 flex items-center justify-between text-[10px] font-bold tracking-wider uppercase text-neutral-500 shrink-0 bg-black/5">
+        <span id="footerChapterTitle">Chương hiện tại</span>
+        <span id="footerReadProgress">Trang: --/--</span>
+      </div>
+
+    </section>
+
+    <!-- RIGHT SIDEBAR: Speech & Voice Settings -->
+    <section class="w-80 border-l border-neutral-800 bg-[#121212] flex flex-col justify-between shrink-0 p-5">
+      
+      <div class="flex flex-col gap-6">
+        <div>
+          <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-500"></i> Cài đặt giọng đọc
+          </h3>
+          
+          <div class="flex flex-col gap-4 bg-neutral-900/60 p-4 rounded-xl border border-neutral-800">
+            <!-- Voice selection -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Chọn giọng đọc</label>
+              <select id="voiceSelect" class="w-full bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 text-neutral-200">
+                <option value="">Đang tìm giọng nói...</option>
+              </select>
+              <p class="text-[9px] text-neutral-500 leading-tight">Mẹo: Ưu tiên chọn giọng có chữ "Google" hoặc tiếng Việt (vi-VN).</p>
+            </div>
+            
+            <!-- Warning if Vietnamese voice is missing -->
+            <div id="viVoiceAlert" class="hidden p-3 bg-red-950/40 border border-red-900/60 rounded-xl text-[11px] text-red-200 leading-relaxed">
+              <div class="font-bold flex items-center gap-1 mb-1 text-red-400">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i> Không tìm thấy giọng Tiếng Việt!
+              </div>
+              Hệ thống không tìm thấy giọng đọc Tiếng Việt trên trình duyệt của bạn. Để sửa đổi:
+              <ul class="list-decimal pl-4 mt-1 space-y-1">
+                <li>Sử dụng trình duyệt <strong>Microsoft Edge</strong> để có sẵn các giọng đọc AI tự nhiên cực hay.</li>
+                <li>Hoặc trên Windows, vào <strong>Settings &rarr; Time & Language &rarr; Language</strong>, thêm ngôn ngữ <strong>Tiếng Việt</strong> và tick chọn Speech (Giọng nói).</li>
+              </ul>
+            </div>
+
+            <!-- Speed range -->
+            <div class="flex flex-col gap-1.5">
+              <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                <span>Tốc độ đọc</span>
+                <span id="speedVal" class="text-emerald-500">1.0x</span>
+              </div>
+              <input type="range" id="rateRange" min="0.5" max="3" step="0.1" value="1.0" oninput="updateSpeechParam('speed', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+            </div>
+
+            <!-- Pitch range -->
+            <div class="flex flex-col gap-1.5">
+              <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                <span>Độ trầm bổng</span>
+                <span id="pitchVal" class="text-emerald-500">1.0</span>
+              </div>
+              <input type="range" id="pitchRange" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateSpeechParam('pitch', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+            </div>
+            
+            <!-- Volume range -->
+            <div class="flex flex-col gap-1.5">
+              <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                <span>Âm lượng</span>
+                <span id="volumeVal" class="text-emerald-500">100%</span>
+              </div>
+              <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="1.0" oninput="updateSpeechParam('volume', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio wave graphic visualizer -->
+        <div>
+          <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3">Tín hiệu giọng</h3>
+          <div class="h-28 bg-[#181818] rounded-xl border border-neutral-800 flex items-center justify-center relative overflow-hidden group">
+            <div id="visualizerPlaceholder" class="text-xs text-neutral-600 font-medium">Chưa phát âm thanh</div>
+            <div id="visualizerBars" class="hidden items-end gap-1.5">
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+              <div class="eq-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick instructions help -->
+      <div class="bg-neutral-900/40 p-4 rounded-xl border border-neutral-800 shrink-0 text-xs leading-relaxed text-neutral-400">
+        <p class="font-bold text-neutral-300 mb-1 flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5 text-emerald-500"></i> Hướng dẫn sử dụng:</p>
+        <ul class="list-disc pl-4 space-y-1 mt-1 text-[11px]">
+          <li>Nhấp trực tiếp vào bất cứ đoạn văn nào để bắt đầu phát giọng đọc từ vị trí đó.</li>
+          <li>Hệ thống tự động cuộn màn hình và tô màu theo đoạn đang đọc.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- BOTTOM PLAYER CONTROL BAR -->
+  <footer class="h-20 border-t border-neutral-800 bg-[#181818] px-6 flex items-center justify-between z-10 shrink-0 select-none">
+    
+    <!-- Left: Track info details -->
+    <div class="flex items-center gap-3 w-1/4">
+      <div class="hidden sm:block">
+        <p id="playerBookTitle" class="text-xs font-bold text-white max-w-[200px] truncate">Chưa tải sách</p>
+        <p id="playerChapterTitle" class="text-[10px] text-neutral-400 mt-1 max-w-[200px] truncate">Chưa có chương nào được chọn</p>
+      </div>
+    </div>
+
+    <!-- Center: Playback control buttons -->
+    <div class="flex flex-col items-center gap-2 w-2/4">
+      <div class="flex items-center gap-6">
+        <button onclick="prevParagraph()" class="text-neutral-400 hover:text-white transition-colors" title="Đoạn trước">
+          <i data-lucide="skip-back" class="w-5 h-5"></i>
+        </button>
+        <button onclick="togglePlayback()" id="btnPlay" class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow shadow-white/10" title="Phát / Tạm dừng">
+          <i id="playIcon" data-lucide="play" class="w-5 h-5 fill-current"></i>
+        </button>
+        <button onclick="stopPlayback()" class="text-neutral-400 hover:text-white transition-colors" title="Dừng phát">
+          <i data-lucide="square" class="w-5 h-5"></i>
+        </button>
+        <button onclick="nextParagraph()" class="text-neutral-400 hover:text-white transition-colors" title="Đoạn tiếp theo">
+          <i data-lucide="skip-forward" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <!-- Progress Bar Slider -->
+      <div class="w-full flex items-center gap-3">
+        <span id="playerProgressStart" class="text-[10px] font-semibold text-neutral-500 font-mono">00:00</span>
+        <div class="flex-1 bg-neutral-800 h-1.5 rounded-full relative group cursor-pointer" onclick="handleProgressBarClick(event)">
+          <div id="playerProgressBar" class="bg-emerald-500 h-full rounded-full w-0 transition-all duration-300 relative">
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow"></div>
+          </div>
+        </div>
+        <span id="playerProgressEnd" class="text-[10px] font-semibold text-neutral-500 font-mono">00:00</span>
+      </div>
+    </div>
+
+    <!-- Right: Extra features -->
+    <div class="flex items-center justify-end gap-3 w-1/4">
+      <button onclick="toggleMute()" class="text-neutral-400 hover:text-white transition-colors">
+        <i id="muteIcon" data-lucide="volume-2" class="w-5 h-5"></i>
+      </button>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1.0" oninput="updateSpeechParam('volume', this.value)" class="w-20 h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+    </div>
+
+  </footer>
+
+  <script>
+    let zip = null;
+    let epubMetadata = {};
+    let epubSpine = [];
+    let epubManifest = {};
+    let chaptersData = [];
+    let opfDirectory = "";
+    
+    let currentChapterIdx = -1;
+    let currentBlockIdx = -1;
+    let currentTextBlocks = [];
+    
+    // TTS Audio Player States
+    let isPlaying = false;
+    let isMuted = false;
+    let savedVolume = 1.0;
+    let currentUtterance = null;
+    let readingFontSerif = false;
+    let readingFontSize = 100;
+    
+    // Initialise Speech Synthesis voices list
+    function populateVoiceList() {
+      if (typeof speechSynthesis === 'undefined') return;
+      const voices = speechSynthesis.getVoices();
+      const select = document.getElementById('voiceSelect');
+      select.innerHTML = '';
+      
+      if (voices.length === 0) {
+        select.innerHTML = '<option value="">Đang tải danh sách giọng nói...</option>';
+        return;
+      }
+      
+      // Filter Vietnamese voices first, then Google, then others
+      const viVoices = voices.filter(v => v.lang.includes('vi') || v.lang.includes('VI'));
+      const enVoices = voices.filter(v => v.lang.includes('en') || v.lang.includes('EN'));
+      const googleVoices = voices.filter(v => v.name.includes('Google') && !v.lang.includes('vi'));
+      
+      const alertEl = document.getElementById('viVoiceAlert');
+      if (alertEl) {
+        if (viVoices.length === 0) {
+          alertEl.classList.remove('hidden');
+        } else {
+          alertEl.classList.add('hidden');
+        }
+      }
+      
+      let preferred = [...viVoices];
+      // Append others
+      let otherVoices = voices.filter(v => !preferred.includes(v));
+      
+      preferred.push(...otherVoices);
+      
+      preferred.forEach(voice => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = voice.name;
+        
+        // Auto select Vietnamese if found
+        if (voice.lang.includes('vi') || voice.lang.includes('VI')) {
+          option.selected = true;
+        }
+        select.appendChild(option);
+      });
+    }
+
+    // Populate voices asynchronously
+    populateVoiceList();
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // ----------------------------------------------------
+    // Drag & Drop / File Upload Handler
+    // ----------------------------------------------------
+    function triggerNewUpload() {
+      document.getElementById('epubInput').click();
+    }
+
+    async function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      // Clear old state
+      stopPlayback();
+      document.getElementById('emptyStateReader').innerHTML = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-12 h-12 rounded-full border-4 border-t-emerald-500 border-neutral-700 animate-spin"></div>
+          <p class="text-sm font-bold text-neutral-400">Đang giải nén và phân tích sách EPUB...</p>
+        </div>
+      `;
+      
+      try {
+        zip = await JSZip.loadAsync(file);
+        
+        // Find META-INF/container.xml
+        const containerFile = zip.file("META-INF/container.xml");
+        if (!containerFile) {
+          alert("Tệp tin không đúng định dạng EPUB chuẩn (Thiếu container.xml)");
+          resetToEmptyState();
+          return;
+        }
+        
+        const containerText = await containerFile.async("text");
+        const parser = new DOMParser();
+        const containerXml = parser.parseFromString(containerText, "text/xml");
+        const rootfile = containerXml.querySelector("rootfile");
+        if (!rootfile) {
+          alert("Không tìm thấy đường dẫn rootfile trong container.xml");
+          resetToEmptyState();
+          return;
+        }
+        
+        const opfPath = rootfile.getAttribute("full-path");
+        opfDirectory = opfPath.substring(0, opfPath.lastIndexOf('/') + 1); // e.g. "OEBPS/" or ""
+        
+        // Load OPF File
+        const opfFile = zip.file(opfPath);
+        if (!opfFile) {
+          alert("Không tìm thấy tệp tin định cấu hình OPF sách");
+          resetToEmptyState();
+          return;
+        }
+        
+        const opfText = await opfFile.async("text");
+        const opfXml = parser.parseFromString(opfText, "text/xml");
+        
+        // Parse Book Metadata
+        const titleEl = opfXml.querySelector("title");
+        const creatorEl = opfXml.querySelector("creator");
+        
+        epubMetadata.title = titleEl ? titleEl.textContent : file.name.replace(/\.epub$/i, "");
+        epubMetadata.author = creatorEl ? creatorEl.textContent : "Chưa rõ tác giả";
+        
+        // Parse Manifest items
+        epubManifest = {};
+        opfXml.querySelectorAll("manifest > item").forEach(item => {
+          const id = item.getAttribute("id");
+          const href = item.getAttribute("href");
+          const type = item.getAttribute("media-type");
+          epubManifest[id] = { href: opfDirectory + href, type };
+        });
+        
+        // Parse Spine items
+        epubSpine = [];
+        opfXml.querySelectorAll("spine > itemref").forEach(itemref => {
+          const idref = itemref.getAttribute("idref");
+          if (epubManifest[idref]) {
+            epubSpine.push(epubManifest[idref].href);
+          }
+        });
+        
+        // Update Metadata UI
+        document.getElementById('bookTitle').innerText = epubMetadata.title;
+        document.getElementById('bookAuthor').innerText = epubMetadata.author;
+        document.getElementById('headerBookTitle').innerText = epubMetadata.title;
+        document.getElementById('playerBookTitle').innerText = epubMetadata.title;
+        
+        document.getElementById('uploadDropzone').classList.add('hidden');
+        document.getElementById('bookMetaContainer').classList.remove('hidden');
+        document.getElementById('currentBookTitleHeader').classList.remove('hidden');
+        
+        // Extract Cover Image if possible
+        await extractCoverImage(opfXml);
+        
+        // Render chapters list
+        await loadAllChaptersList();
+        
+        // Auto load first chapter or restore saved progress
+        const savedProgress = loadSavedProgress(epubMetadata.title);
+        if (savedProgress && savedProgress.chapterIndex < chaptersData.length) {
+          loadChapter(savedProgress.chapterIndex, savedProgress.blockIndex);
+        } else {
+          loadChapter(0);
+        }
+        
+      } catch (err) {
+        console.error("Parse error:", err);
+        alert("Lỗi khi đọc file EPUB: " + err.message);
+        resetToEmptyState();
+      }
+    }
+
+    async function extractCoverImage(opfXml) {
+      document.getElementById('bookCover').classList.add('hidden');
+      document.getElementById('bookCoverPlaceholder').classList.remove('hidden');
+      
+      let coverId = '';
+      const metaCover = opfXml.querySelector('meta[name="cover"]');
+      if (metaCover) {
+        coverId = metaCover.getAttribute('content');
+      } else {
+        const coverItem = opfXml.querySelector('item[properties~="cover-image"]') || opfXml.querySelector('item[id*="cover"]');
+        if (coverItem) coverId = coverItem.getAttribute('id');
+      }
+      
+      if (coverId && epubManifest[coverId]) {
+        try {
+          const imgPath = epubManifest[coverId].href;
+          const zipFile = zip.file(imgPath);
+          if (zipFile) {
+            const blob = await zipFile.async('blob');
+            const coverUrl = URL.createObjectURL(blob);
+            document.getElementById('bookCover').src = coverUrl;
+            document.getElementById('bookCover').classList.remove('hidden');
+            document.getElementById('bookCoverPlaceholder').classList.add('hidden');
+          }
+        } catch (e) {
+          console.warn("Cover extract error:", e);
+        }
+      }
+    }
+
+    async function loadAllChaptersList() {
+      chaptersData = [];
+      const chaptersList = document.getElementById('chaptersList');
+      chaptersList.innerHTML = '<div class="text-center py-6 text-xs text-neutral-500">Đang chuẩn bị mục lục...</div>';
+      
+      const parser = new DOMParser();
+      
+      for (let i = 0; i < epubSpine.length; i++) {
+        const path = epubSpine[i];
+        const zipFile = zip.file(path);
+        if (!zipFile) continue;
+        
+        try {
+          const htmlText = await zipFile.async("text");
+          const doc = parser.parseFromString(htmlText, "text/html");
+          
+          // Get title candidate
+          let title = `Chương ${i + 1}`;
+          const hTag = doc.querySelector('h1, h2, h3, h4');
+          if (hTag && hTag.textContent.trim()) {
+            title = hTag.textContent.trim().replace(/\s+/g, ' ');
+          } else {
+            const titleTag = doc.querySelector('title');
+            if (titleTag && titleTag.textContent.trim()) {
+              title = titleTag.textContent.trim();
+            }
+          }
+          
+          // Strip files and read raw readable text blocks
+          doc.querySelectorAll('script, style, svg, img, image, head').forEach(el => el.remove());
+          const readableElements = doc.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li');
+          let blocks = [];
+          readableElements.forEach(el => {
+            const textVal = el.textContent.trim();
+            if (textVal.length > 2) {
+              blocks.push(textVal);
+            }
+          });
+          
+          chaptersData.push({
+            index: i,
+            title: title,
+            path: path,
+            blocks: blocks
+          });
+          
+        } catch (err) {
+          console.warn(`Error parsing chapter spine at ${path}:`, err);
+        }
+      }
+      
+      document.getElementById('chapterCount').innerText = `${chaptersData.length} chương`;
+      
+      // Render to Sidebar
+      if (chaptersData.length === 0) {
+        chaptersList.innerHTML = '<div class="text-center py-6 text-xs text-neutral-500">Không tìm thấy chương sách có nội dung chữ.</div>';
+        return;
+      }
+      
+      chaptersList.innerHTML = chaptersData.map(ch => `
+        <button id="sidebar-ch-${ch.index}" onclick="loadChapter(${ch.index})" class="w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-between group">
+          <div class="truncate pr-2 flex items-center gap-2">
+            <i data-lucide="play-circle" class="w-3.5 h-3.5 text-neutral-500 shrink-0 group-hover:text-emerald-500 transition-colors"></i>
+            <span class="truncate font-semibold text-xs text-neutral-300 group-hover:text-white">${ch.title}</span>
+          </div>
+          <span class="text-[9px] font-mono text-neutral-600 shrink-0">${ch.blocks.length} đoạn</span>
+        </button>
+      `).join('');
+      
+      lucide.createIcons();
+    }
+
+    function resetToEmptyState() {
+      document.getElementById('uploadDropzone').classList.remove('hidden');
+      document.getElementById('bookMetaContainer').classList.add('hidden');
+      document.getElementById('currentBookTitleHeader').classList.add('hidden');
+      document.getElementById('bookTextDisplay').classList.add('hidden');
+      document.getElementById('emptyStateReader').classList.remove('hidden');
+      document.getElementById('chaptersList').innerHTML = `
+        <div class="text-center py-12 text-xs text-neutral-600">
+          <i data-lucide="book-open" class="w-8 h-8 text-neutral-800 mx-auto mb-2"></i>
+          Chưa có nội dung chương sách.<br>Vui lòng tải lên file EPUB.
+        </div>
+      `;
+      document.getElementById('chapterCount').innerText = "0 chương";
+      document.getElementById('playerBookTitle').innerText = "Chưa tải sách";
+      document.getElementById('playerChapterTitle').innerText = "Chưa có chương nào được chọn";
+      lucide.createIcons();
+    }
+
+    // ----------------------------------------------------
+    // Book Content Rendering & Selection
+    // ----------------------------------------------------
+    function loadChapter(idx, startAtBlockIdx = 0) {
+      if (idx < 0 || idx >= chaptersData.length) return;
+      
+      // Remove highlighting on previous active chapter
+      if (currentChapterIdx !== -1) {
+        const prevBtn = document.getElementById(`sidebar-ch-${currentChapterIdx}`);
+        if (prevBtn) prevBtn.classList.remove('bg-neutral-800', 'border-l-2', 'border-emerald-500');
+      }
+      
+      currentChapterIdx = idx;
+      const currentChapter = chaptersData[idx];
+      
+      // Update sidebar state
+      const nextBtn = document.getElementById(`sidebar-ch-${idx}`);
+      if (nextBtn) {
+        nextBtn.classList.add('bg-neutral-800', 'border-l-2', 'border-emerald-500');
+        nextBtn.scrollIntoView({ block: 'nearest' });
+      }
+      
+      // Update Player Footer
+      document.getElementById('playerChapterTitle').innerText = currentChapter.title;
+      document.getElementById('footerChapterTitle').innerText = currentChapter.title;
+      
+      // Render text to main display
+      const display = document.getElementById('bookTextDisplay');
+      document.getElementById('emptyStateReader').classList.add('hidden');
+      display.classList.remove('hidden');
+      
+      currentTextBlocks = currentChapter.blocks;
+      
+      if (currentTextBlocks.length === 0) {
+        display.innerHTML = '<div class="text-center py-12 text-neutral-500 italic">Chương này trống hoặc không có nội dung chữ dạng thường.</div>';
+        return;
+      }
+      
+      display.innerHTML = `
+        <h2 class="text-2xl md:text-3xl font-extrabold border-b border-neutral-700/10 pb-4 mb-6">${currentChapter.title}</h2>
+        ${currentTextBlocks.map((text, bIdx) => `
+          <div id="block-${bIdx}" onclick="selectAndSpeakParagraph(${bIdx})" class="read-block p-2.5 rounded-lg text-justify leading-relaxed transition-all">
+            ${text}
+          </div>
+        `).join('')}
+      `;
+      
+      updateChapterProgressBar(startAtBlockIdx);
+      
+      // Check if we should auto start speaking or just set the position
+      if (isPlaying) {
+        speakParagraph(startAtBlockIdx);
+      } else {
+        setReadingPointer(startAtBlockIdx, false);
+      }
+    }
+
+    function setReadingPointer(blockIdx, autoScroll = true) {
+      if (blockIdx < 0 || blockIdx >= currentTextBlocks.length) return;
+      
+      // Remove active from previous block
+      if (currentBlockIdx !== -1) {
+        const prevBlock = document.getElementById(`block-${currentBlockIdx}`);
+        if (prevBlock) prevBlock.classList.remove('active-read-block');
+      }
+      
+      currentBlockIdx = blockIdx;
+      const blockEl = document.getElementById(`block-${blockIdx}`);
+      if (blockEl) {
+        blockEl.classList.add('active-read-block');
+        
+        if (autoScroll) {
+          blockEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      
+      updateChapterProgressBar(blockIdx);
+      saveProgress(epubMetadata.title, currentChapterIdx, blockIdx);
+    }
+
+    function updateChapterProgressBar(blockIdx) {
+      const total = currentTextBlocks.length;
+      if (total === 0) return;
+      
+      const pct = ((blockIdx + 1) / total) * 100;
+      document.getElementById('playerProgressBar').style.width = `${pct}%`;
+      
+      // Progress numbers
+      document.getElementById('playerProgressStart').innerText = `${blockIdx + 1}`;
+      document.getElementById('playerProgressEnd').innerText = `${total}`;
+      document.getElementById('footerReadProgress').innerText = `Đoạn: ${blockIdx + 1}/${total}`;
+    }
+
+    function handleProgressBarClick(e) {
+      if (currentTextBlocks.length === 0) return;
+      
+      const bar = e.currentTarget;
+      const rect = bar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const width = rect.width;
+      
+      const ratio = Math.max(0, Math.min(1, clickX / width));
+      const targetBlockIdx = Math.floor(ratio * currentTextBlocks.length);
+      
+      selectAndSpeakParagraph(targetBlockIdx);
+    }
+
+    // ----------------------------------------------------
+    // Text To Speech (TTS) Logic
+    // ----------------------------------------------------
+    function togglePlayback() {
+      if (currentChapterIdx === -1) {
+        alert("Vui lòng tải sách và chọn một chương để bắt đầu đọc.");
+        return;
+      }
+      
+      if (isPlaying) {
+        pausePlayback();
+      } else {
+        startPlayback();
+      }
+    }
+
+    function startPlayback() {
+      isPlaying = true;
+      document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+      lucide.createIcons();
+      
+      document.getElementById('visualizerBars').classList.remove('hidden');
+      document.getElementById('visualizerBars').classList.add('flex');
+      document.getElementById('visualizerPlaceholder').classList.add('hidden');
+      
+      // If we haven't selected any block, start at the first
+      if (currentBlockIdx === -1) {
+        speakParagraph(0);
+      } else {
+        speakParagraph(currentBlockIdx);
+      }
+    }
+
+    function pausePlayback() {
+      isPlaying = false;
+      document.getElementById('playIcon').setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+      
+      document.getElementById('visualizerBars').classList.add('hidden');
+      document.getElementById('visualizerBars').classList.remove('flex');
+      document.getElementById('visualizerPlaceholder').classList.remove('hidden');
+      
+      if (typeof speechSynthesis !== 'undefined') {
+        speechSynthesis.cancel();
+      }
+    }
+
+    function stopPlayback() {
+      pausePlayback();
+      setReadingPointer(0, true);
+    }
+
+    function selectAndSpeakParagraph(blockIdx) {
+      setReadingPointer(blockIdx, true);
+      
+      // Auto start playback if not already playing
+      isPlaying = true;
+      document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+      lucide.createIcons();
+      
+      document.getElementById('visualizerBars').classList.remove('hidden');
+      document.getElementById('visualizerBars').classList.add('flex');
+      document.getElementById('visualizerPlaceholder').classList.add('hidden');
+      
+      speakParagraph(blockIdx);
+    }
+
+    function speakParagraph(blockIdx) {
+      if (typeof speechSynthesis === 'undefined') {
+        alert("Xin lỗi, trình duyệt của bạn không hỗ trợ công nghệ đọc văn bản (TTS).");
+        return;
+      }
+      
+      speechSynthesis.cancel(); // Cancel active speech
+      
+      if (blockIdx < 0 || blockIdx >= currentTextBlocks.length) {
+        // We reached the end of the chapter! Auto load next chapter
+        if (currentChapterIdx + 1 < chaptersData.length) {
+          loadChapter(currentChapterIdx + 1, 0);
+        } else {
+          // Finished the entire book
+          stopPlayback();
+          alert("Chúc mừng! Bạn đã nghe hết quyển sách này rồi. 🎉");
+        }
+        return;
+      }
+      
+      setReadingPointer(blockIdx, true);
+      const textToSpeak = currentTextBlocks[blockIdx];
+      
+      currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+      
+      // Bind voice selection
+      const voiceSelect = document.getElementById('voiceSelect');
+      const selectedVoiceName = voiceSelect.value;
+      if (selectedVoiceName) {
+        const voices = speechSynthesis.getVoices();
+        const match = voices.find(v => v.name === selectedVoiceName);
+        if (match) currentUtterance.voice = match;
+      }
+      
+      // Bind settings parameters
+      currentUtterance.rate = parseFloat(document.getElementById('rateRange').value) || 1.0;
+      currentUtterance.pitch = parseFloat(document.getElementById('pitchRange').value) || 1.0;
+      currentUtterance.volume = isMuted ? 0 : (parseFloat(document.getElementById('volumeRange').value) || 1.0);
+      
+      currentUtterance.onend = function() {
+        if (isPlaying) {
+          // Automatically speak next paragraph
+          speakParagraph(currentBlockIdx + 1);
+        }
+      };
+      
+      currentUtterance.onerror = function(e) {
+        console.warn("Speech end due to error/cancel:", e);
+      };
+      
+      speechSynthesis.speak(currentUtterance);
+    }
+
+    function nextParagraph() {
+      if (currentChapterIdx === -1) return;
+      if (currentBlockIdx + 1 < currentTextBlocks.length) {
+        selectAndSpeakParagraph(currentBlockIdx + 1);
+      } else {
+        // Next chapter
+        if (currentChapterIdx + 1 < chaptersData.length) {
+          loadChapter(currentChapterIdx + 1, 0);
+        }
+      }
+    }
+
+    function prevParagraph() {
+      if (currentChapterIdx === -1) return;
+      if (currentBlockIdx - 1 >= 0) {
+        selectAndSpeakParagraph(currentBlockIdx - 1);
+      } else {
+        // Prev chapter
+        if (currentChapterIdx - 1 >= 0) {
+          const prevCh = chaptersData[currentChapterIdx - 1];
+          loadChapter(currentChapterIdx - 1, Math.max(0, prevCh.blocks.length - 1));
+        }
+      }
+    }
+
+    // ----------------------------------------------------
+    // TTS Voice Setting Controls
+    // ----------------------------------------------------
+    function updateSpeechParam(param, val) {
+      if (param === 'speed') {
+        document.getElementById('speedVal').innerText = parseFloat(val).toFixed(1) + 'x';
+        document.getElementById('rateRange').value = val;
+      } else if (param === 'pitch') {
+        document.getElementById('pitchVal').innerText = parseFloat(val).toFixed(1);
+        document.getElementById('pitchRange').value = val;
+      } else if (param === 'volume') {
+        document.getElementById('volumeVal').innerText = Math.round(val * 100) + '%';
+        document.getElementById('volumeRange').value = val;
+        document.getElementById('volumeSlider').value = val;
+        
+        if (parseFloat(val) === 0) {
+          isMuted = true;
+          document.getElementById('muteIcon').setAttribute('data-lucide', 'volume-x');
+        } else {
+          isMuted = false;
+          document.getElementById('muteIcon').setAttribute('data-lucide', 'volume-2');
+        }
+        lucide.createIcons();
+      }
+      
+      // If playing, update speech immediately by re-starting the current block
+      if (isPlaying && currentBlockIdx !== -1) {
+        speakParagraph(currentBlockIdx);
+      }
+    }
+
+    function toggleMute() {
+      const volumeRange = document.getElementById('volumeRange');
+      if (isMuted) {
+        isMuted = false;
+        updateSpeechParam('volume', savedVolume);
+      } else {
+        isMuted = true;
+        savedVolume = parseFloat(volumeRange.value) || 1.0;
+        updateSpeechParam('volume', 0);
+      }
+    }
+
+    // ----------------------------------------------------
+    // Font formatting & Page Styling
+    // ----------------------------------------------------
+    function adjustFontSize(delta) {
+      readingFontSize = Math.max(70, Math.min(200, readingFontSize + delta));
+      document.getElementById('fontSizeDisplay').innerText = readingFontSize + '%';
+      
+      const textDisplay = document.getElementById('bookTextDisplay');
+      textDisplay.style.fontSize = (readingFontSize / 100) * 1.125 + 'rem';
+    }
+
+    function toggleFontSerif(isSerif) {
+      readingFontSerif = isSerif;
+      const textDisplay = document.getElementById('bookTextDisplay');
+      
+      const btnSerif = document.getElementById('btnFontSerif');
+      const btnSans = document.getElementById('btnFontSans');
+      
+      if (isSerif) {
+        textDisplay.classList.remove('font-sans');
+        textDisplay.classList.add('font-serif');
+        btnSerif.classList.add('bg-neutral-800/80', 'text-white');
+        btnSans.classList.remove('bg-neutral-800/80', 'text-white');
+      } else {
+        textDisplay.classList.remove('font-serif');
+        textDisplay.classList.add('font-sans');
+        btnSans.classList.add('bg-neutral-800/80', 'text-white');
+        btnSerif.classList.remove('bg-neutral-800/80', 'text-white');
+      }
+    }
+
+    function setReaderTheme(theme) {
+      const panel = document.getElementById('readerPanel');
+      panel.classList.remove('theme-reader-dark', 'theme-reader-light', 'theme-reader-sepia');
+      
+      if (theme === 'dark') {
+        panel.classList.add('theme-reader-dark');
+      } else if (theme === 'light') {
+        panel.classList.add('theme-reader-light');
+      } else if (theme === 'sepia') {
+        panel.classList.add('theme-reader-sepia');
+      }
+    }
+
+    // ----------------------------------------------------
+    // LocalStorage Reading Progress Persistence
+    // ----------------------------------------------------
+    function saveProgress(bookTitle, chapterIndex, blockIndex) {
+      if (!bookTitle) return;
+      const progress = { chapterIndex, blockIndex };
+      localStorage.setItem(`epub_progress_${bookTitle}`, JSON.stringify(progress));
+    }
+
+    function loadSavedProgress(bookTitle) {
+      if (!bookTitle) return null;
+      const data = localStorage.getItem(`epub_progress_${bookTitle}`);
+      return data ? JSON.parse(data) : null;
+    }
+  </script>
+</body>
+</html>
