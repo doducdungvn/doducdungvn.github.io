@@ -1053,8 +1053,8 @@
     }
 
     // --- CAPTURE & EXPORT IMAGES ---
-    async function splitCanvasToImages(canvas, targetTable, rootElement) {
-        const images = []; const contentWidth = canvas.width; const totalHeight = canvas.height; const pageHeight = Math.floor(contentWidth * 1.414); 
+    async function splitCanvasToCanvases(canvas, targetTable, rootElement) {
+        const canvases = []; const contentWidth = canvas.width; const totalHeight = canvas.height; const pageHeight = Math.floor(contentWidth * 1.414); 
         let theadH_inCanvas = 0; let theadY_inCanvas = 0;
         
         if (targetTable && rootElement) {
@@ -1084,10 +1084,27 @@
             const ctx = pageCanvas.getContext('2d'); ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
             if (!isFirstPage && repeatHeaderHeight > 0) ctx.drawImage(canvas, 0, repeatHeaderSourceY, contentWidth, repeatHeaderHeight, 0, 0, contentWidth, repeatHeaderHeight);
             const destY = isFirstPage ? 0 : repeatHeaderHeight; ctx.drawImage(canvas, 0, currentY, contentWidth, sliceHeight, 0, destY, contentWidth, sliceHeight);
-            images.push(pageCanvas.toDataURL('image/png')); currentY = splitPoint; pageIndex++;
+            canvases.push(pageCanvas); currentY = splitPoint; pageIndex++;
             if (currentY >= totalHeight) break;
         }
-        return images;
+        return canvases;
+    }
+
+    function mergeCanvases(canvases) {
+        if (canvases.length === 0) return null;
+        if (canvases.length === 1) return canvases[0];
+        const mergedCanvas = document.createElement('canvas');
+        mergedCanvas.width = canvases[0].width;
+        mergedCanvas.height = canvases.reduce((sum, c) => sum + c.height, 0);
+        const ctx = mergedCanvas.getContext('2d');
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, mergedCanvas.width, mergedCanvas.height);
+        let currentY = 0;
+        canvases.forEach(c => {
+            ctx.drawImage(c, 0, currentY);
+            currentY += c.height;
+        });
+        return mergedCanvas;
     }
 
     async function copyElementAsImage(sel, msg, btn) { 
@@ -1136,12 +1153,54 @@
                 
                 const limitHeight = canvas.width * 2; const previewHolder = document.getElementById('imagePreviewHolder'); previewHolder.innerHTML = ''; currentGeneratedImages = [];
                 if (canvas.height > limitHeight && sel !== '#reportContainer') {
-                    const images = await splitCanvasToImages(canvas, targetTable, el); currentGeneratedImages = images;
-                    images.forEach((imgSrc, index) => { const div = document.createElement('div'); div.className = 'preview-image-item'; div.innerHTML = `<div class="page-number">Trang ${index + 1}/${images.length}</div><img src="${imgSrc}">`; previewHolder.appendChild(div); });
-                    showNotification(`Đã chia thành ${images.length} trang`, 'info'); 
-                    DOM.btnSaveAllImages.textContent = '💾 TẢI TẤT CẢ ẢNH';
-                    DOM.btnSaveAllImages.style.display = 'inline-block'; 
-                    DOM.imagePreviewModal.style.display = 'block';
+                    const canvases = await splitCanvasToCanvases(canvas, targetTable, el);
+                    
+                    if (canvases.length <= 3) {
+                        const mergedCanvas = mergeCanvases(canvases);
+                        const imgSrc = mergedCanvas.toDataURL('image/png');
+                        currentGeneratedImages = [imgSrc];
+                        
+                        const showPreviewModal = () => {
+                            const div = document.createElement('div');
+                            div.className = 'preview-image-item';
+                            div.innerHTML = `<div class="page-number">Ảnh ghép từ ${canvases.length} trang (Click chuột phải / nhấn giữ để sao chép)</div><img src="${imgSrc}">`;
+                            previewHolder.appendChild(div);
+                            
+                            DOM.btnSaveAllImages.textContent = '💾 TẢI ẢNH VỀ MÁY';
+                            DOM.btnSaveAllImages.style.display = 'inline-block';
+                            DOM.imagePreviewModal.style.display = 'block';
+                        };
+                        
+                        if (navigator.clipboard && navigator.clipboard.write) {
+                            mergedCanvas.toBlob((blob) => {
+                                if (!blob) { showPreviewModal(); return; }
+                                navigator.clipboard.write([
+                                    new ClipboardItem({ 'image/png': blob })
+                                ]).then(() => {
+                                    showNotification('Đã ghép ' + canvases.length + ' trang thành 1 ảnh và sao chép vào Clipboard!', 'success');
+                                    DOM.imagePreviewModal.style.display = 'none';
+                                }).catch((err) => {
+                                    console.warn("Lỗi ghi clipboard:", err);
+                                    showPreviewModal();
+                                });
+                            }, 'image/png');
+                        } else {
+                            showPreviewModal();
+                        }
+                    } else {
+                        const images = canvases.map(c => c.toDataURL('image/png'));
+                        currentGeneratedImages = images;
+                        images.forEach((imgSrc, index) => { 
+                            const div = document.createElement('div'); 
+                            div.className = 'preview-image-item'; 
+                            div.innerHTML = `<div class="page-number">Trang ${index + 1}/${images.length}</div><img src="${imgSrc}">`; 
+                            previewHolder.appendChild(div); 
+                        });
+                        showNotification(`Đã chia thành ${images.length} trang`, 'info'); 
+                        DOM.btnSaveAllImages.textContent = '💾 TẢI TẤT CẢ ẢNH';
+                        DOM.btnSaveAllImages.style.display = 'inline-block'; 
+                        DOM.imagePreviewModal.style.display = 'block';
+                    }
                 } else {
                     const imgSrc = canvas.toDataURL('image/png'); currentGeneratedImages = [imgSrc];
                     const showPreviewModal = () => {
@@ -1180,13 +1239,21 @@
         }, 100);
     }
 
-    DOM.btnSaveAllImages.onclick = () => { 
+    DOM.btnSaveAllImages.onclick = async () => { 
         if (!currentGeneratedImages || currentGeneratedImages.length === 0) return; 
-        currentGeneratedImages.forEach((imgSrc, index) => { 
-            const link = document.createElement('a'); link.href = imgSrc; link.download = `Bao_cao_Trang_${index + 1}.png`; 
-            document.body.appendChild(link); link.click(); document.body.removeChild(link); 
-        }); 
-        showNotification('Đang tải xuống...', 'success'); 
+        showNotification('Bắt đầu tải xuống...', 'info');
+        for (let index = 0; index < currentGeneratedImages.length; index++) {
+            const imgSrc = currentGeneratedImages[index];
+            const link = document.createElement('a'); 
+            link.href = imgSrc; 
+            link.download = `Bao_cao_Trang_${index + 1}.png`; 
+            document.body.appendChild(link); 
+            link.click(); 
+            document.body.removeChild(link); 
+            // Wait 600ms between each download to bypass browser popup blocking
+            await new Promise(resolve => setTimeout(resolve, 600));
+        }
+        showNotification('Đã tải xuống tất cả ảnh!', 'success'); 
     };
 
     // --- DATA HANDLING ---
