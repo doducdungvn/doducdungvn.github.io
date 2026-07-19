@@ -2,8 +2,8 @@
 <html lang="vi" class="h-full">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Microsoft 365 Web Suite - Excel & Word Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Microsoft 365 Web Suite - Mobile & Desktop</title>
   
   <!-- CDNs: TailwindCSS, FontAwesome, SheetJS (XLSX), Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -42,15 +42,14 @@
   </script>
 
   <style>
-    /* Custom CSS for Grid & Scrollbars */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
     .dark ::-webkit-scrollbar-track { background: #1e293b; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     .dark ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-    /* Spreadsheet Grid Cell Styles */
+    /* Touch Friendly Grid Cells */
     .grid-cell {
       position: relative;
       user-select: none;
@@ -60,35 +59,32 @@
       font-size: 13px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #ffffff;
+      touch-action: manipulation;
     }
-    .dark .grid-cell {
-      background-color: #0f172a;
-    }
+    .dark .grid-cell { background-color: #0f172a; }
 
     .grid-cell.selected {
       background-color: rgba(16, 124, 65, 0.15) !important;
     }
 
     .grid-cell.active-cell {
-      outline: 2px solid #107c41 !important;
-      outline-offset: -2px;
+      outline: 2.5px solid #107c41 !important;
+      outline-offset: -2.5px;
       z-index: 10;
     }
 
-    /* Fill Handle Box at bottom right of active cell */
     .fill-handle {
       position: absolute;
       right: -3px;
       bottom: -3px;
-      width: 7px;
-      height: 7px;
+      width: 9px;
+      height: 9px;
       background-color: #107c41;
       border: 1px solid #ffffff;
       cursor: crosshair;
       z-index: 15;
     }
 
-    /* Row & Column Headers */
     .col-header, .row-header {
       background-color: #f1f5f9;
       color: #334155;
@@ -101,13 +97,7 @@
       color: #94a3b8;
     }
 
-    .col-header.active-hdr, .row-header.active-hdr {
-      background-color: #cbd5e1 !important;
-      color: #107c41 !important;
-      font-weight: 700;
-    }
-
-    /* Cell Editing Input Overlay */
+    /* Mobile Optimized Cell Editor Overlay */
     .cell-editor {
       position: absolute;
       top: 0;
@@ -115,74 +105,62 @@
       width: 100%;
       height: 100%;
       border: 2px solid #107c41;
-      padding: 0 4px;
-      font-size: 13px;
+      padding: 0 6px;
+      font-size: 14px;
       font-family: inherit;
       outline: none;
       z-index: 50;
       background: #ffffff;
       color: #0f172a;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .dark .cell-editor {
-      background: #0f172a;
-      color: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* Tab ribbon styling */
     .ribbon-tab {
-      padding: 6px 16px;
+      padding: 8px 14px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       border-bottom: 3px solid transparent;
-      transition: all 0.15s ease;
+      white-space: nowrap;
     }
     .mode-excel .ribbon-tab.active {
       color: #107c41;
       border-bottom-color: #107c41;
-      font-weight: 700;
-      background-color: rgba(16, 124, 65, 0.05);
+      background-color: rgba(16, 124, 65, 0.08);
     }
 
-    /* A4 Paper Styling */
-    .a4-paper {
-      width: 210mm;
-      min-height: 297mm;
-      padding: 25mm 20mm;
-      background: white;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      margin: 20px auto;
-      outline: none;
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #1e293b;
+    /* Mobile Touch Scrolling Momentum */
+    .horizontal-scroll-touch {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .horizontal-scroll-touch::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body id="appBody" class="h-full mode-excel bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans flex flex-col overflow-hidden select-none">
 
-  <!-- TOP TITLE BAR & APP SWITCHER -->
-  <header id="topHeader" class="bg-excel-800 text-white flex items-center justify-between px-4 py-1.5 shadow-md z-30 transition-colors duration-300">
-    <div class="flex items-center space-x-3">
-      <div class="relative">
-        <button onclick="toggleAppSwitcher()" title="Trình chuyển đổi ứng dụng Microsoft 365" class="w-8 h-8 hover:bg-white/20 rounded flex items-center justify-center text-lg transition">
+  <!-- ==================== RESPONSIVE TOP HEADER ==================== -->
+  <header id="topHeader" class="bg-excel-800 text-white flex items-center justify-between px-3 md:px-4 py-2 shadow-md z-30 transition-colors">
+    <div class="flex items-center space-x-2 md:space-x-3 overflow-hidden">
+      <!-- App Switcher Button -->
+      <div class="relative flex-shrink-0">
+        <button onclick="toggleAppSwitcher()" title="Trình chuyển đổi ứng dụng" class="w-9 h-9 hover:bg-white/20 active:bg-white/30 rounded-lg flex items-center justify-center text-lg transition">
           <i class="fa-solid fa-table-cells"></i>
         </button>
 
         <div id="appSwitcherDropdown" class="absolute left-0 top-full mt-2 w-64 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3 hidden z-50">
           <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 px-2">Ứng dụng Microsoft 365</div>
           <div class="space-y-1">
-            <button onclick="switchAppMode('excel')" class="w-full flex items-center space-x-3 p-2 hover:bg-excel-50 rounded-lg transition text-left group">
-              <div class="w-9 h-9 bg-excel-800 text-white rounded-lg flex items-center justify-center font-bold text-lg">X</div>
+            <button onclick="switchAppMode('excel')" class="w-full flex items-center space-x-3 p-2.5 hover:bg-excel-50 rounded-lg transition text-left">
+              <div class="w-8 h-8 bg-excel-800 text-white rounded-lg flex items-center justify-center font-bold text-base">X</div>
               <div>
                 <div class="font-bold text-sm">Microsoft Excel</div>
                 <div class="text-[11px] text-slate-500">Sổ tính & Công thức dữ liệu</div>
               </div>
             </button>
-            <button onclick="switchAppMode('word')" class="w-full flex items-center space-x-3 p-2 hover:bg-word-50 rounded-lg transition text-left group">
-              <div class="w-9 h-9 bg-word-800 text-white rounded-lg flex items-center justify-center font-bold text-lg">W</div>
+            <button onclick="switchAppMode('word')" class="w-full flex items-center space-x-3 p-2.5 hover:bg-word-50 rounded-lg transition text-left">
+              <div class="w-8 h-8 bg-word-800 text-white rounded-lg flex items-center justify-center font-bold text-base">W</div>
               <div>
                 <div class="font-bold text-sm">Microsoft Word</div>
                 <div class="text-[11px] text-slate-500">Soạn thảo Văn bản A4</div>
@@ -192,123 +170,113 @@
         </div>
       </div>
 
-      <div class="flex items-center space-x-2">
-        <div id="appBadgeIcon" class="w-7 h-7 bg-white text-excel-800 rounded flex items-center justify-center font-extrabold text-lg shadow-sm">X</div>
-        <div class="flex items-center space-x-2">
-          <input id="workbookTitle" type="text" value="Sổ tính Excel không tên.xlsx" class="bg-transparent font-semibold text-sm hover:bg-white/20 px-2 py-0.5 rounded focus:bg-white focus:text-slate-900 focus:outline-none transition-colors text-white" />
-          <span id="savedTag" class="text-xs bg-black/20 text-white/90 px-1.5 py-0.5 rounded font-mono">Đã lưu tự động</span>
-        </div>
+      <!-- App Title -->
+      <div class="flex items-center space-x-2 overflow-hidden">
+        <div id="appBadgeIcon" class="w-7 h-7 bg-white text-excel-800 rounded flex items-center justify-center font-extrabold text-sm shadow-sm flex-shrink-0">X</div>
+        <input id="workbookTitle" type="text" value="Sổ tính Excel.xlsx" class="bg-transparent font-semibold text-xs md:text-sm hover:bg-white/20 px-1.5 py-0.5 rounded focus:bg-white focus:text-slate-900 focus:outline-none transition-colors text-white truncate max-w-[140px] sm:max-w-[200px] md:max-w-none" />
       </div>
     </div>
 
-    <!-- Quick Action Toolbar -->
-    <div class="flex items-center space-x-1 text-xs">
+    <!-- Right Header Actions (Responsive Icons on Mobile) -->
+    <div class="flex items-center space-x-1 text-xs flex-shrink-0">
       <div id="excelQuickActions" class="flex items-center space-x-1">
-        <button onclick="newWorkbook()" title="Tạo sổ tính mới" class="p-1.5 hover:bg-white/20 rounded transition font-medium"><i class="fa-solid fa-file-circle-plus"></i> Sổ mới</button>
-        <button onclick="triggerFileInput()" title="Mở file Excel / CSV" class="p-1.5 hover:bg-white/20 rounded transition"><i class="fa-solid fa-folder-open"></i> Mở</button>
-        <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileImport(event)" />
-        
-        <button onclick="exportToXLSX()" title="Tải xuống Excel (.xlsx)" class="p-1.5 hover:bg-white/20 rounded transition text-emerald-300 font-bold"><i class="fa-solid fa-file-excel mr-1"></i> Xuất XLSX</button>
-        <button onclick="exportToCSV()" title="Tải xuống CSV" class="p-1.5 hover:bg-white/20 rounded transition"><i class="fa-solid fa-file-csv"></i> CSV</button>
-        
-        <div class="h-4 w-px bg-white/30 mx-1"></div>
-        <button onclick="loadSampleDataset('sales')" title="Nạp dữ liệu mẫu Excel" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-2.5 py-1 rounded shadow-sm transition flex items-center gap-1">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> Mẫu Excel
+        <button onclick="newWorkbook()" title="Tạo sổ mới" class="p-2 sm:px-2.5 sm:py-1 hover:bg-white/20 rounded transition font-medium flex items-center gap-1">
+          <i class="fa-solid fa-file-circle-plus"></i> <span class="hidden sm:inline">Sổ mới</span>
+        </button>
+        <button onclick="exportToXLSX()" title="Tải xuống Excel" class="p-2 sm:px-2.5 sm:py-1 hover:bg-white/20 rounded transition text-emerald-300 font-bold flex items-center gap-1">
+          <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Xuất XLSX</span>
+        </button>
+        <button onclick="loadSampleDataset('sales')" title="Dữ liệu mẫu" class="p-2 sm:px-2.5 sm:py-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded shadow-sm transition flex items-center gap-1">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span class="hidden md:inline">Mẫu Excel</span>
         </button>
       </div>
 
-      <div id="wordQuickActions" class="hidden flex items-center space-x-1">
-        <button onclick="newWordDocument()" title="Tạo văn bản Word mới" class="p-1.5 hover:bg-white/20 rounded transition"><i class="fa-solid fa-file-circle-plus"></i></button>
-        <button onclick="exportWordDocx()" title="Tải xuống Word (.docx)" class="p-1.5 hover:bg-white/20 rounded transition text-sky-200 font-bold"><i class="fa-solid fa-file-word mr-1"></i> Xuất DOCX</button>
-      </div>
-
       <div class="h-4 w-px bg-white/30 mx-1"></div>
-      <button onclick="saveActiveData()" title="Lưu dữ liệu (Ctrl+S)" class="p-1.5 hover:bg-white/20 rounded transition"><i class="fa-solid fa-floppy-disk"></i></button>
-      <button onclick="toggleDarkMode()" title="Chế độ Tối" class="p-1.5 hover:bg-white/20 rounded transition"><i class="fa-solid fa-moon"></i></button>
+      <button onclick="saveActiveData()" title="Lưu dữ liệu" class="p-2 hover:bg-white/20 rounded transition"><i class="fa-solid fa-floppy-disk"></i></button>
+      <button onclick="toggleDarkMode()" title="Chế độ Tối" class="p-2 hover:bg-white/20 rounded transition"><i class="fa-solid fa-moon"></i></button>
     </div>
   </header>
 
-  <!-- EXCEL WORKSPACE -->
+  <!-- ==================== EXCEL WORKSPACE ==================== -->
   <div id="excelWorkspace" class="flex-1 flex flex-col overflow-hidden">
-    <nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center px-2 z-20">
+    <!-- RIBBON TABS (Touch Scroll) -->
+    <nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center px-2 z-20 horizontal-scroll-touch">
       <div class="flex space-x-1">
-        <button onclick="switchRibbonTab('home')" id="tab-home" class="ribbon-tab active">Trang chủ (Home)</button>
-        <button onclick="switchRibbonTab('insert')" id="tab-insert" class="ribbon-tab">Chèn (Insert)</button>
-        <button onclick="switchRibbonTab('formulas')" id="tab-formulas" class="ribbon-tab">Công thức (Formulas)</button>
+        <button onclick="switchRibbonTab('home')" id="tab-home" class="ribbon-tab active">Trang chủ</button>
+        <button onclick="switchRibbonTab('insert')" id="tab-insert" class="ribbon-tab">Chèn</button>
+        <button onclick="switchRibbonTab('formulas')" id="tab-formulas" class="ribbon-tab">Công thức</button>
       </div>
     </nav>
 
-    <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-2 shadow-inner z-20 text-xs min-h-[64px] flex items-center overflow-x-auto">
-      <div id="panel-home" class="ribbon-panel flex items-center space-x-4">
-        <div class="flex flex-col items-center border-r border-slate-200 dark:border-slate-700 pr-3">
+    <!-- RIBBON TOOLBAR (Horizontal Mobile Touch Scroll) -->
+    <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-2 shadow-inner z-20 text-xs min-h-[58px] flex items-center horizontal-scroll-touch">
+      <div id="panel-home" class="ribbon-panel flex items-center space-x-3 flex-nowrap">
+        
+        <!-- Font Actions -->
+        <div class="flex flex-col items-center border-r border-slate-200 dark:border-slate-700 pr-3 flex-shrink-0">
           <div class="flex items-center space-x-1 mb-1">
-            <button onclick="toggleStyle('fontWeight', 'bold', 'normal')" title="In đậm (Ctrl+B)" class="w-6 h-6 hover:bg-slate-200 rounded font-bold border">B</button>
-            <button onclick="toggleStyle('fontStyle', 'italic', 'normal')" title="In nghiêng (Ctrl+I)" class="w-6 h-6 hover:bg-slate-200 rounded italic font-serif border">I</button>
-            <button onclick="toggleStyle('textDecoration', 'underline', 'none')" title="Gạch chân (Ctrl+U)" class="w-6 h-6 hover:bg-slate-200 rounded underline border">U</button>
+            <button onclick="toggleStyle('fontWeight', 'bold', 'normal')" title="In đậm" class="w-7 h-7 hover:bg-slate-200 rounded font-bold border border-slate-300 dark:border-slate-700">B</button>
+            <button onclick="toggleStyle('fontStyle', 'italic', 'normal')" title="In nghiêng" class="w-7 h-7 hover:bg-slate-200 rounded italic font-serif border border-slate-300 dark:border-slate-700">I</button>
+            <button onclick="toggleStyle('textDecoration', 'underline', 'none')" title="Gạch chân" class="w-7 h-7 hover:bg-slate-200 rounded underline border border-slate-300 dark:border-slate-700">U</button>
             
-            <label title="Màu chữ" class="w-6 h-6 hover:bg-slate-200 rounded border flex items-center justify-center cursor-pointer relative">
-              <i class="fa-solid fa-font text-xs"></i>
-              <input type="color" onchange="applyStyle('color', this.value)" class="absolute opacity-0 w-0 h-0" />
-            </label>
-            <label title="Màu nền Ô" class="w-6 h-6 hover:bg-slate-200 rounded border flex items-center justify-center cursor-pointer relative bg-amber-100">
+            <label title="Màu nền Ô" class="w-7 h-7 hover:bg-slate-200 rounded border border-slate-300 dark:border-slate-700 flex items-center justify-center cursor-pointer bg-amber-100 relative">
               <i class="fa-solid fa-fill-drip text-xs text-amber-700"></i>
               <input type="color" value="#ffffff" onchange="applyStyle('backgroundColor', this.value)" class="absolute opacity-0 w-0 h-0" />
             </label>
           </div>
-          <span class="text-[10px] text-slate-400 font-semibold mt-1">Phông chữ</span>
+          <span class="text-[10px] text-slate-400 font-semibold">Phông chữ</span>
         </div>
 
-        <div class="flex flex-col items-center border-r border-slate-200 dark:border-slate-700 pr-3">
+        <!-- Alignments -->
+        <div class="flex flex-col items-center border-r border-slate-200 dark:border-slate-700 pr-3 flex-shrink-0">
           <div class="flex items-center space-x-1 mb-1">
-            <button onclick="applyStyle('textAlign', 'left')" title="Căn trái" class="w-6 h-6 hover:bg-slate-200 rounded"><i class="fa-solid fa-align-left text-[10px]"></i></button>
-            <button onclick="applyStyle('textAlign', 'center')" title="Căn giữa" class="w-6 h-6 hover:bg-slate-200 rounded"><i class="fa-solid fa-align-center text-[10px]"></i></button>
-            <button onclick="applyStyle('textAlign', 'right')" title="Căn phải" class="w-6 h-6 hover:bg-slate-200 rounded"><i class="fa-solid fa-align-right text-[10px]"></i></button>
+            <button onclick="applyStyle('textAlign', 'left')" class="w-7 h-7 hover:bg-slate-200 rounded border border-slate-300 dark:border-slate-700"><i class="fa-solid fa-align-left text-xs"></i></button>
+            <button onclick="applyStyle('textAlign', 'center')" class="w-7 h-7 hover:bg-slate-200 rounded border border-slate-300 dark:border-slate-700"><i class="fa-solid fa-align-center text-xs"></i></button>
+            <button onclick="applyStyle('textAlign', 'right')" class="w-7 h-7 hover:bg-slate-200 rounded border border-slate-300 dark:border-slate-700"><i class="fa-solid fa-align-right text-xs"></i></button>
           </div>
-          <span class="text-[10px] text-slate-400 font-semibold mt-1">Căn chỉnh</span>
+          <span class="text-[10px] text-slate-400 font-semibold">Căn chỉnh</span>
         </div>
 
-        <div class="flex flex-col items-center">
-          <button onclick="autoSum()" title="Tự động tính tổng =SUM()" class="px-3 py-1.5 bg-excel-800 text-white rounded font-bold hover:bg-excel-900 flex items-center gap-1.5 shadow-sm">
-            <i class="fa-solid fa-sigma"></i> AutoSum (Tính Tổng Dọc/Ngang)
+        <!-- AutoSum -->
+        <div class="flex flex-col items-center flex-shrink-0">
+          <button onclick="autoSum()" class="px-3 py-1.5 bg-excel-800 text-white rounded font-bold hover:bg-excel-900 flex items-center gap-1.5 shadow-sm text-xs">
+            <i class="fa-solid fa-sigma"></i> AutoSum (Tính Tổng)
           </button>
-          <span class="text-[10px] text-slate-400 font-semibold mt-1">Công thức nhanh</span>
+          <span class="text-[10px] text-slate-400 font-semibold">Công thức nhanh</span>
         </div>
       </div>
     </div>
 
-    <!-- FORMULA BAR & NAME BOX -->
-    <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 py-1 flex items-center space-x-2 z-10 text-xs shadow-sm">
-      <input id="nameBox" type="text" value="A1" onkeydown="handleNameBoxKey(event)" class="w-20 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-center font-mono font-bold" />
-      <span class="font-serif italic font-extrabold text-slate-500 text-sm px-1">fx</span>
-      <div class="h-4 w-px bg-slate-300"></div>
-      <input id="formulaInput" type="text" placeholder="Nhập giá trị hoặc công thức (ví dụ: =SUM(A1:A5))" oninput="handleFormulaInput(this.value)" onkeydown="handleFormulaKeydown(event)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-1 font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:border-excel-800" />
+    <!-- FORMULA BAR (Mobile Optimized Input) -->
+    <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-2 sm:px-3 py-1.5 flex items-center space-x-1.5 z-10 text-xs shadow-xs">
+      <input id="nameBox" type="text" value="A1" onkeydown="handleNameBoxKey(event)" class="w-14 sm:w-20 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-1 text-center font-mono font-bold flex-shrink-0" />
+      <span class="font-serif italic font-extrabold text-slate-500 text-sm px-0.5 flex-shrink-0">fx</span>
+      <div class="h-4 w-px bg-slate-300 flex-shrink-0"></div>
+      <input id="formulaInput" type="text" placeholder="Nhập giá trị hoặc công thức (=SUM...)" oninput="handleFormulaInput(this.value)" onkeydown="handleFormulaKeydown(event)" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-2.5 py-1 font-mono text-slate-900 dark:text-slate-100 focus:outline-none focus:border-excel-800 text-xs sm:text-sm" />
     </div>
 
-    <!-- SPREADSHEET GRID CANVAS CONTAINER -->
-    <main class="flex-1 relative overflow-auto bg-slate-200 dark:bg-slate-950 p-0" id="gridContainer" style="min-height: 400px;">
+    <!-- SPREADSHEET GRID CANVAS -->
+    <main class="flex-1 relative overflow-auto bg-slate-200 dark:bg-slate-950 p-0" id="gridContainer">
       <div id="spreadsheetGrid" class="relative bg-white dark:bg-slate-900 border-collapse min-w-full"></div>
     </main>
 
-    <!-- STATUS BAR -->
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between px-3 py-1 text-xs z-30">
-      <div class="flex items-center space-x-1 overflow-x-auto">
-        <button onclick="addNewSheet()" title="Thêm Trang tính mới" class="w-7 h-7 hover:bg-slate-100 rounded flex items-center justify-center text-excel-800 font-bold text-base"><i class="fa-solid fa-plus"></i></button>
+    <!-- MOBILE STATUS BAR & SHEET TABS -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between px-2 py-1.5 text-xs z-30">
+      <div class="flex items-center space-x-1 horizontal-scroll-touch max-w-[50%] sm:max-w-none">
+        <button onclick="addNewSheet()" title="Thêm Sheet mới" class="w-7 h-7 hover:bg-slate-100 rounded flex items-center justify-center text-excel-800 font-bold text-base flex-shrink-0"><i class="fa-solid fa-plus"></i></button>
         <div id="sheetTabsList" class="flex items-center space-x-1"></div>
       </div>
-      <div class="flex items-center space-x-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
-        <div>Sẵn sàng</div>
-        <div id="statusSelectionRange" class="font-bold text-slate-700 dark:text-slate-300">Ô chọn: A1</div>
-        <div id="statusCount">Đếm: 1</div>
-        <div id="statusSum">Tổng: 0</div>
-        <div id="statusAverage">Trung bình: 0</div>
+      <div class="flex items-center space-x-2 sm:space-x-4 text-slate-500 dark:text-slate-400 font-mono text-[10px] sm:text-[11px] flex-shrink-0">
+        <div id="statusSelectionRange" class="font-bold text-slate-700 dark:text-slate-300">Ô: A1</div>
+        <div id="statusSum" class="font-bold text-excel-800 dark:text-emerald-400">Tổng: 0</div>
       </div>
     </footer>
   </div>
 
   <!-- WORD WORKSPACE -->
   <div id="wordWorkspace" class="hidden flex-1 flex flex-col overflow-hidden bg-slate-200 dark:bg-slate-950">
-    <main class="flex-1 overflow-auto p-6 flex justify-center">
-      <div id="wordDocumentCanvas" contenteditable="true" class="a4-paper shadow-2xl focus:outline-none">
+    <main class="flex-1 overflow-auto p-4 sm:p-6 flex justify-center">
+      <div id="wordDocumentCanvas" contenteditable="true" class="a4-paper shadow-2xl focus:outline-none max-w-full">
         <h1>Văn bản Word</h1>
         <p>Bắt đầu soạn thảo...</p>
       </div>
@@ -348,25 +316,23 @@
       document.getElementById('appSwitcherDropdown').classList.add('hidden');
       if (mode === 'excel') {
         document.getElementById('excelQuickActions').classList.remove('hidden');
-        document.getElementById('wordQuickActions').classList.add('hidden');
         document.getElementById('excelWorkspace').classList.remove('hidden');
         document.getElementById('wordWorkspace').classList.add('hidden');
       } else {
         document.getElementById('excelQuickActions').classList.add('hidden');
-        document.getElementById('wordQuickActions').classList.remove('hidden');
         document.getElementById('excelWorkspace').classList.add('hidden');
         document.getElementById('wordWorkspace').classList.remove('hidden');
       }
     }
 
     /* ==========================================================================
-       AUTHENTIC EXCEL ENGINE (GUARANTEED GRID RENDER & PERSISTENCE SAFETY)
+       AUTHENTIC EXCEL ENGINE (MOBILE TOUCH OPTIMIZED)
        ========================================================================== */
     const DEFAULT_ROWS = 50;
     const DEFAULT_COLS = 20;
 
     let workbook = {
-      title: "Sổ tính Excel không tên.xlsx",
+      title: "Sổ tính Excel.xlsx",
       activeSheetIndex: 0,
       sheets: [
         { id: "sheet_1", name: "Sheet1", data: {}, colWidths: {}, rowHeights: {} }
@@ -395,7 +361,7 @@
       if (confirm('Tạo sổ tính mới và nạp dữ liệu chuẩn?')) {
         localStorage.removeItem('m365_excel_workbook');
         workbook = {
-          title: "Sổ tính Excel không tên.xlsx",
+          title: "Sổ tính Excel.xlsx",
           activeSheetIndex: 0,
           sheets: [{ id: "sheet_1", name: "Sheet1", data: {}, colWidths: {}, rowHeights: {} }]
         };
@@ -407,11 +373,6 @@
       try {
         localStorage.setItem('m365_excel_workbook', JSON.stringify(workbook));
         localStorage.setItem('m365_word_content', document.getElementById('wordDocumentCanvas').innerHTML);
-        const savedTag = document.getElementById('savedTag');
-        if (savedTag) {
-          savedTag.textContent = 'Đã lưu vừa xong';
-          setTimeout(() => { savedTag.textContent = 'Đã lưu tự động'; }, 2000);
-        }
       } catch (err) {}
     }
 
@@ -425,7 +386,6 @@
           }
         }
       } catch (err) {
-        console.error("Load Saved Data error:", err);
         localStorage.removeItem('m365_excel_workbook');
       }
     }
@@ -454,7 +414,7 @@
     function getActiveSheet() {
       if (!workbook || !workbook.sheets || !workbook.sheets[workbook.activeSheetIndex]) {
         workbook = {
-          title: "Sổ tính Excel không tên.xlsx",
+          title: "Sổ tính Excel.xlsx",
           activeSheetIndex: 0,
           sheets: [{ id: "sheet_1", name: "Sheet1", data: {}, colWidths: {}, rowHeights: {} }]
         };
@@ -466,7 +426,6 @@
       return sheet;
     }
 
-    /* SAFE & DEFENSIVE GRID RENDERER */
     function initSpreadsheetGrid() {
       try {
         const gridContainer = document.getElementById('spreadsheetGrid');
@@ -474,22 +433,22 @@
         const sheet = getActiveSheet();
         let html = '<table class="border-collapse select-none cursor-default font-sans w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">';
 
-        html += '<thead><tr class="h-6">';
+        html += '<thead><tr class="h-7">';
         html += `<th onclick="selectAllCells()" class="col-header w-10 text-center border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 text-slate-500 font-mono text-[11px] sticky top-0 left-0 z-30 cursor-pointer">#</th>`;
         
         for (let c = 0; c < DEFAULT_COLS; c++) {
           const colName = colIndexToName(c);
-          const colW = (sheet.colWidths && sheet.colWidths[c]) ? sheet.colWidths[c] : 90;
-          html += `<th id="col-hdr-${c}" onclick="selectColumn(${c})" class="col-header border border-slate-300 dark:border-slate-700 sticky top-0 z-20 text-center relative cursor-pointer" style="width: ${colW}px; min-width: 50px;">
+          const colW = (sheet.colWidths && sheet.colWidths[c]) ? sheet.colWidths[c] : 85;
+          html += `<th id="col-hdr-${c}" onclick="selectColumn(${c})" class="col-header border border-slate-300 dark:border-slate-700 sticky top-0 z-20 text-center relative cursor-pointer" style="width: ${colW}px; min-width: 65px;">
             <span>${colName}</span>
           </th>`;
         }
         html += '</tr></thead><tbody>';
 
         for (let r = 0; r < DEFAULT_ROWS; r++) {
-          const rowH = (sheet.rowHeights && sheet.rowHeights[r]) ? sheet.rowHeights[r] : 24;
+          const rowH = (sheet.rowHeights && sheet.rowHeights[r]) ? sheet.rowHeights[r] : 26;
           html += `<tr style="height: ${rowH}px;">`;
-          html += `<td id="row-hdr-${r}" onclick="selectRow(${r})" class="row-header border border-slate-300 dark:border-slate-700 sticky left-0 z-20 text-center font-mono text-[11px] relative cursor-pointer" style="width: 40px;">
+          html += `<td id="row-hdr-${r}" onclick="selectRow(${r})" class="row-header border border-slate-300 dark:border-slate-700 sticky left-0 z-20 text-center font-mono text-[11px] relative cursor-pointer" style="width: 36px;">
             <span>${r + 1}</span>
           </td>`;
 
@@ -503,9 +462,9 @@
             html += `<td id="cell-${r}-${c}" 
               data-r="${r}" data-c="${c}" 
               onmousedown="handleCellMouseDown(event, ${r}, ${c})"
-              onmouseenter="handleCellMouseEnter(${r}, ${c})"
+              ontouchstart="handleCellMouseDown(event, ${r}, ${c})"
               ondblclick="startCellEditing(${r}, ${c}, null, true)"
-              class="grid-cell border border-slate-200 dark:border-slate-800 px-1.5 align-middle"
+              class="grid-cell border border-slate-200 dark:border-slate-800 px-2 align-middle"
               style="${styleStr}">
               <span class="cell-content">${escapeHTML(formattedVal)}</span>
             </td>`;
@@ -542,9 +501,7 @@
     }
 
     function handleCellMouseDown(e, r, c) {
-      if (e.button !== 0) return;
       if (isEditing) finishCellEditing(true);
-
       isMouseDown = true;
       activeCell = { r, c };
       selectionRange = { startR: r, startC: c, endR: r, endC: c };
@@ -561,6 +518,7 @@
     }
 
     document.addEventListener('mouseup', () => { isMouseDown = false; });
+    document.addEventListener('touchend', () => { isMouseDown = false; });
 
     function updateSelectionUI() {
       document.querySelectorAll('.grid-cell').forEach(el => {
@@ -583,7 +541,6 @@
               cellEl.classList.add('active-cell');
               const handle = document.createElement('div');
               handle.className = 'fill-handle';
-              handle.onmousedown = (e) => { e.stopPropagation(); startDragFill(e); };
               cellEl.appendChild(handle);
             }
           }
@@ -591,7 +548,7 @@
       }
     }
 
-    /* CELL EDITING WITH ENTER MOVE DOWN */
+    /* CELL EDITING WITH MOBILE NUMERIC INPUT FIX */
     function startCellEditing(r, c, initialChar = null, appendMode = false) {
       if (isEditing) finishCellEditing(true);
 
@@ -617,14 +574,12 @@
       }
 
       editor.id = 'activeCellEditor';
-      editor.onmousedown = (e) => e.stopPropagation();
-
       editor.onkeydown = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           editor.onblur = null;
           finishCellEditing(true);
-          moveActiveCell(e.shiftKey ? -1 : 1, 0); // Move down
+          moveActiveCell(e.shiftKey ? -1 : 1, 0);
         } else if (e.key === 'Tab') {
           e.preventDefault();
           editor.onblur = null;
@@ -638,7 +593,6 @@
       };
 
       editor.onblur = () => { finishCellEditing(true); };
-
       cellEl.appendChild(editor);
 
       setTimeout(() => {
@@ -707,13 +661,11 @@
       }
     }
 
-    /* FORMULA EVALUATOR: RELIABLE STRING/NUMBER PARSING FOR VERTICAL SUM */
     function evaluateFormula(formulaStr, targetR, targetC) {
       try {
         let expr = formulaStr.substring(1).trim();
         if (!expr) return '';
 
-        // Replace Ranges (A1:A10)
         expr = expr.replace(/([A-Z]+[0-9]+)\s*:\s*([A-Z]+[0-9]+)/gi, (match, startCell, endCell) => {
           const start = cellNameToCoords(startCell);
           const end = cellNameToCoords(endCell);
@@ -737,7 +689,6 @@
           return `[${vals.join(',')}]`;
         });
 
-        // Replace Single Cell References (A1)
         expr = expr.replace(/\b([A-Z]+[0-9]+)\b/gi, (match, cellRef) => {
           const coords = cellNameToCoords(cellRef);
           if (!coords) return 0;
@@ -801,10 +752,8 @@
         }
       }
 
-      document.getElementById('statusSelectionRange').textContent = `Ô chọn: ${coordsToCellName(minR, minC)}`;
-      document.getElementById('statusCount').textContent = `Đếm: ${count}`;
+      document.getElementById('statusSelectionRange').textContent = `Ô: ${coordsToCellName(minR, minC)}`;
       document.getElementById('statusSum').textContent = `Tổng: ${numericCount ? sum.toLocaleString('vi-VN') : 0}`;
-      document.getElementById('statusAverage').textContent = `Trung bình: ${numericCount ? (sum / numericCount).toFixed(2) : 0}`;
     }
 
     function handleFormulaInput(val) {
@@ -833,7 +782,6 @@
       }
     }
 
-    /* AUTOSUM FUNCTIONALITY */
     function autoSum() {
       const minR = Math.min(selectionRange.startR, selectionRange.endR);
       const maxR = Math.max(selectionRange.startR, selectionRange.endR);
@@ -867,7 +815,6 @@
       saveActiveData();
     }
 
-    /* KEYBOARD NAVIGATION & CELL SELECTION SHORTCUTS */
     function setupNativeExcelShortcuts() {
       document.addEventListener('keydown', (e) => {
         if (e.ctrlKey || e.metaKey) {
@@ -922,23 +869,6 @@
       if (cellEl) cellEl.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
 
-    function clearSelectionContents() {
-      const sheet = getActiveSheet();
-      const minR = Math.min(selectionRange.startR, selectionRange.endR);
-      const maxR = Math.max(selectionRange.startR, selectionRange.endR);
-      const minC = Math.min(selectionRange.startC, selectionRange.endC);
-      const maxC = Math.max(selectionRange.startC, selectionRange.endC);
-
-      for (let r = minR; r <= maxR; r++) {
-        for (let c = minC; c <= maxC; c++) {
-          delete sheet.data[`${r}_${c}`];
-        }
-      }
-      refreshGridValues();
-      updateFormulaBarAndStatus();
-      saveActiveData();
-    }
-
     function applyStyle(prop, val) {
       const sheet = getActiveSheet();
       const minR = Math.min(selectionRange.startR, selectionRange.endR);
@@ -970,7 +900,7 @@
       const container = document.getElementById('sheetTabsList');
       container.innerHTML = workbook.sheets.map((sheet, index) => {
         const isActive = index === workbook.activeSheetIndex;
-        return `<div onclick="switchSheet(${index})" class="flex items-center space-x-2 px-3 py-1 rounded-t border-t-2 text-xs font-semibold cursor-pointer ${isActive ? 'bg-excel-800 text-white border-excel-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-600'}">
+        return `<div onclick="switchSheet(${index})" class="flex items-center space-x-2 px-3 py-1 rounded-t border-t-2 text-xs font-semibold cursor-pointer flex-shrink-0 ${isActive ? 'bg-excel-800 text-white border-excel-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-600'}">
           <span>${sheet.name}</span>
         </div>`;
       }).join('');
@@ -1029,43 +959,6 @@
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), sheet.name);
       });
       XLSX.writeFile(wb, document.getElementById('workbookTitle').value || 'Workbook.xlsx');
-    }
-
-    function exportToCSV() {
-      const rows = [];
-      for (let r = 0; r < DEFAULT_ROWS; r++) {
-        const row = [];
-        for (let c = 0; c < DEFAULT_COLS; c++) row.push(`"${getEvaluatedCellValue(r, c)}"` );
-        rows.push(row.join(','));
-      }
-      const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `Export.csv`;
-      link.click();
-    }
-
-    function triggerFileInput() { document.getElementById('fileInput').click(); }
-    function handleFileImport(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const wb = XLSX.read(new Uint8Array(evt.target.result), { type: 'array' });
-        workbook.sheets = wb.SheetNames.map(name => {
-          const json = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1 });
-          const sheetData = {};
-          json.forEach((row, r) => row.forEach((cellVal, c) => sheetData[`${r}_${c}`] = { v: cellVal }));
-          return { id: `sheet_${Date.now()}_${name}`, name, data: sheetData, colWidths: {}, rowHeights: {} };
-        });
-        workbook.activeSheetIndex = 0;
-        document.getElementById('workbookTitle').value = file.name;
-        renderSheetTabs();
-        initSpreadsheetGrid();
-        updateFormulaBarAndStatus();
-        saveActiveData();
-      };
-      reader.readAsArrayBuffer(file);
     }
 
     function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
