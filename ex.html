@@ -103,7 +103,7 @@
       </div>
 
       <!-- Grid Table Container (Compact max-height on mobile so 3 buttons NEVER get pushed down) -->
-      <div class="max-h-[36vh] sm:max-h-[45vh] lg:max-h-[50vh] overflow-y-auto p-2 sm:p-3 relative flex-1">
+      <div class="max-h-[38vh] sm:max-h-[48vh] lg:max-h-[55vh] overflow-y-auto p-2 sm:p-3 relative flex-1">
         <div class="border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden shadow-xs">
           <table class="w-full text-left border-collapse">
             <thead class="sticky top-0 z-10 bg-slate-100 dark:bg-slate-800">
@@ -493,8 +493,10 @@
     }
 
     function closeModal() {
-      const modal.classList.add("opacity-0", "pointer-events-none");
-      modalContent.classList.add("scale-95");
+      const modal = document.getElementById("mergeModal");
+      const modalContent = document.getElementById("mergeModalContent");
+      if (modal) modal.classList.add("opacity-0", "pointer-events-none");
+      if (modalContent) modalContent.classList.add("scale-95");
     }
   </script>
 </body>
