@@ -65,7 +65,9 @@
 
   <!-- ==================== TOP HEADER ==================== -->
   <header class="bg-excel-800 text-white flex items-center justify-between px-3 sm:px-4 py-2 shadow-md z-30 flex-shrink-0">
-    <div class="flex items-center space-x-2.5 overflow-hidden">
+    
+    <!-- CLICK BRAND TITLE CLUSTER TO RELOAD PAGE (F5) -->
+    <div onclick="location.reload()" title="Nhấp để tải lại trang (F5)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer hover:opacity-90 active:scale-95 transition-all">
       <div class="w-8 h-8 bg-white text-excel-800 rounded-lg flex items-center justify-center font-extrabold text-sm shadow-sm flex-shrink-0">
         <i class="fa-solid fa-calculator"></i>
       </div>
@@ -113,7 +115,7 @@
                     <span id="currentTotal" class="font-mono font-extrabold text-excel-800 dark:text-emerald-400 text-sm sm:text-base bg-excel-50 dark:bg-slate-800 border border-excel-200 dark:border-slate-700 px-2 py-0.5 rounded shadow-xs">0</span>
                   </div>
                 </th>
-                <th class="py-2 px-2 text-center grid-table-th w-14">Xóa</th>
+                <th class="py-2 px-2 text-center grid-table-th w-20">THAO TÁC</th>
               </tr>
             </thead>
             <tbody id="inputTableBody" class="divide-y divide-slate-200 dark:divide-slate-800">
@@ -244,9 +246,14 @@
                  onkeydown="handleKeyDown(event, this)">
         </td>
         <td class="py-1 px-2 text-center">
-          <button onclick="deleteRow(this)" class="p-1.5 text-slate-400 hover:text-rose-600 rounded transition" title="Xóa dòng">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
+          <div class="flex items-center justify-center space-x-1">
+            <button onclick="addRow(true)" class="p-1.5 bg-emerald-100 dark:bg-slate-800 text-excel-800 dark:text-emerald-400 hover:bg-emerald-200 rounded font-bold text-xs" title="Thêm dòng mới bên dưới">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <button onclick="deleteRow(this)" class="p-1.5 text-slate-400 hover:text-rose-600 rounded transition" title="Xóa dòng này">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
         </td>
       `;
       tableBody.appendChild(tr);
