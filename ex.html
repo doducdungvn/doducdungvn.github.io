@@ -90,7 +90,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 overflow-hidden">
     
     <!-- LEFT PANEL: CURRENT INPUT GRID (7 cols) -->
-    <section class="lg:col-span-7 flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-1 max-h-[85vh] lg:max-h-none">
+    <section class="lg:col-span-7 flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-1 min-h-[260px] lg:min-h-0">
       
       <!-- Card Header -->
       <div class="px-3 sm:px-4 py-2 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0 z-20">
@@ -100,8 +100,8 @@
         </div>
       </div>
 
-      <!-- Grid Table Container (Independently Scrollable Table Area) -->
-      <div class="flex-1 overflow-y-auto p-2 sm:p-3 relative min-h-[180px]">
+      <!-- Grid Table Container (Scrollable Table Area) -->
+      <div class="flex-1 overflow-y-auto p-2 sm:p-3 relative">
         <div class="border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden shadow-xs">
           <table class="w-full text-left border-collapse">
             <thead class="sticky top-0 z-10 bg-slate-100 dark:bg-slate-800">
@@ -122,32 +122,35 @@
           </table>
         </div>
       </div>
+    </section>
 
-      <!-- PERMANENT 3 ACTION BUTTONS FOOTER BAR (LOCKED AT BOTTOM OF CARD - NEVER SCROLLS AWAY) -->
-      <div class="p-2 sm:p-3 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex-shrink-0 z-20">
+    <!-- RIGHT PANEL: SPLIT HISTORY CARD WITH 3 ACTION BUTTONS AT TOP (5 cols) -->
+    <section class="lg:col-span-5 flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-1 min-h-[220px] lg:min-h-0">
+      
+      <!-- 3 ACTION BUTTONS INSIDE HISTORY CARD CONTAINER (PLACED ABOVE 'LỊCH SỬ LẦN TÁCH') -->
+      <div class="p-2 sm:p-2.5 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 flex-shrink-0 z-20">
         <div class="grid grid-cols-3 gap-2">
-          <button onclick="addRow(true)" class="py-2.5 px-2 bg-excel-800 hover:bg-excel-900 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
+          <button onclick="addRow(true)" class="py-2 px-2 bg-excel-800 hover:bg-excel-900 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
             <i class="fa-solid fa-plus-circle"></i> + Dòng
           </button>
-          <button onclick="splitGroup()" title="Phím tắt: Ctrl + S" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
+          <button onclick="splitGroup()" title="Phím tắt: Ctrl + S" class="py-2 px-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
             <i class="fa-solid fa-scissors"></i> Lưu Tách
           </button>
-          <button onclick="mergeGroups()" title="Phím tắt: Ctrl + A" class="py-2.5 px-2 bg-sky-700 hover:bg-sky-800 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
+          <button onclick="mergeGroups()" title="Phím tắt: Ctrl + A" class="py-2 px-2 bg-sky-700 hover:bg-sky-800 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
             <i class="fa-solid fa-object-group"></i> Gộp
           </button>
         </div>
       </div>
-    </section>
 
-    <!-- RIGHT PANEL: SPLIT HISTORY (5 cols) -->
-    <section class="lg:col-span-5 flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden min-h-[140px] lg:min-h-0">
-      <div class="px-3 sm:px-4 py-2 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <!-- History Header Bar (Directly below 3 Buttons) -->
+      <div class="px-3 sm:px-4 py-2 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0">
         <h2 class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
           <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Lịch Sử Lần Tách
         </h2>
         <span id="historyBadge" class="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full">0 phần</span>
       </div>
 
+      <!-- History Items Scrollable Container -->
       <div id="historyContainer" class="flex-1 overflow-y-auto p-3 space-y-2">
         <div id="emptyHistoryState" class="flex flex-col items-center justify-center h-full text-center py-4 text-slate-400">
           <i class="fa-solid fa-box-open text-2xl text-slate-300 dark:text-slate-700 mb-1"></i>
