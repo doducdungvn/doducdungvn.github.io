@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siêu Trợ Lý Toán Học - Xuân Lâm V20.0 🚀</title>
+  <title>Trợ Lý Học Tập - Xuân Lâm V20.0 🚀</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -74,7 +74,7 @@
       <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
       <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
       
-      <h1 class="text-3xl font-black mb-2 relative z-10 drop-shadow-md">Siêu Trợ Lý Toán Học</h1>
+      <h1 class="text-3xl font-black mb-2 relative z-10 drop-shadow-md">Trợ Lý Học Tập</h1>
       <p class="text-brand-100 font-bold tracking-wider uppercase text-sm relative z-10">Bản Đặc Quyền Xuân Lâm V20.0</p>
       
       <!-- Progress Bar -->
@@ -102,10 +102,16 @@
           <div class="text-sm font-bold text-slate-500">🏆 Điểm số: <span id="scoreText" class="text-brand-600 font-black text-xl">0</span></div>
         </div>
       </div>
-      <button onclick="captureScoreForZalo()" class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-bold px-4 py-2 rounded-xl text-sm transition-colors flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
-        Chụp khoe Ba
-      </button>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="captureScoreForZalo()" class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-bold px-4 py-2 rounded-xl text-sm transition-colors flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
+          Chụp khoe Ba
+        </button>
+        <button onclick="downloadScoreImage()" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold px-4 py-2 rounded-xl text-sm transition-colors flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+          Tải xuống
+        </button>
+      </div>
     </div>
 
     <!-- Main Content -->
@@ -113,12 +119,25 @@
       
       <!-- Menus -->
       <div class="flex flex-col sm:flex-row gap-3 mb-6">
-        <select id="grade" onchange="loadTypes()" class="flex-1 bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all appearance-none cursor-pointer">
+        <select id="subject" onchange="loadGrades()" class="flex-1 bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all appearance-none cursor-pointer">
+          <option value="math" selected>🧮 Toán Học</option>
+          <option value="vietnamese">🇻🇳 Tiếng Việt</option>
+          <option value="english">🇬🇧 Tiếng Anh</option>
+          <option value="science">🔬 Khoa Học & Đời Sống</option>
+        </select>
+        <select id="grade" onchange="updateSubjectsDropdown()" class="flex-1 bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all appearance-none cursor-pointer">
           <option value="1">🎓 Lớp 1</option>
           <option value="2">🎓 Lớp 2</option>
           <option value="3">🎓 Lớp 3</option>
           <option value="4">🎓 Lớp 4</option>
-          <option value="5" selected>🎓 Lớp 5 (Full Logic)</option>
+          <option value="5" selected>🎓 Lớp 5</option>
+          <option value="6">🎓 Lớp 6</option>
+          <option value="7">🎓 Lớp 7</option>
+          <option value="8">🎓 Lớp 8</option>
+          <option value="9">🎓 Lớp 9</option>
+          <option value="10">🎓 Lớp 10</option>
+          <option value="11">🎓 Lớp 11</option>
+          <option value="12">🎓 Lớp 12</option>
         </select>
         <select id="type" onchange="newQuestion()" class="flex-[2] bg-slate-50 border-2 border-slate-200 text-slate-700 font-bold rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-all appearance-none cursor-pointer">
           <!-- Options injected by JS -->
@@ -132,7 +151,10 @@
       </div>
 
       <!-- Answer Input -->
-      <div class="flex flex-col items-center gap-4">
+      <div class="flex flex-col items-center gap-4 w-full">
+        <!-- Start Button Container -->
+        <div id="startContainer" class="w-full flex justify-center"></div>
+
         <input type="text" id="answer" placeholder="Gõ đáp án vào đây..." autocomplete="off" class="w-full max-w-sm text-center text-3xl font-black text-brand-700 placeholder-slate-300 bg-slate-50 border-4 border-slate-200 rounded-2xl py-4 focus:outline-none focus:border-brand-500 focus:bg-white transition-all shadow-inner">
         
         <!-- Feedback Message -->
@@ -155,11 +177,424 @@
 
 <script>
   const dataConfig = {
-      "1": [ {n:"🎲 Trộn tất cả (Lớp 1)", id:"all"}, {n:"➕➖ Cộng trừ phạm vi 100", id:"1_1"}, {n:"🔢 Số liền trước - liền sau", id:"1_2"}, {n:"⚖️ So sánh số (<, >, =)", id:"1_3"} ],
-      "2": [ {n:"🎲 Trộn tất cả (Lớp 2)", id:"all"}, {n:"✖️➗ Bảng nhân/chia (2-5)", id:"2_1"}, {n:"📏 Đo lường (m, dm, cm)", id:"2_2"}, {n:"⏳ Thời gian & Ngày tháng", id:"2_4"} ],
-      "3": [ {n:"🎲 Trộn tất cả (Lớp 3)", id:"all"}, {n:"✖️➗ Nhân/Chia số lớn", id:"3_1"}, {n:"🔲 Chu vi & Diện tích", id:"3_3"}, {n:"🧮 Tính giá trị biểu thức", id:"3_5"} ],
-      "4": [ {n:"🎲 Trộn tất cả (Lớp 4)", id:"all"}, {n:"🧩 Toán đố: Tổng-Hiệu", id:"4_1"}, {n:"⚖️ Đổi Đơn Vị Đa Năng", id:"4_3"}, {n:"📊 Tổng-Tỉ & Hiệu-Tỉ", id:"4_4"}, {n:"🍕 4 phép tính Phân số", id:"4_6"} ],
-      "5": [ {n:"🎲 Trộn tất cả (Lớp 5)", id:"all"}, {n:"⏺️ Số thập phân", id:"5_1"}, {n:"💯 Tỉ số phần trăm", id:"5_2"}, {n:"🚗 Toán chuyển động", id:"5_3"}, {n:"⭕ Hình học: Tròn, Thang", id:"5_4"}, {n:"🧊 Thể tích Siêu Cấp", id:"5_6"} ]
+      "math": {
+          "1": [ {n:"🎲 Trộn tất cả (Lớp 1)", id:"all"}, {n:"➕➖ Cộng trừ phạm vi 100", id:"1_1"}, {n:"🔢 Số liền trước - liền sau", id:"1_2"}, {n:"⚖️ So sánh số (<, >, =)", id:"1_3"} ],
+          "2": [ {n:"🎲 Trộn tất cả (Lớp 2)", id:"all"}, {n:"✖️➗ Bảng nhân/chia (2-5)", id:"2_1"}, {n:"📏 Đo lường (m, dm, cm)", id:"2_2"}, {n:"⏳ Thời gian & Ngày tháng", id:"2_4"} ],
+          "3": [ {n:"🎲 Trộn tất cả (Lớp 3)", id:"all"}, {n:"✖️➗ Nhân/Chia số lớn", id:"3_1"}, {n:"🔲 Chu vi & Diện tích", id:"3_3"}, {n:"🧮 Tính giá trị biểu thức", id:"3_5"} ],
+          "4": [ {n:"🎲 Trộn tất cả (Lớp 4)", id:"all"}, {n:"🧩 Toán đố: Tổng-Hiệu", id:"4_1"}, {n:"⚖️ Đổi Đơn Vị Đa Năng", id:"4_3"}, {n:"📊 Tổng-Tỉ & Hiệu-Tỉ", id:"4_4"}, {n:"🍕 4 phép tính Phân số", id:"4_6"} ],
+          "5": [ {n:"🎲 Trộn tất cả (Lớp 5)", id:"all"}, {n:"⏺️ Số thập phân", id:"5_1"}, {n:"💯 Tỉ số phần trăm", id:"5_2"}, {n:"🚗 Toán chuyển động", id:"5_3"}, {n:"⭕ Hình học: Tròn, Thang", id:"5_4"}, {n:"🧊 Thể tích Siêu Cấp", id:"5_6"} ],
+          "6": [ {n:"🎲 Trộn tất cả (Lớp 6)", id:"all"}, {n:"🧬 Số nguyên & Luỹ thừa", id:"6_1"}, {n:"☘️ Tìm x (Ước & Bội)", id:"6_2"}, {n:"🍕 Rút gọn Phân số", id:"6_3"} ],
+          "7": [ {n:"🎲 Trộn tất cả (Lớp 7)", id:"all"}, {n:"⚖️ Tỉ lệ thức (Tìm x)", id:"7_1"}, {n:"📈 Số vô tỉ & Căn bậc hai", id:"7_2"}, {n:"📐 Góc trong tam giác", id:"7_3"} ],
+          "8": [ {n:"🎲 Trộn tất cả (Lớp 8)", id:"all"}, {n:"🧮 Hằng đẳng thức", id:"8_1"}, {n:"🧬 Phương trình bậc nhất", id:"8_2"}, {n:"📐 Định lý Pythagore", id:"8_3"} ],
+          "9": [ {n:"🎲 Trộn tất cả (Lớp 9)", id:"all"}, {n:"📈 Căn thức bậc hai", id:"9_1"}, {n:"🧬 Hệ phương trình 2 ẩn", id:"9_2"}, {n:"📉 Định lý Vi-ét (Tổng-Tích)", id:"9_3"} ],
+          "10": [ {n:"🎲 Trộn tất cả (Lớp 10)", id:"all"}, {n:"🎯 Tập hợp & Phép toán", id:"10_1"}, {n:"📈 Đỉnh của Parabol", id:"10_2"}, {n:"📐 Tích vô hướng Vectơ", id:"10_3"} ],
+          "11": [ {n:"🎲 Trộn tất cả (Lớp 11)", id:"all"}, {n:"🌀 Lượng giác căn bản", id:"11_1"}, {n:"🔢 Cấp số cộng & nhân", id:"11_2"}, {n:"🎲 Tổ hợp & Xác suất", id:"11_3"} ],
+          "12": [ {n:"🎲 Trộn tất cả (Lớp 12)", id:"all"}, {n:"📈 Tiệm cận & Cực trị", id:"12_1"}, {n:"🗝️ Mũ & Logarit", id:"12_2"}, {n:"🌀 Nguyên hàm & Tích phân", id:"12_3"}, {n:"🧊 Số phức căn bản", id:"12_4"} ]
+      },
+      "vietnamese": {
+          "1": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"✏️ Chính tả phân biệt (ch/tr, s/x...)", id:"vi_1_1"}, {n:"🏷️ Từ chỉ hoạt động/sự vật", id:"vi_1_2"} ],
+          "2": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🏷️ Từ chỉ hoạt động/sự vật/tính chất", id:"vi_2_1"}, {n:"🌿 Đặt câu hỏi và trả lời", id:"vi_2_2"} ],
+          "3": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔄 Từ đồng nghĩa & trái nghĩa", id:"vi_3_1"}, {n:"💬 So sánh & nhân hóa", id:"vi_3_2"} ],
+          "4": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📖 Thành ngữ & Tục ngữ", id:"vi_4_1"}, {n:"🏗️ Cấu tạo từ (Từ ghép/láy)", id:"vi_4_2"} ],
+          "5": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🏗️ Thành phần câu (Chủ/Vị ngữ)", id:"vi_5_1"}, {n:"💬 Từ nhiều nghĩa/Đồng âm", id:"vi_5_2"} ],
+          "6": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"💬 Biện pháp tu từ ẩn dụ/hoán dụ", id:"vi_6_1"}, {n:"📖 Văn học dân gian & Truyền thuyết", id:"vi_6_2"} ],
+          "7": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"Sino-Vietnamese Từ Hán Việt", id:"vi_7_1"}, {n:"📖 Ca dao & Dân ca", id:"vi_7_2"} ],
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🏗️ Các loại câu ghép", id:"vi_8_1"}, {n:"🎭 Tác phẩm văn học trung đại", id:"vi_8_2"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🎭 Tác phẩm thơ hiện đại", id:"vi_9_1"}, {n:"📖 Tác phẩm truyện hiện đại", id:"vi_9_2"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📖 Văn học dân gian & Sử thi", id:"vi_10_1"}, {n:"🎭 Nguyễn Trãi & Bình Ngô đại cáo", id:"vi_10_2"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🎭 Văn học hiện thực phê phán", id:"vi_11_1"}, {n:"📖 Phong trào Thơ mới", id:"vi_11_2"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📖 Thơ ca kháng chiến", id:"vi_12_1"}, {n:"🎭 Văn xuôi hiện đại", id:"vi_12_2"} ]
+      },
+      "english": {
+          "1": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🍎 Từ vựng: Màu sắc & Số đếm", id:"en_1_1"} ],
+          "2": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🐶 Từ vựng: Động vật & Trái cây", id:"en_2_1"} ],
+          "3": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🎒 Từ vựng: Đồ dùng học tập & Gia đình", id:"en_3_1"} ],
+          "4": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧭 Giới từ chỉ vị trí (In, On, Under)", id:"en_4_1"}, {n:"💬 Câu giao tiếp cơ bản", id:"en_4_2"} ],
+          "5": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📈 Cấp so sánh hơn của tính từ", id:"en_5_1"}, {n:"⏳ Thì Hiện tại đơn giản", id:"en_5_2"} ],
+          "6": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⏳ Thì Quá khứ đơn giản (V2)", id:"en_6_1"}, {n:"📈 Cấp so sánh nhất", id:"en_6_2"} ],
+          "7": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⏳ Thì Tương lai đơn", id:"en_7_1"}, {n:"💬 Lời khuyên (Should/Shouldn't)", id:"en_7_2"} ],
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⏳ Thì Hiện tại hoàn thành (V3)", id:"en_8_1"}, {n:"🏗️ Câu bị động cơ bản", id:"en_8_2"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔗 Đại từ quan hệ (Who, Which...)", id:"en_9_1"}, {n:"🔄 Câu điều kiện loại 1 & 2", id:"en_9_2"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🏗️ Câu gián tiếp (Reported Speech)", id:"en_10_1"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔗 Động từ khuyết thiếu (Modal Verbs)", id:"en_11_1"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📚 Cụm động từ & Thành ngữ (Phrasal Verbs)", id:"en_12_1"} ]
+      },
+      "science": {
+          "1": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"👁️ Các giác quan cơ thể", id:"sci_1_1"} ],
+          "2": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌱 Thực vật & Động vật quanh ta", id:"sci_2_1"} ],
+          "3": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🍎 Dinh dưỡng & Chăm sóc sức khỏe", id:"sci_3_1"} ],
+          "4": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"💧 Tính chất của Nước & Không khí", id:"sci_4_1"} ],
+          "5": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚡ Các nguồn Năng lượng tự nhiên", id:"sci_5_1"} ],
+          "6": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔬 Tế bào & Cấu tạo cơ thể sống", id:"sci_6_1"}, {n:"🪐 Hệ Mặt Trời", id:"sci_6_2"} ],
+          "7": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚙️ Vận tốc, Lực & Năng lượng", id:"sci_7_1"} ],
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧪 Ký hiệu hóa học & Phân tử", id:"sci_8_1"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧬 Di truyền học & ADN", id:"sci_9_1"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🪐 Cơ học & Chuyển động Trái Đất", id:"sci_10_1"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧪 Phản ứng hóa học & Kim loại", id:"sci_11_1"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔬 Vật lý lượng tử & Danh nhân Khoa học", id:"sci_12_1"} ]
+      },
+      "physics": {
+          "6": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📏 Đo độ dài, thể tích, khối lượng", id:"phy_6_1"} ],
+          "7": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🕯️ Ánh sáng (Phản xạ & Khúc xạ)", id:"phy_7_1"} ],
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚙️ Lực, ma sát & Áp suất", id:"phy_8_1"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚡ Điện học & Định luật Ohm", id:"phy_9_1"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🚗 Động học (Vận tốc, Rơi tự do)", id:"phy_10_1"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚡ Điện tích & Dòng điện không đổi", id:"phy_11_1"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌀 Dao động & Sóng cơ học", id:"phy_12_1"} ]
+      },
+      "chemistry": {
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚛️ Nguyên tử, Phân tử khối", id:"chm_8_1"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧪 Hợp chất vô cơ & pH", id:"chm_9_1"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚛️ Lớp vỏ electron & Liên kết hóa học", id:"chm_10_1"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧪 Sự điện li & Hóa học hữu cơ", id:"chm_11_1"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🍬 Este, Cacbohidrat & Polime", id:"chm_12_1"} ]
+      },
+      "biology": {
+          "6": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌿 Sinh học thực vật & Quang hợp", id:"bio_6_1"} ],
+          "7": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🐶 Động vật có/không xương sống", id:"bio_7_1"} ],
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🫁 Hệ cơ quan trên cơ thể người", id:"bio_8_1"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🧬 Quy luật di truyền của Mendel", id:"bio_9_1"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔬 Sinh học tế bào & Bào quan", id:"bio_10_1"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌱 Sinh lý thực vật & Hướng sáng", id:"bio_11_1"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🔬 Thuyết tiến hóa Darwin", id:"bio_12_1"} ]
+      },
+      "history": {
+          "4": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"👑 Buổi đầu dựng nước (Hùng Vương...)", id:"his_4_1"} ],
+          "5": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"📜 Chống thực dân Pháp cận đại", id:"his_5_1"} ],
+          "6": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌍 Lịch sử thế giới cổ đại", id:"his_6_1"} ],
+          "7": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚔️ Triều đại Lý, Trần, Lê sơ", id:"his_7_1"} ],
+          "8": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌍 Cách mạng tư sản & Phong trào Cần Vương", id:"his_8_1"} ],
+          "9": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"⚔️ Lịch sử Việt Nam hiện đại (1919-1975)", id:"his_9_1"} ],
+          "10": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🎨 Văn minh sông Hồng & Đông Sơn", id:"his_10_1"} ],
+          "11": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🌍 Chiến tranh thế giới thứ 1 & 2", id:"his_11_1"} ],
+          "12": [ {n:"🎲 Trộn tất cả", id:"all"}, {n:"🇻🇳 Lịch sử Việt Nam từ 1919 đến nay", id:"his_12_1"} ]
+      }
+  };
+
+  const vietnameseData = {
+    "vi_1_1": [
+      { q: "Điền 'tr' hoặc 'ch': ...ân lý", a: ["tr"], h: "Chân lý (lẽ phải)." },
+      { q: "Điền 'tr' hoặc 'ch': ...ăm chỉ", a: ["ch"], h: "Chăm chỉ (cần cù học tập)." },
+      { q: "Điền 's' hoặc 'x': ...inh đẹp", a: ["s"], h: "Xinh đẹp bắt đầu bằng chữ s." },
+      { q: "Điền 's' hoặc 'x': ...anh lá", a: ["x"], h: "Xanh lá bắt đầu bằng chữ x." },
+      { q: "Điền 'c' hoặc 'k': thước ...ẻ", a: ["k"], h: "Trước e, ê, i ta dùng k." },
+      { q: "Điền 'c' hoặc 'k': ...im oanh", a: ["c"], h: "Ta dùng c trước âm i khi viết c-i-m." }
+    ],
+    "vi_1_2": [
+      { q: "Từ 'chạy' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Chạy thể hiện cử động của cơ thể." },
+      { q: "Từ 'quyển sách' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Quyển sách là đồ vật." }
+    ],
+    "vi_2_1": [
+      { q: "Trong câu: 'Em bé cười tươi.', từ nào chỉ hoạt động?", a: ["cười", "cươi"], h: "Hoạt động là hành động như cười, nói, đi, chạy." },
+      { q: "Trong câu: 'Bầu trời xanh ngắt.', từ nào chỉ đặc điểm?", a: ["xanh ngắt", "xanh ngat", "xanh"], h: "Xanh ngắt chỉ màu sắc đặc trưng." }
+    ],
+    "vi_2_2": [
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Em đi học **bằng xe đạp**.' -> Em đi học ...?", a: ["bằng gì", "bang gi"], h: "Hỏi về phương tiện bằng cụm từ 'bằng gì'." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: '**Mẹ em** là giáo viên.' -> ... là giáo viên?", a: ["ai"], h: "Hỏi về người bằng từ 'ai'." }
+    ],
+    "vi_3_1": [
+      { q: "Tìm từ trái nghĩa với từ 'chăm chỉ':", a: ["lười biếng", "lười", "luoi bieng", "luoi"], h: "Từ trái nghĩa với chăm chỉ là lười biếng." },
+      { q: "Tìm từ đồng nghĩa với từ 'bao la':", a: ["mênh mông", "bát ngát", "menh mong", "bat ngat"], h: "Bao la đồng nghĩa với mênh mông, rộng lớn." }
+    ],
+    "vi_3_2": [
+      { q: "Câu sau sử dụng phép tu từ nào: 'Trăng ôm khít bóng tre'?", a: ["nhân hóa", "nhan hoa"], h: "Trăng được gán hành động 'ôm' của con người." }
+    ],
+    "vi_4_1": [
+      { q: "Điền từ còn thiếu vào câu tục ngữ: 'Ăn quả nhớ kẻ ...'", a: ["trồng cây", "trong cay"], h: "Nhớ ơn người gieo trồng." },
+      { q: "Điền từ còn thiếu vào câu tục ngữ: 'Lá lành đùm lá ...'", a: ["rách", "rach"], h: "Đùm bọc cưu mang lúc khó khăn." }
+    ],
+    "vi_4_2": [
+      { q: "Từ 'xinh xắn' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Xinh xắn có sự lặp lại âm đầu và vần." },
+      { q: "Từ 'xe đạp' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Xe và đạp đều có nghĩa cụ thể." }
+    ],
+    "vi_5_1": [
+      { q: "Xác định chủ ngữ trong câu: 'Mùa xuân đã về.'", a: ["mùa xuân", "mua xuan"], h: "Bộ phận trả lời cho câu hỏi: Cái gì đã về?" },
+      { q: "Xác định vị ngữ trong câu: 'Học sinh đang đọc bài.'", a: ["đang đọc bài", "đang đọc", "dang doc bai", "dang doc"], h: "Vị ngữ chỉ hoạt động đang diễn ra." }
+    ],
+    "vi_5_2": [
+      { q: "Từ 'chân' trong 'chân bàn' và 'chân người' là từ đồng âm hay nhiều nghĩa?", a: ["nhiều nghĩa", "tu nhieu nghia", "nhieu nghia"], h: "Có sự chuyển nghĩa từ chân người sang chân bàn." }
+    ],
+    "vi_6_1": [
+      { q: "Phép tu từ nào so sánh ngầm hai sự vật có nét tương đồng gọi là gì? (Ẩn dụ / Hoán dụ)", a: ["ẩn dụ", "an du"], h: "Ẩn dụ là so sánh ngầm." }
+    ],
+    "vi_6_2": [
+      { q: "Truyền thuyết nào giải thích nguồn gốc con Rồng cháu Tiên của dân tộc Việt Nam?", a: ["con rồng cháu tiên", "con rong chau tien"], h: "Nói về Lạc Long Quân và Âu Cơ." }
+    ],
+    "vi_7_1": [
+      { q: "Yếu tố 'gia' trong 'gia định' có nghĩa là gì? (nhà / tăng thêm / người)", a: ["nhà", "nha"], h: "Gia đình có nghĩa gốc gia là nhà." }
+    ],
+    "vi_7_2": [
+      { q: "Hoàn thành câu ca dao: 'Công cha như núi thái sơn, nghĩa mẹ như nước trong ... chảy ra'", a: ["nguồn", "nguon"], h: "Nghĩa mẹ dạt dào khôn xiết." }
+    ],
+    "vi_8_1": [
+      { q: "Câu 'Vì trời mưa nên đường trơn.' liên kết với nhau bằng quan hệ từ chỉ quan hệ gì? (Nguyên nhân - Kết quả / Điều kiện / Tương phản)", a: ["nguyên nhân - kết quả", "nguyên nhân kết quả", "nguyen nhan ket qua"], h: "Vì... nên..." }
+    ],
+    "vi_8_2": [
+      { q: "Bài thơ 'Sông núi nước Nam' (Nam quốc sơn hà) thường được tương truyền là của ai?", a: ["lý thường kiệt", "ly thuong kiet"], h: "Vị tướng anh hùng thời Lý." }
+    ],
+    "vi_9_1": [
+      { q: "Ai là tác giả của bài thơ 'Đồng chí' viết về tình đồng đội?", a: ["chính hữu", "chinh huu"], h: "Nhà thơ quân đội viết về người lính thời kháng Pháp." }
+    ],
+    "vi_9_2": [
+      { q: "Truyện ngắn 'Làng' của nhà văn Kim Lân viết về nhân vật chính tên là gì?", a: ["ông hai", "ong hai"], h: "Người nông dân yêu làng yêu nước." }
+    ],
+    "vi_10_1": [
+      { q: "Sử thi anh hùng của Tây Nguyên nổi tiếng kể về người tù trưởng Đăm Săn có tên là gì?", a: ["đăm săn", "dam san", "bài ca chàng đăm săn"], h: "Anh hùng săn bắt thú dữ và chiến đấu vì buôn làng." }
+    ],
+    "vi_10_2": [
+      { q: "Bình Ngô đại cáo của Nguyễn Trãi viết sau chiến thắng quân xâm lược nào?", a: ["minh", "quân minh", "quan minh"], h: "Chiến thắng giặc Minh phương Bắc." }
+    ],
+    "vi_11_1": [
+      { q: "Tác phẩm 'Chí Phèo' lúc đầu có tên là gì?", a: ["cái lò gạch cũ", "cai lo gach cu"], h: "Biểu tượng của sự nghèo đói và bế tắc." }
+    ],
+    "vi_11_2": [
+      { q: "Tác giả của bài thơ 'Đây thôn Vĩ Dạ' là ai?", a: ["hàn mặc tử", "han mac tu"], h: "Nhà thơ lãng mạn quê miền Trung." }
+    ],
+    "vi_12_1": [
+      { q: "Bài thơ kháng chiến chống Pháp nổi tiếng 'Tây Tiến' là của nhà thơ nào?", a: ["quang dũng", "quang dung"], h: "Đoàn binh Tây Tiến anh hùng hào hoa." },
+      { q: "Bài thơ được coi là khúc tráng ca kháng chiến chống Pháp của Tố Hữu mang tên địa danh chiến khu nào?", a: ["việt bắc", "viet bac"], h: "Mười lăm năm ấy thiết tha mặn nồng." }
+    ],
+    "vi_12_2": [
+      { q: "Ai là tác giả của truyện ngắn 'Chiếc thuyền ngoài xa'?", a: ["nguyễn minh châu", "nguyen minh chau"], h: "Nhà văn quân đội mở đường đổi mới văn học." },
+      { q: "Nhân vật ông lái đò vượt thác giữ sóng thác Sông Đà xuất hiện trong tùy bút của nhà văn nào?", a: ["nguyễn tuân", "nguyen tuan"], h: "Người nghệ sĩ suốt đời đi tìm cái đẹp độc đáo." }
+    ]
+  };
+
+  const englishData = {
+    "en_1_1": [
+      { q: "Màu đỏ trong tiếng Anh là gì?", a: ["red"], h: "Bắt đầu bằng chữ r." },
+      { q: "Số 3 tiếng Anh viết là gì?", a: ["three"], h: "t-h-r-e-e" },
+      { q: "Màu xanh lá cây tiếng Anh là gì?", a: ["green"], h: "g-r-e-e-n" }
+    ],
+    "en_2_1": [
+      { q: "Con mèo tiếng Anh là gì?", a: ["cat"], h: "c-a-t" },
+      { q: "Quả táo tiếng Anh là gì?", a: ["apple"], h: "a-p-p-l-e" },
+      { q: "Con chó tiếng Anh là gì?", a: ["dog"], h: "d-o-g" }
+    ],
+    "en_3_1": [
+      { q: "Quyển sách tiếng Anh là gì?", a: ["book"], h: "b-o-o-k" },
+      { q: "Bút chì tiếng Anh là gì?", a: ["pencil"], h: "p-e-n-c-i-l" },
+      { q: "Gia đình tiếng Anh là gì?", a: ["family"], h: "f-a-m-i-l-y" }
+    ],
+    "en_4_1": [
+      { q: "The pen is ... the table (trên bàn). Điền giới từ?", a: ["on"], h: "Ở trên bề mặt ta dùng 'on'." },
+      { q: "The dog is ... the house (trong nhà). Điền giới từ?", a: ["in"], h: "Ở bên trong ta dùng 'in'." }
+    ],
+    "en_4_2": [
+      { q: "How are you? -> I am ..., thank you. (Gõ từ chỉ sức khỏe tốt)", a: ["fine", "good", "well"], h: "Fine hoặc Good." }
+    ],
+    "en_5_1": [
+      { q: "Dạng so sánh hơn của 'tall' là gì?", a: ["taller"], h: "Tính từ ngắn thêm đuôi '-er'." },
+      { q: "Dạng so sánh hơn của 'good' là gì?", a: ["better"], h: "Đây là tính từ bất quy tắc." }
+    ],
+    "en_5_2": [
+      { q: "She ... (go) to school every day. Điền dạng đúng của động từ?", a: ["goes"], h: "Chủ ngữ là ngôi thứ ba số ít 'She'." }
+    ],
+    "en_6_1": [
+      { q: "Quá khứ (V2) của động từ 'go' là gì?", a: ["went"], h: "Động từ bất quy tắc." },
+      { q: "Quá khứ (V2) của động từ 'buy' là gì?", a: ["bought"], h: "Bắt đầu bằng chữ b." }
+    ],
+    "en_6_2": [
+      { q: "Dạng so sánh nhất của 'big' là gì?", a: ["biggest"], h: "Gấp đôi phụ âm cuối rồi thêm '-est'." }
+    ],
+    "en_7_1": [
+      { q: "We ... (will/would) travel to Da Nang next week.", a: ["will"], h: "Thì tương lai diễn tả hành động sắp tới." }
+    ],
+    "en_7_2": [
+      { q: "You ... (should/shouldn't) stay up late. It's bad for health.", a: ["shouldn't", "should not"], h: "Không nên thức khuya." }
+    ],
+    "en_8_1": [
+      { q: "Dạng quá khứ phân từ (V3) của 'write' là gì?", a: ["written"], h: "w-r-i-t-t-e-n" }
+    ],
+    "en_8_2": [
+      { q: "Chuyển sang bị động: 'He bought a car.' -> A car was ... by him.", a: ["bought"], h: "Sử dụng phân từ hai (V3) của buy." }
+    ],
+    "en_9_1": [
+      { q: "The man ... lives next door is a doctor. Điền đại từ quan hệ?", a: ["who", "that"], h: "Chỉ người đóng vai trò chủ ngữ." }
+    ],
+    "en_9_2": [
+      { q: "If I ... you, I would study harder. (was/were)?", a: ["were"], h: "Câu điều kiện loại 2, dùng were cho mọi ngôi." }
+    ],
+    "en_10_1": [
+      { q: "He said: 'I am tired.' -> He said that he ... tired (is/was)?", a: ["was"], h: "Lùi thì từ hiện tại đơn sang quá khứ đơn." }
+    ],
+    "en_11_1": [
+      { q: "You ... (must/mustn't) park here. It is forbidden.", a: ["mustn't", "must not"], h: "Bị cấm đoán." }
+    ],
+    "en_12_1": [
+      { q: "I look forward to ... (hear) from you soon.", a: ["hearing"], h: "Look forward to + V-ing." }
+    ]
+  };
+
+  const scienceData = {
+    "sci_1_1": [
+      { q: "Bộ phận nào trên cơ thể dùng để nghe âm thanh?", a: ["tai"], h: "Đôi tai xinh xắn." },
+      { q: "Lưỡi là cơ quan dùng để làm gì? (nếm / nhìn / nghe)", a: ["nếm", "nem"], h: "Dùng để thưởng thức mùi vị thức ăn." }
+    ],
+    "sci_2_1": [
+      { q: "Cây hút nước từ đất lên nhờ bộ phận nào?", a: ["rễ", "rễ cây", "re", "re cay"], h: "Bộ phận cắm sâu dưới lòng đất." },
+      { q: "Động vật nào ăn thịt trong các loài sau: trâu, bò, hổ, thỏ?", a: ["hổ", "ho"], h: "Chúa sơn lâm." }
+    ],
+    "sci_3_1": [
+      { q: "Chất dinh dưỡng nào có nhiều trong thịt, cá, trứng giúp xây dựng cơ thể?", a: ["chất đạm", "đạm", "protein", "chat dam", "dam"], h: "Chất đạm hay còn gọi là protein." }
+    ],
+    "sci_4_1": [
+      { q: "Nhiệt độ đóng băng của nước tinh khiết là bao nhiêu độ C?", a: ["0", "0 độ", "0 do c"], h: "Nước đóng băng ở không độ." },
+      { q: "Khí nào cần thiết cho sự thở của sinh vật?", a: ["oxy", "oxygen", "ô-xy"], h: "Khí O₂." }
+    ],
+    "sci_5_1": [
+      { q: "Năng lượng gió, năng lượng mặt trời là các nguồn năng lượng tái tạo hay không tái tạo?", a: ["tái tạo", "tai tao"], h: "Có thể hồi sinh vô hạn." }
+    ],
+    "sci_6_1": [
+      { q: "Đơn vị cấu tạo nên mọi cơ thể sinh vật được gọi là gì?", a: ["tế bào", "te bao"], h: "Thành phần nhỏ nhất của sự sống." }
+    ],
+    "sci_6_2": [
+      { q: "Hành tinh nào được gọi là 'Hành tinh Đỏ'?", a: ["sao hỏa", "sao hoa"], h: "Mars." }
+    ],
+    "sci_7_1": [
+      { q: "Công thức tính vận tốc trung bình là v = ? (dùng s và t)", a: ["s/t", "s : t"], h: "Quãng đường chia cho thời gian." }
+    ],
+    "sci_8_1": [
+      { q: "Ký hiệu hóa học của nguyên tố Oxygen là gì?", a: ["o"], h: "Chữ cái đầu tiên." },
+      { q: "Công thức hóa học của nước tinh khiết là gì?", a: ["h2o"], h: "Gồm 2 nguyên tử Hydro và 1 nguyên tử Oxy." }
+    ],
+    "sci_9_1": [
+      { q: "Axit đêôxiribônuclêic là tên đầy đủ của phân tử nào?", a: ["adn", "dna"], h: "Phân tử mang thông tin di truyền." }
+    ],
+    "sci_10_1": [
+      { q: "Trái Đất tự quay quanh trục của nó theo hướng từ tây sang đông hay từ đông sang tây?", a: ["từ tây sang đông", "tu tay sang dong"], h: "Gây ra hiện tượng Mặt Trời mọc hướng Đông lặn hướng Tây." }
+    ],
+    "sci_11_1": [
+      { q: "Ký hiệu hóa học của Sắt là gì?", a: ["fe"], h: "Ferrum." },
+      { q: "Kim loại nào dẫn điện tốt nhất?", a: ["bạc", "bac"], h: "Ag." }
+    ],
+    "sci_12_1": [
+      { q: "Định luật Vạn vật Hấp dẫn nổi tiếng được gắn liền với quả táo rơi của nhà khoa học nào?", a: ["newton", "isaac newton"], h: "Nhà khoa học người Anh." },
+      { q: "Ai được coi là cha đẻ của Thuyết tương đối?", a: ["einstein", "albert einstein"], h: "Nhà vật lý lỗi lạc thế kỷ 20." }
+    ]
+  };
+
+  const physicsData = {
+    "phy_6_1": [
+      { q: "Đơn vị đo khối lượng hợp pháp của Việt Nam là gì? (Kí hiệu viết tắt)", a: ["kg"], h: "Kilôgam." },
+      { q: "Dụng cụ dùng để đo lực là gì?", a: ["lực kế", "luc ke"], h: "Bắt đầu bằng chữ 'lực'." }
+    ],
+    "phy_7_1": [
+      { q: "Ảnh của một vật tạo bởi gương phẳng có độ lớn như thế nào so với vật? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "Gương phẳng cho ảnh ảo bằng vật." },
+      { q: "Góc phản xạ như thế nào so với góc tới? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "Định luật phản xạ ánh sáng: i' = i." }
+    ],
+    "phy_8_1": [
+      { q: "Đơn vị của áp suất là gì? (Kí hiệu viết tắt hoặc tên)", a: ["pa", "pascal"], h: "Pascal." },
+      { q: "Khi đi trên sàn đá hoa mới lau dễ bị ngã do lực ma sát nào bị giảm? (ma sát trượt / ma sát lăn / ma sát nghỉ)", a: ["ma sát trượt", "ma sat truot"], h: "Lực ma sát cản trở chuyển động trượt giảm đi do nước trơn trượt." }
+    ],
+    "phy_9_1": [
+      { q: "Hệ thức của Định luật Ohm là I = ? (dùng U và R)", a: ["u/r", "u : r"], h: "Cường độ dòng điện tỉ lệ thuận với hiệu điện thế và tỉ lệ nghịch với điện trở." },
+      { q: "Cho hai điện trở R1 = 5 Ohm, R2 = 10 Ohm mắc NỐI TIẾP. Điện trở tương đương của mạch là bao nhiêu Ohm?", a: ["15"], h: "Mắc nối tiếp: R = R1 + R2." }
+    ],
+    "phy_10_1": [
+      { q: "Gia tốc rơi tự do thường được lấy giá trị xấp xỉ bằng bao nhiêu m/s²?", a: ["10", "9.8", "9,8"], h: "Thường lấy g = 9.8 hoặc 10." },
+      { q: "Một xe máy đi được quãng đường 60km trong 1,5 giờ. Vận tốc trung bình của xe là bao nhiêu km/h?", a: ["40"], h: "v = s / t = 60 / 1.5." }
+    ],
+    "phy_11_1": [
+      { q: "Đơn vị của điện tích là gì? (Kí hiệu viết tắt)", a: ["c", "coulomb"], h: "Cu-lông." },
+      { q: "Hạt mang điện tích âm trong nguyên tử là hạt nào?", a: ["electron", "ê-lec-trôn", "êlectrôn"], h: "Hạt chuyển động xung quanh hạt nhân." }
+    ],
+    "phy_12_1": [
+      { q: "Chu kỳ dao động T và tần số f liên hệ với nhau qua công thức nào? (f = ...)", a: ["1/t"], h: "Tần số là nghịch đảo của chu kỳ." },
+      { q: "Vận tốc truyền sóng phụ thuộc chủ yếu vào yếu tố nào? (chu kỳ / tần số / môi trường truyền sóng)", a: ["môi trường truyền sóng", "moi truong truyen song", "môi trường", "moi truong"], h: "Tùy thuộc bản chất của môi trường đàn hồi (rắn, lỏng, khí)." }
+    ]
+  };
+
+  const chemistryData = {
+    "chm_8_1": [
+      { q: "Ký hiệu hóa học của nguyên tố Sodium (Natri) là gì?", a: ["na"], h: "Natri." },
+      { q: "Tính phân tử khối của Nước (H2O)? (Cho H=1, O=16)", a: ["18"], h: "M = 1 x 2 + 16." },
+      { q: "Ký hiệu hóa học của nguyên tố Đồng (Copper) là gì?", a: ["cu"], h: "Cuprum." }
+    ],
+    "chm_9_1": [
+      { q: "Axit clohiđric có công thức hóa học là gì?", a: ["hcl"], h: "Hydro và Clo." },
+      { q: "Độ pH của một dung dịch axit luôn như thế nào so với 7? (< 7 / > 7 / = 7)", a: ["< 7", "nho hon 7", "bé hơn 7"], h: "Axit có pH nhỏ hơn 7, bazơ lớn hơn 7." }
+    ],
+    "chm_10_1": [
+      { q: "Lớp electron thứ nhất (sát hạt nhân nhất) chứa tối đa bao nhiêu electron?", a: ["2"], h: "Phân lớp 1s²." },
+      { q: "Phản ứng hóa học có sự thay đổi số oxi hóa của các nguyên tố gọi là phản ứng gì?", a: ["oxi hóa khử", "oxi hóa - khử", "oxi hoa khu"], h: "Phản ứng oxi hóa - khử." }
+    ],
+    "chm_11_1": [
+      { q: "Chất khí hữu cơ đơn giản nhất thuộc dãy đồng đẳng Ankan có công thức CH4 tên là gì?", a: ["metan", "methane"], h: "Mê-tan." },
+      { q: "Dung dịch chất nào sau đây làm quỳ tím hóa đỏ: HCl hay NaOH?", a: ["hcl"], h: "Axit làm quỳ tím hóa đỏ." }
+    ],
+    "chm_12_1": [
+      { q: "Kim loại dẫn điện tốt nhất trong các kim loại sau: Cu, Al, Ag, Fe?", a: ["ag", "bạc", "bac"], h: "Bạc dẫn điện tốt nhất, sau đó đến đồng (Cu)." },
+      { q: "Công thức hóa học của Glucozơ là gì?", a: ["c6h12o6"], h: "C_6_H_12_O_6." }
+    ]
+  };
+
+  const biologyData = {
+    "bio_6_1": [
+      { q: "Cây xanh chế tạo chất hữu cơ nhờ quá trình gì dưới ánh sáng Mặt Trời?", a: ["quang hợp", "quang hop"], h: "Quang hợp lấy CO2 giải phóng O2." },
+      { q: "Nấm có chứa chất diệp lục để tự quang hợp không? (có / không)", a: ["không", "khong"], h: "Nấm sống dị dưỡng ký sinh hoặc hoại sinh." }
+    ],
+    "bio_7_1": [
+      { q: "Động vật nào sau đây thuộc nhóm không xương sống: giun đất, cá chép, chim bồ câu?", a: ["giun đất", "giun dat"], h: "Giun đất không có cột sống." },
+      { q: "Động vật nào sau đây thuộc lớp Thú: cá voi, cá mập, cá chép?", a: ["cá voi", "ca voi"], h: "Cá voi đẻ con và nuôi con bằng sữa mẹ." }
+    ],
+    "bio_8_1": [
+      { q: "Nhóm máu nào được gọi là nhóm máu chuyên cho (có thể truyền cho mọi nhóm máu khác)?", a: ["o", "nhóm máu o", "nhom mau o"], h: "Nhóm máu O không có kháng nguyên trên hồng cầu." },
+      { q: "Cơ quan nào trong hệ tiêu hóa của người đảm nhận chức năng hấp thụ chất dinh dưỡng chủ yếu?", a: ["ruột non", "ruot non"], h: "Nơi có các lông cực nhỏ để hấp thụ chất dinh dưỡng." }
+    ],
+    "bio_9_1": [
+      { q: "Nhà khoa học được coi là ông tổ của ngành Di truyền học là ai?", a: ["men-đen", "menden", "mendel", "gregor mendel"], h: "Người lai các giống đậu Hà Lan." },
+      { q: "Một phân tử ADN mạch kép có Nu loại A = 20%. Tỉ lệ Nu loại T là bao nhiêu phần trăm?", a: ["20", "20%"], h: "Theo nguyên tắc bổ sung: A = T." }
+    ],
+    "bio_10_1": [
+      { q: "Bào quan nào được ví là 'nhà máy năng lượng' của tế bào nhân thực?", a: ["ti thể", "ti the", "mitochondria"], h: "Nơi hô hấp tế bào tạo ATP." },
+      { q: "Virut có cấu tạo tế bào hoàn chỉnh chưa? (có / chưa)", a: ["chưa", "chua", "chưa có", "chua co"], h: "Virut chỉ gồm lõi axit nucleic và vỏ protein." }
+    ],
+    "bio_11_1": [
+      { q: "Hiện tượng cây hướng về phía nguồn ánh sáng được gọi là gì?", a: ["hướng sáng", "huong sang", "hướng động", "huong dong"], h: "Tính hướng sáng của thực vật." }
+    ],
+    "bio_12_1": [
+      { q: "Ai là tác giả của tác phẩm nổi tiếng 'Nguồn gốc các loài' nêu thuyết tiến hóa chọn lọc tự nhiên?", a: ["đác-uyn", "dac uyn", "darwin", "charles darwin"], h: "Nhà sinh học người Anh." },
+      { q: "Đơn vị cấu trúc cơ bản của hệ sinh thái gồm quần xã sinh vật và sinh cảnh gọi là gì?", a: ["hệ sinh thái", "he sinh thai"], h: "Hệ sinh thái." }
+    ]
+  };
+
+  const historyData = {
+    "his_4_1": [
+      { q: "Triều đại Hùng Vương truyền được bao nhiêu đời vua Hùng?", a: ["18", "mười tám"], h: "Con số 18 đời vua Hùng Vương dựng nước." },
+      { q: "Kinh đô đầu tiên của nhà nước Văn Lang nước ta tên là gì?", a: ["phong châu", "phong chau"], h: "Nằm ở tỉnh Phú Thọ ngày nay." }
+    ],
+    "his_5_1": [
+      { q: "Ai được phong là 'Bình Tây Đại Nguyên Soái' trong cuộc kháng chiến chống Pháp ở Nam Kì?", a: ["trương định", "truong dinh"], h: "Một danh tướng nghĩa khí ở Gò Công." },
+      { q: "Ai là người dâng bản 'Điều trần' canh tân đất nước lên vua Tự Đức?", a: ["nguyễn trường tộ", "nguyen truong to"], h: "Nhà cải cách công giáo quê Nghệ An." }
+    ],
+    "his_6_1": [
+      { q: "Kỳ quan cổ đại 'Kim tự tháp Giza' là thành tựu của nền văn minh cổ đại nào?", a: ["ai cập", "ai cap"], h: "Nằm bên dòng sông Nile." },
+      { q: "Quê hương của Thế vận hội Olympic cổ đại ở quốc gia cổ đại nào?", a: ["hy lạp", "hy lap", "lạp"], h: "Đất nước của các vị thần trên đỉnh Olympus." }
+    ],
+    "his_7_1": [
+      { q: "Ai là vị vua đầu tiên của triều đại nhà Lý?", a: ["lý thái tổ", "lý công uẩn", "ly thai to", "ly cong uan"], h: "Người dời đô từ Hoa Lư về Thăng Long năm 1010." },
+      { q: "Ba lần kháng chiến chống quân Nguyên - Mông thắng lợi lẫy lừng diễn ra ở triều đại nào?", a: ["trần", "nhà trần", "tran", "nha tran"], h: "Gắn liền với các vị vua Trần và Hưng Đạo Vương Trần Quốc Tuấn." }
+    ],
+    "his_8_1": [
+      { q: "Cuộc cách mạng tư sản đầu tiên trên thế giới nổ ra ở nước nào?", a: ["hà lan", "ha lan"], h: "Nước Hà Lan vào thế kỷ XVI." },
+      { q: "Vị vua nào của triều Nguyễn đã ban chiếu Cần Vương kêu gọi nhân dân giúp vua cứu nước?", a: ["hàm nghi", "ham nghi"], h: "Vị vua trẻ yêu nước bị thực dân Pháp lưu đày." }
+    ],
+    "his_9_1": [
+      { q: "Chiến thắng Điện Biên Phủ 'lừng lẫy năm châu, chấn động địa cầu' diễn ra vào năm nào?", a: ["1954"], h: "Chấm dứt chiến tranh xâm lược của thực dân Pháp." },
+      { q: "Tổng tư lệnh chiến dịch Điện Biên Phủ năm 1954 là vị đại tướng nào?", a: ["võ nguyên giáp", "vo nguyen giap"], h: "Người anh cả của Quân đội Nhân dân Việt Nam." }
+    ],
+    "his_10_1": [
+      { q: "Trống đồng Đông Sơn là biểu tượng của nền văn minh cổ nào ở Việt Nam?", a: ["đông sơn", "dong son", "văn minh đông sơn"], h: "Giai đoạn văn hóa đồ đồng phát triển rực rỡ ở Bắc Bộ." }
+    ],
+    "his_11_1": [
+      { q: "Chiến tranh thế giới thế hai kết thúc vào năm nào?", a: ["1945"], h: "Năm phát xít Nhật, Đức đầu hàng đồng minh." },
+      { q: "Sự kiện lịch sử nào mở đầu cho thời kỳ cận đại của thế giới vào năm 1789?", a: ["cách mạng pháp", "cach mang phap", "cách mạng tư sản pháp"], h: "Sự sụp đổ của ngục Bastille ở nước Pháp." }
+    ],
+    "his_12_1": [
+      { q: "Đảng Cộng sản Việt Nam được thành lập vào ngày tháng năm nào? (Gõ dạng DD/MM/YYYY)", a: ["03/02/1930", "3/2/1930"], h: "Hội nghị thành lập Đảng tại Cửu Long, Hương Cảng, Trung Quốc." },
+      { q: "Ngày giải phóng miền Nam thống nhất đất nước là ngày tháng nào hàng năm? (Gõ dạng DD/MM)", a: ["30/04", "30/4"], h: "Ngày xe tăng tiến vào Dinh Độc Lập." }
+    ]
   };
 
   let currentAnswers = [], currentHint = "", currentTypeId = "";
@@ -192,10 +627,126 @@
       }, 1000);
   }
 
-  function loadTypes() {
-      const g = document.getElementById('grade').value;
-      document.getElementById('type').innerHTML = dataConfig[g].map(i => `<option value="${i.id}">${i.n}</option>`).join('');
+  const subjectsConfig = {
+      "primary_low": [
+          { val: "math", txt: "🧮 Toán Học" },
+          { val: "vietnamese", txt: "🇻🇳 Tiếng Việt" },
+          { val: "english", txt: "🇬🇧 Tiếng Anh" },
+          { val: "science", txt: "🔬 Khoa Học & Đời Sống" }
+      ],
+      "primary_high": [
+          { val: "math", txt: "🧮 Toán Học" },
+          { val: "vietnamese", txt: "🇻🇳 Tiếng Việt" },
+          { val: "english", txt: "🇬🇧 Tiếng Anh" },
+          { val: "science", txt: "🔬 Khoa Học & Đời Sống" },
+          { val: "history", txt: "📜 Lịch Sử" }
+      ],
+      "junior_low": [
+          { val: "math", txt: "🧮 Toán Học" },
+          { val: "vietnamese", txt: "🇻🇳 Ngữ Văn" },
+          { val: "english", txt: "🇬🇧 Tiếng Anh" },
+          { val: "physics", txt: "💡 Vật Lý" },
+          { val: "biology", txt: "🌿 Sinh Học" },
+          { val: "history", txt: "📜 Lịch Sử" }
+      ],
+      "junior_high": [
+          { val: "math", txt: "🧮 Toán Học" },
+          { val: "vietnamese", txt: "🇻🇳 Ngữ Văn" },
+          { val: "english", txt: "🇬🇧 Tiếng Anh" },
+          { val: "physics", txt: "💡 Vật Lý" },
+          { val: "chemistry", txt: "🧪 Hóa Học" },
+          { val: "biology", txt: "🌿 Sinh Học" },
+          { val: "history", txt: "📜 Lịch Sử" }
+      ],
+      "senior": [
+          { val: "math", txt: "🧮 Toán Học" },
+          { val: "vietnamese", txt: "🇻🇳 Ngữ Văn" },
+          { val: "english", txt: "🇬🇧 Tiếng Anh" },
+          { val: "physics", txt: "💡 Vật Lý" },
+          { val: "chemistry", txt: "🧪 Hóa Học" },
+          { val: "biology", txt: "🌿 Sinh Học" },
+          { val: "history", txt: "📜 Lịch Sử" }
+      ]
+  };
+
+  function getGradeCategory(grade) {
+      const g = parseInt(grade);
+      if (g <= 3) return "primary_low";
+      if (g <= 5) return "primary_high";
+      if (g <= 7) return "junior_low";
+      if (g <= 9) return "junior_high";
+      return "senior";
+  }
+
+  function updateSubjectsDropdown() {
+      const grade = document.getElementById('grade').value;
+      const subjectSelect = document.getElementById('subject');
+      const currentSubject = subjectSelect.value;
+      
+      const category = getGradeCategory(grade);
+      const list = subjectsConfig[category];
+      
+      subjectSelect.innerHTML = list.map(item => `<option value="${item.val}">${item.txt}</option>`).join('');
+      
+      if (list.some(item => item.val === currentSubject)) {
+          subjectSelect.value = currentSubject;
+      } else {
+          subjectSelect.value = "math";
+      }
+      
+      loadTypes();
+  }
+
+  let isSessionStarted = false;
+
+  function loadGrades() {
+      loadTypes();
+  }
+
+  function showStartScreen() {
+      document.getElementById('question').innerHTML = "Sẵn sàng chưa? Hãy bấm nút Bắt đầu để làm bài ôn luyện! 🌟";
+      document.getElementById('formatHint').innerText = "";
+      
+      // Show start button
+      document.getElementById('startContainer').innerHTML = `<button class="bg-success-500 hover:bg-success-600 text-white font-black text-xl px-12 py-4 rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95 w-full max-w-sm" onclick="startSession()">Bắt đầu làm bài 🚀</button>`;
+      document.getElementById('startContainer').classList.remove('hidden');
+      
+      // Hide active play controls
+      document.getElementById('answer').classList.add('hidden');
+      document.getElementById('message').classList.add('hidden');
+      document.getElementById('actionButtons').classList.add('hidden');
+      document.getElementById('explanationBox').classList.add("hidden");
+  }
+
+  function startSession() {
+      isSessionStarted = true;
+      
+      // Hide start button
+      document.getElementById('startContainer').classList.add('hidden');
+      document.getElementById('startContainer').innerHTML = "";
+      
+      // Show active play controls
+      document.getElementById('answer').classList.remove('hidden');
+      document.getElementById('message').classList.remove('hidden');
+      document.getElementById('actionButtons').classList.remove('hidden');
+      
+      document.getElementById('answer').disabled = false;
+      document.getElementById('answer').placeholder = "Gõ đáp án vào đây...";
+      document.getElementById('answer').focus();
+      
+      startGlobalTimer();
       newQuestion();
+  }
+
+  function loadTypes() {
+      const s = document.getElementById('subject').value;
+      const g = document.getElementById('grade').value;
+      document.getElementById('type').innerHTML = dataConfig[s][g].map(i => `<option value="${i.id}">${i.n}</option>`).join('');
+      if (isSessionStarted) {
+          newQuestion();
+      } else {
+          showStartScreen();
+      }
   }
 
   // Define buttons globally for reuse
@@ -204,12 +755,13 @@
   const btnRetryHtml = `<button class="bg-warning-400 hover:bg-warning-500 text-white font-black text-lg px-8 py-3 rounded-2xl shadow-md transition-all flex-1 max-w-[200px]" onclick="retryQuestion()">Thử lại 🔄</button>`;
 
   function newQuestion() {
+      const subject = document.getElementById('subject').value;
       let id = document.getElementById('type').value;
       const grade = document.getElementById('grade').value;
       
       // Smart random if "all" is selected (weights based on errors)
       if (id === "all") {
-          const types = dataConfig[grade].filter(i => i.id !== "all");
+          const types = dataConfig[subject][grade].filter(i => i.id !== "all");
           let pool = [];
           types.forEach(t => { let w = 1 + (errorTracker[t.id] || 0) * 3; for(let i=0; i<w; i++) pool.push(t.id); });
           currentTypeId = pool[r(0, pool.length-1)];
@@ -228,7 +780,8 @@
       questionStartTime = Date.now();
       currentHint = "Con thử nháp lại cẩn thận xem sao nhé!"; // Default hint
 
-      switch(currentTypeId) {
+      if (subject === 'math') {
+          switch(currentTypeId) {
           // --- KHỐI 1 ---
           case "1_1": { 
               let a=r(10,80), b=r(1,19); 
@@ -248,6 +801,33 @@
               if (r(0,1)) { v.push(c1 > c2 ? ">" : "<"); q=`Điền dấu >, <, = vào chỗ chấm: ${c1} ... ${c2}`; }
               else { c2=c1; v.push("="); q=`Điền dấu >, <, = vào chỗ chấm: ${c1} ... ${c2}`; }
               document.getElementById('formatHint').innerText = "Chỉ gõ 1 dấu (Ví dụ: >)";
+              break;
+          }
+          case "1_4": {
+              let a = r(1, 10), b = r(11, 20);
+              let type = r(1, 2);
+              if (type === 1) {
+                  v.push(b - a); q = `Tìm x biết: x + ${a} = ${b}`;
+                  currentHint = `Muốn tìm số hạng x chưa biết, ta lấy tổng ${b} trừ đi số hạng đã biết ${a}.`;
+              } else {
+                  a = r(1, 9); let x_val = r(10, 19);
+                  v.push(x_val); q = `Tìm x biết: x - ${a} = ${x_val - a}`;
+                  currentHint = `Muốn tìm số bị chia/số bị trừ x, ta lấy hiệu cộng với số trừ: x = hiệu + ${a}.`;
+              }
+              break;
+          }
+          case "1_5": {
+              let tens = r(1, 9);
+              let ones = r(0, 9);
+              let total = tens * 10 + ones;
+              let type = r(1, 2);
+              if (type === 1) {
+                  v.push(tens); q = `Số ${total} gồm mấy chục và mấy đơn vị? Trả lời số chục?`;
+                  currentHint = `Hàng chục đứng trước, hàng đơn vị đứng sau.`;
+              } else {
+                  v.push(ones); q = `Số ${total} gồm mấy chục và mấy đơn vị? Trả lời số đơn vị?`;
+                  currentHint = `Hàng chục đứng trước, hàng đơn vị đứng sau.`;
+              }
               break;
           }
 
@@ -272,6 +852,30 @@
               currentHint = "Một tuần có 7 ngày. Hãy lấy ngày hiện tại cộng thêm 7 nhé.";
               break;
           }
+          case "2_5": {
+              let type = r(1, 3);
+              if (type === 1) {
+                  let a = r(2, 5), x = r(2, 9);
+                  v.push(x); q = `Tìm x biết: ${a} x x = ${a*x}`;
+                  currentHint = `Tìm thừa số x bằng cách lấy tích chia cho thừa số đã biết: x = tích : ${a}.`;
+              } else if (type === 2) {
+                  let a = r(2, 5), x = r(2, 5);
+                  v.push(a*x); q = `Tìm x biết: x : ${a} = ${x}`;
+                  currentHint = `Tìm số bị chia x bằng cách lấy thương nhân với số chia: x = thương x ${a}.`;
+              } else {
+                  let a = r(20, 50), x = r(5, 15);
+                  v.push(x); q = `Tìm x biết: ${a} - x = ${a - x}`;
+                  currentHint = `Tìm số trừ x bằng cách lấy số bị trừ trừ đi hiệu: x = ${a} - hiệu.`;
+              }
+              break;
+          }
+          case "2_6": {
+              let a = r(2, 10), b = r(2, 10), c = r(2, 10);
+              v.push(a + b + c); q = `Độ dài đường gấp khúc gồm 3 đoạn thẳng lần lượt là ${a}cm, ${b}cm, ${c}cm là bao nhiêu cm?`;
+              document.getElementById('formatHint').innerText = "Chỉ gõ số.";
+              currentHint = `Độ dài đường gấp khúc bằng tổng độ dài các đoạn thẳng thành phần cộng lại.`;
+              break;
+          }
 
           // --- KHỐI 3 ---
           case "3_1": {
@@ -292,6 +896,27 @@
               if(r(0,1)) { v.push(a3_5 + b3_5*c3_5); q=`Tính giá trị biểu thức: ${a3_5} + ${b3_5} x ${c3_5} = ?`; }
               else { v.push(a3_5*b3_5 - c3_5); q=`Tính giá trị biểu thức: ${a3_5} x ${b3_5} - ${c3_5} = ?`; }
               currentHint = "Nhớ quy tắc vàng: Nhân chia trước, cộng trừ sau nhé!";
+              break;
+          }
+          case "3_6": {
+              let b = r(2, 5), x_plus_a = r(10, 20), a = r(2, 9);
+              let x = x_plus_a - a;
+              let c = x_plus_a * b;
+              v.push(x); q = `Tìm x biết: (x + ${a}) x ${b} = ${c}`;
+              currentHint = `Đầu tiên tìm (x + ${a}) = ${c} : ${b}. Sau đó tìm x = kết quả vừa tìm được - ${a}.`;
+              break;
+          }
+          case "3_7": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let m = r(2, 9), cm = r(5, 95);
+                  v.push(m * 100 + cm); q = `Đổi đơn vị: ${m}m ${cm}cm = ... cm?`;
+                  currentHint = `1m = 100cm. Hãy lấy ${m} x 100 rồi cộng thêm ${cm}.`;
+              } else {
+                  let kg = r(1, 5), g = r(50, 950);
+                  v.push(kg * 1000 + g); q = `Đổi đơn vị: ${kg}kg ${g}g = ... g?`;
+                  currentHint = `1kg = 1000g. Hãy lấy ${kg} x 1000 rồi cộng thêm ${g}.`;
+              }
               break;
           }
 
@@ -326,6 +951,23 @@
               q=`Tính: ${t1}/${m} + ${t2}/${m} = ?`; 
               document.getElementById('formatHint').innerText = "Gõ dưới dạng phân số (VD: 3/4). Nhớ rút gọn nếu có thể.";
               break; 
+          }
+          case "4_7": {
+              let a = r(10, 50), b = r(10, 50), c = r(10, 50);
+              while ((a + b + c) % 3 !== 0) {
+                  c = r(10, 50);
+              }
+              v.push((a + b + c) / 3); q = `Tìm số trung bình cộng của ba số: ${a}, ${b} và ${c}?`;
+              currentHint = `Tìm trung bình cộng bằng cách tính tổng ba số rồi chia cho 3: (a + b + c) : 3.`;
+              break;
+          }
+          case "4_8": {
+              let a = r(1, 4), c = r(6, 9);
+              v.push(`${c - a}/5`);
+              q = `Tìm x biết: x + ${a}/5 = ${c}/5`;
+              document.getElementById('formatHint').innerText = "Gõ dưới dạng phân số tối giản (VD: 3/5).";
+              currentHint = `x = ${c}/5 - ${a}/5 = (${c} - ${a})/5.`;
+              break;
           }
 
           // --- KHỐI 5 ---
@@ -384,11 +1026,553 @@
               }
               break;
           }
+          case "5_7": {
+              let x = r(2, 5);
+              let a = r(1, 9) + r(1, 9)/10;
+              let c = x * a;
+              v.push(x); q = `Tìm x biết: x x ${a.toFixed(1).replace('.', ',')} = ${c.toFixed(1).replace('.', ',')}`;
+              document.getElementById('formatHint').innerText = "Dùng dấu phẩy cho số thập phân nếu cần.";
+              currentHint = `Tìm x = ${c.toFixed(1).replace('.', ',')} : ${a.toFixed(1).replace('.', ',')}.`;
+              break;
+          }
+          case "5_8": {
+              let h1 = r(1, 5), m1 = r(10, 50);
+              let h2 = r(1, 5), m2 = r(10, 50);
+              let totalMin = m1 + m2;
+              let finalH = h1 + h2 + Math.floor(totalMin/60);
+              v.push(finalH);
+              q = `Một người đi từ A lúc ${h1} giờ ${m1} phút và đi hết ${h2} giờ ${m2} phút. Người đó đến B lúc mấy giờ? (Chỉ trả lời phần giờ)`;
+              currentHint = `Hãy cộng số giờ với số giờ, số phút với số phút. 60 phút thì đổi thành 1 giờ nhé.`;
+              break;
+          }
+
+          // --- KHỐI 6 ---
+          case "6_1": {
+              let type = r(1, 3);
+              if (type === 1) {
+                  let a = r(5, 30), b = r(5, 30);
+                  v.push(-a + b); q = `Tính: (-${a}) + ${b} = ?`;
+                  currentHint = `Quy tắc cộng số nguyên khác dấu: hiệu hai phần tự nhiên, lấy dấu của số có phần tự nhiên lớn hơn.`;
+              } else if (type === 2) {
+                  let a = r(2, 12), b = r(2, 12);
+                  v.push(-a * b); q = `Tính: (-${a}) x ${b} = ?`;
+                  currentHint = `Tích của hai số nguyên khác dấu luôn là một số nguyên âm.`;
+              } else {
+                  let a = r(2, 5), b = r(2, 4);
+                  v.push(Math.pow(a, b)); q = `Tính lũy thừa: ${a}<sup>${b}</sup> = ?`;
+                  currentHint = `${a}<sup>${b}</sup> là tích của ${b} thừa số ${a}.`;
+              }
+              break;
+          }
+          case "6_2": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let common = r(2, 6);
+                  let a = r(2, 6) * common, b = r(2, 6) * common;
+                  while (a === b) b = r(2, 6) * common;
+                  let ans = gcd(a, b);
+                  v.push(ans); q = `Tìm ước chung lớn nhất UCLN(${a}, ${b}) = ?`;
+                  currentHint = `UCLN của ${a} và ${b} là số lớn nhất mà cả hai đều chia hết.`;
+              } else {
+                  let a = [4, 6, 8, 9, 10, 12][r(0, 5)];
+                  let b = [5, 6, 8, 9, 10, 12][r(0, 5)];
+                  while (a === b) b = [5, 6, 8, 9, 10, 12][r(0, 5)];
+                  let ans = (a * b) / gcd(a, b);
+                  v.push(ans); q = `Tìm bội chung nhỏ nhất BCNN(${a}, ${b}) = ?`;
+                  currentHint = `BCNN của ${a} và ${b} là số nhỏ nhất chia hết cho cả hai số.`;
+              }
+              break;
+          }
+          case "6_3": {
+              let common = r(2, 15);
+              let num = r(1, 9) * common, den = r(2, 9) * common;
+              while (num === den) den = r(2, 9) * common;
+              let g = gcd(num, den);
+              let simplifiedNum = num / g;
+              let simplifiedDen = den / g;
+              v.push(simplifiedDen === 1 ? `${simplifiedNum}` : `${simplifiedNum}/${simplifiedDen}`);
+              q = `Rút gọn phân số sau về tối giản: ${num}/${den} = ?`;
+              document.getElementById('formatHint').innerText = "Gõ dạng số (VD: 5) hoặc phân số (VD: 3/4).";
+              currentHint = `Chia cả tử số ${num} và mẫu số ${den} cho ước chung lớn nhất UCLN là ${g}.`;
+              break;
+          }
+          case "6_4": {
+              let a = r(10, 30), b = r(-5, 5), c = r(5, 15);
+              let x = a - c - b;
+              v.push(x); q = `Tìm số nguyên x biết: ${a} - (x + ${b < 0 ? '(' + b + ')' : b}) = ${c}`;
+              currentHint = `Tính (x + b) = ${a} - ${c}. Sau đó tìm x.`;
+              break;
+          }
+          case "6_5": {
+              let pct = [10, 20, 25, 50][r(0, 3)];
+              let b = r(5, 50);
+              let x = (b * 100) / pct;
+              v.push(x); q = `Tìm một số biết ${pct}% của số đó là ${b}?`;
+              currentHint = `Số cần tìm = ${b} : ${pct} x 100.`;
+              break;
+          }
+
+          // --- KHỐI 7 ---
+          case "7_1": {
+              let a = r(2, 10), b = r(2, 10), c = r(2, 10);
+              let val = (a * b) / c;
+              while (val % 1 !== 0) {
+                  a = r(2, 10); b = r(2, 10); c = r(2, 10);
+                  val = (a * b) / c;
+              }
+              v.push(val); q = `Tìm x biết tỉ lệ thức: x/${a} = ${b}/${c}`;
+              currentHint = `Nhân chéo chia ngang: x = (${a} x ${b}) : ${c}.`;
+              break;
+          }
+          case "7_2": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let a = r(2, 15);
+                  v.push(a); q = `Tính căn bậc hai: √${a*a} = ?`;
+                  currentHint = `Căn bậc hai số học của ${a*a} là số không âm mà bình phương lên bằng ${a*a}.`;
+              } else {
+                  let a = r(2, 10);
+                  v.push(a*a); q = `Tìm số thực x dương biết: √x = ${a}`;
+                  currentHint = `Bình phương hai vế lên: x = ${a}² = ${a} x ${a}.`;
+              }
+              break;
+          }
+          case "7_3": {
+              let a = r(30, 100), b = r(30, 70);
+              while (a + b >= 170) {
+                  a = r(30, 100); b = r(30, 70);
+              }
+              v.push(180 - (a + b)); q = `Trong tam giác ABC, góc A = ${a}°, góc B = ${b}°. Tính số đo góc C? (độ)`;
+              document.getElementById('formatHint').innerText = "Chỉ gõ số.";
+              currentHint = `Tổng ba góc trong một tam giác luôn bằng 180°. Góc C = 180° - (Góc A + Góc B).`;
+              break;
+          }
+          case "7_4": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let items1 = r(2, 5), price1 = r(10, 50) * 1000;
+                  let items2 = items1 * 2;
+                  v.push(price1 * 2);
+                  q = `Biết ${items1} mét vải giá ${price1} đồng. Hỏi ${items2} mét vải cùng loại giá bao nhiêu đồng?`;
+                  currentHint = `Tỉ lệ thuận: Số mét vải tăng gấp đôi thì giá tiền cũng tăng gấp đôi.`;
+              } else {
+                  let workers1 = r(2, 4), days1 = r(6, 12);
+                  let workers2 = workers1 * 2;
+                  v.push(days1 / 2);
+                  q = `Biết ${workers1} người làm xong một công việc trong ${days1} ngày. Hỏi ${workers2} người (với cùng năng suất) làm xong công việc đó trong mấy ngày?`;
+                  currentHint = `Tỉ lệ nghịch: Số người tăng gấp đôi thì thời gian hoàn thành giảm đi một nửa.`;
+              }
+              break;
+          }
+          case "7_5": {
+              let a = r(1, 3), b = r(-3, 3), c = r(-5, 5);
+              let x = r(-2, 2);
+              let val = a*x*x + b*x + c;
+              v.push(val);
+              q = `Tính giá trị của đa thức P(x) = ${a}x² ${b < 0 ? '-' : '+'} ${Math.abs(b)}x ${c < 0 ? '-' : '+'} ${Math.abs(c)} tại x = ${x}`;
+              currentHint = `Thay x = ${x} vào đa thức: P(${x}) = ${a}.(${x})² + ${b}.(${x}) + ${c}.`;
+              break;
+          }
+
+          // --- KHỐI 8 ---
+          case "8_1": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let a = r(2, 10);
+                  v.push(2*a); q = `Trong khai triển hằng đẳng thức (x + ${a})² = x² + Bx + ${a*a}, giá trị của hệ số B là bao nhiêu?`;
+                  currentHint = `Hằng đẳng thức: (x + a)² = x² + 2ax + a². So sánh ta có B = 2a.`;
+              } else {
+                  let ab = r(2, 10);
+                  let a2b2 = r(15, 50);
+                  v.push(a2b2 + 2*ab); q = `Cho a² + b² = ${a2b2} và ab = ${ab}. Tính giá trị của biểu thức P = (a + b)² ?`;
+                  currentHint = `Khai triển: (a + b)² = a² + b² + 2ab. Thay số vào ta có P = ${a2b2} + 2 x ${ab}.`;
+              }
+              break;
+          }
+          case "8_2": {
+              let a = r(2, 9), b = r(-15, 15);
+              while (b === 0) b = r(-15, 15);
+              let x = r(-10, 10);
+              let c = a*x + b;
+              v.push(x); q = `Giải phương trình: ${a}x ${b < 0 ? '-' : '+'} ${Math.abs(b)} = ${c}. Tìm x?`;
+              currentHint = `Chuyển vế đổi dấu: ${a}x = ${c} - (${b}). Sau đó chia cả 2 vế cho ${a}.`;
+              break;
+          }
+          case "8_3": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let choices = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17]];
+                  let pair = choices[r(0, choices.length-1)];
+                  v.push(pair[2]); q = `Tam giác vuông có độ dài hai cạnh góc vuông là ${pair[0]}cm và ${pair[1]}cm. Tính độ dài cạnh huyền? (cm)`;
+                  currentHint = `Định lý Pythagore: Cạnh huyền = √(Cạnh₁² + Cạnh₂²).`;
+              } else {
+                  let choices = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]];
+                  let pair = choices[r(0, choices.length-1)];
+                  v.push(pair[0]); q = `Tam giác vuông có cạnh huyền dài ${pair[2]}cm, một cạnh góc vuông dài ${pair[1]}cm. Cạnh góc vuông còn lại dài bao nhiêu? (cm)`;
+                  currentHint = `Định lý Pythagore: Cạnh còn lại = √(Cạnh huyền² - Cạnh đã biết²).`;
+              }
+              break;
+          }
+          case "8_4": {
+              let a = r(2, 9);
+              let x = a + r(2, 5);
+              let ans = x + a;
+              v.push(ans);
+              q = `Tính giá trị của phân thức P = (x² - ${a*a}) / (x - ${a}) khi x = ${x}?`;
+              currentHint = `Rút gọn phân thức: (x² - a²) / (x - a) = (x - a)(x + a) / (x - a) = x + a. Thay x = ${x} vào ta được ${x} + ${a}.`;
+              break;
+          }
+          case "8_5": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let d1 = r(6, 12), d2 = r(4, 10);
+                  while ((d1 * d2) % 2 !== 0) d2 = r(4, 10);
+                  v.push((d1 * d2)/2); q = `Tính diện tích hình thoi có độ dài hai đường chéo là ${d1}cm và ${d2}cm? (cm²)`;
+                  currentHint = `Diện tích hình thoi bằng nửa tích hai đường chéo: S = (d₁ x d₂) : 2.`;
+              } else {
+                  let a = r(5, 15), h = r(4, 10);
+                  v.push(a * h); q = `Tính diện tích hình bình hành có độ dài cạnh đáy là ${a}cm và chiều cao tương ứng là ${h}cm? (cm²)`;
+                  currentHint = `Diện tích hình bình hành bằng độ dài đáy nhân với chiều cao tương ứng: S = a x h.`;
+              }
+              break;
+          }
+
+          // --- KHỐI 9 ---
+          case "9_1": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let a = r(2, 8);
+                  let b = a * r(2, 5) * r(2, 5);
+                  let ans = Math.sqrt(a * b);
+                  while (ans % 1 !== 0) {
+                      a = r(2, 8);
+                      b = a * r(2, 5) * r(2, 5);
+                      ans = Math.sqrt(a * b);
+                  }
+                  v.push(ans); q = `Tính giá trị của căn thức: √${a} x √${b} = ?`;
+                  currentHint = `Áp dụng công thức: √A x √B = √(A x B). Tính căn bậc hai của tích đó.`;
+              } else {
+                  let a = r(2, 10);
+                  let b = r(2, 5);
+                  v.push(a * b); q = `Rút gọn căn thức sau: √(${a*a} x ${b*b}) = ?`;
+                  currentHint = `Áp dụng công thức: √(A² x B²) = A x B (với A, B dương).`;
+              }
+              break;
+          }
+          case "9_2": {
+              let x = r(-5, 10), y = r(-5, 10);
+              let a1 = r(1, 3), b1 = r(1, 2);
+              let c1 = a1*x + b1*y;
+              let a2 = r(1, 2), b2 = r(-2, -1);
+              let c2 = a2*x + b2*y;
+              let askX = r(0, 1);
+              v.push(askX ? x : y);
+              q = `Giải hệ phương trình:<br>{ ${a1}x ${b1 < 0 ? '-' : '+'} ${Math.abs(b1)}y = ${c1}<br>{ ${a2}x ${b2 < 0 ? '-' : '+'} ${Math.abs(b2)}y = ${c2}<br>Tìm giá trị của ${askX ? 'x' : 'y'}?`;
+              currentHint = `Sử dụng phương pháp cộng đại số hoặc phương pháp thế để khử một ẩn đi.`;
+              break;
+          }
+          case "9_3": {
+              let x1 = r(-5, 5), x2 = r(-5, 5);
+              while (x1 === 0 || x2 === 0) { x1 = r(-5, 5); x2 = r(-5, 5); }
+              let sum = x1 + x2;
+              let prod = x1 * x2;
+              let eq = `x² ${sum < 0 ? '+' : '-'} ${Math.abs(sum)}x ${prod < 0 ? '-' : '+'} ${Math.abs(prod)} = 0`;
+              let type = r(1, 2);
+              if (type === 1) {
+                  v.push(sum); q = `Không giải phương trình, hãy tính tổng hai nghiệm (x₁ + x₂) của phương trình bậc hai: ${eq}`;
+                  currentHint = `Theo định lý Vi-ét: Tổng hai nghiệm S = x₁ + x₂ = -b/a.`;
+              } else {
+                  v.push(prod); q = `Không giải phương trình, hãy tính tích hai nghiệm (x₁ . x₂) của phương trình bậc hai: ${eq}`;
+                  currentHint = `Theo định lý Vi-ét: Tích hai nghiệm P = x₁ . x₂ = c/a.`;
+              }
+              break;
+          }
+          case "9_4": {
+              let central = r(40, 150);
+              while (central % 2 !== 0) central = r(40, 150);
+              let type = r(1, 2);
+              if (type === 1) {
+                  v.push(central / 2); q = `Cho đường tròn (O), góc ở tâm AOB = ${central}°. Số đo của góc nội tiếp ACB chắn cung AB là bao nhiêu độ?`;
+                  currentHint = `Góc nội tiếp bằng nửa số đo của góc ở tâm cùng chắn một cung: góc nội tiếp = góc ở tâm : 2.`;
+              } else {
+                  let inscribed = r(20, 80);
+                  v.push(inscribed * 2); q = `Cho đường tròn (O), góc nội tiếp ACB chắn cung AB có số đo bằng ${inscribed}°. Số đo góc ở tâm AOB bằng bao nhiêu độ?`;
+                  currentHint = `Góc ở tâm bằng hai lần số đo góc nội tiếp cùng chắn một cung: góc ở tâm = góc nội tiếp x 2.`;
+              }
+              break;
+          }
+          case "9_5": {
+              let a = r(2, 4), c = r(-3, -1);
+              let x = r(-3, 3);
+              let b = r(-5, 5);
+              let d = (a - c)*x + b;
+              v.push(x);
+              q = `Tìm hoành độ giao điểm x của hai đường thẳng (d₁): y = ${a}x ${b < 0 ? '-' : '+'} ${Math.abs(b)} và (d₂): y = ${c === -1 ? '-' : (c === 1 ? '' : c)}x ${d < 0 ? '-' : '+'} ${Math.abs(d)}?`;
+              currentHint = `Cho hai vế phải bằng nhau: ${a}x + (${b}) = ${c}x + (${d}), giải tìm x.`;
+              break;
+          }
+
+          // --- KHỐI 10 ---
+          case "10_1": {
+              let a = r(1, 5), b = a + r(3, 6);
+              let c = r(2, 6), d = c + r(3, 6);
+              let setA = new Set(), setB = new Set();
+              for(let i=a; i<=b; i++) setA.add(i);
+              for(let i=c; i<=d; i++) setB.add(i);
+              
+              let type = r(1, 2);
+              if (type === 1) {
+                  let intersection = [...setA].filter(x => setB.has(x));
+                  v.push(intersection.length);
+                  q = `Cho tập hợp A gồm các số nguyên từ ${a} đến ${b}, tập hợp B gồm các số nguyên từ ${c} đến ${d}. Hỏi tập hợp giao (A ∩ B) có bao nhiêu phần tử?`;
+                  currentHint = `Giao (A ∩ B) gồm các phần tử vừa thuộc A vừa thuộc B. Hãy tìm số chung.`;
+              } else {
+                  let union = new Set([...setA, ...setB]);
+                  v.push(union.size);
+                  q = `Cho tập hợp A gồm các số nguyên từ ${a} đến ${b}, tập hợp B gồm các số nguyên từ ${c} đến ${d}. Hỏi tập hợp hợp (A ∪ B) có bao nhiêu phần tử?`;
+                  currentHint = `Hợp (A ∪ B) gồm tất cả các phần tử thuộc ít nhất một trong hai tập hợp (không đếm trùng lặp).`;
+              }
+              break;
+          }
+          case "10_2": {
+              let x_vertex = r(-5, 5);
+              let a = [1, -1, 2, -2][r(0, 3)];
+              let b = -2 * a * x_vertex;
+              let c = r(-5, 5);
+              v.push(x_vertex);
+              q = `Tìm hoành độ đỉnh I (x_I) của parabol (P): y = ${a === 1 ? '' : (a === -1 ? '-' : a)}x² ${b < 0 ? '-' : '+'} ${Math.abs(b)}x ${c < 0 ? '-' : '+'} ${Math.abs(c)}`;
+              currentHint = `Hoành độ đỉnh parabol được tính bằng công thức: x_I = -b / (2a).`;
+              break;
+          }
+          case "10_3": {
+              let u1 = r(-5, 5), u2 = r(-5, 5);
+              let v1 = r(-5, 5), v2 = r(-5, 5);
+              let prod = u1*v1 + u2*v2;
+              v.push(prod);
+              q = `Cho hai vectơ u⃗ = (${u1}; ${u2}) và v⃗ = (${v1}; ${v2}). Tính tích vô hướng u⃗ . v⃗ = ?`;
+              currentHint = `Tích vô hướng hai vectơ: u⃗ . v⃗ = u₁ . v₁ + u₂ . v₂.`;
+              break;
+          }
+          case "10_4": {
+              let a = r(1, 10), b = r(2, 6);
+              let x = b*b - a;
+              v.push(x); q = `Giải phương trình: √(${x + a >= 0 ? 'x + ' + a : 'x - ' + Math.abs(a)}) = ${b}. Tìm x?`;
+              currentHint = `Bình phương hai vế: x + a = ${b}² = ${b*b}. Suy ra x = ${b*b} - a.`;
+              break;
+          }
+          case "10_5": {
+              let b = 3, c = 8, angle = 60, a = 7;
+              v.push(a); q = `Cho tam giác ABC có cạnh b = ${b}, c = ${c} và góc A = ${angle}°. Tính độ dài cạnh a?`;
+              currentHint = `Định lý Côsin: a² = b² + c² - 2bc.cos(A). Với cos(60°) = 0,5.`;
+              break;
+          }
+
+          // --- KHỐI 11 ---
+          case "11_1": {
+              let choices = [[3, 5, 4], [5, 13, 12], [8, 17, 15]];
+              let choice = choices[r(0, choices.length-1)];
+              let sin_num = choice[0], sin_den = choice[1], cos_num = choice[2];
+              v.push(`${cos_num}/${sin_den}`);
+              q = `Cho góc nhọn x có sin(x) = ${sin_num}/${sin_den}. Tính giá trị của cos(x) ?`;
+              document.getElementById('formatHint').innerText = "Gõ dạng phân số (VD: 4/5).";
+              currentHint = `Áp dụng công thức lượng giác cơ bản: sin²(x) + cos²(x) = 1. Với góc nhọn thì cos(x) > 0.`;
+              break;
+          }
+          case "11_2": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let u1 = r(1, 10), d = r(2, 5), n = r(4, 10);
+                  v.push(u1 + (n-1)*d);
+                  q = `Cho cấp số cộng (u_n) có số hạng đầu u₁ = ${u1} và công sai d = ${d}. Tìm số hạng thứ u_(${n}) ?`;
+                  currentHint = `Công thức số hạng tổng quát của cấp số cộng: u_n = u₁ + (n - 1) . d.`;
+              } else {
+                  let u1 = r(1, 3), q_ratio = 2, n = r(3, 6);
+                  v.push(u1 * Math.pow(q_ratio, n-1));
+                  q = `Cho cấp số nhân (u_n) có số hạng đầu u₁ = ${u1} và công bội q = ${q_ratio}. Tìm số hạng thứ u_(${n}) ?`;
+                  currentHint = `Công thức số hạng tổng quát của cấp số nhân: u_n = u₁ . q^(n - 1).`;
+              }
+              break;
+          }
+          case "11_3": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let n = r(4, 8), k = r(2, n-1);
+                  const factorial = (num) => num <= 1 ? 1 : num * factorial(num-1);
+                  let ans = factorial(n) / (factorial(k) * factorial(n-k));
+                  v.push(ans);
+                  q = `Tính số tổ hợp chập ${k} của ${n} phần tử: C_${n}<sup>${k}</sup> = ?`;
+                  currentHint = `Công thức tổ hợp: C_n^k = n! / [k! . (n - k)!].`;
+              } else {
+                  let red = r(3, 8), blue = r(3, 8);
+                  let total = red + blue;
+                  const select2 = (num) => (num * (num-1)) / 2;
+                  let favorable = select2(red);
+                  let allCases = select2(total);
+                  let g = gcd(favorable, allCases);
+                  let simplifiedNum = favorable / g;
+                  let simplifiedDen = allCases / g;
+                  v.push(simplifiedDen === 1 ? `${simplifiedNum}` : `${simplifiedNum}/${simplifiedDen}`);
+                  q = `Một hộp chứa ${red} quả cầu đỏ và ${blue} quả cầu xanh. Lấy ngẫu nhiên đồng thời 2 quả cầu. Tính xác suất lấy được 2 quả cầu CÙNG MÀU ĐỎ?`;
+                  document.getElementById('formatHint').innerText = "Gõ dạng phân số (VD: 3/10).";
+                  currentHint = `Số cách chọn 2 quả đỏ là C_${red}² = ${favorable}. Tổng số cách chọn 2 quả bất kỳ là C_${total}² = ${allCases}. Xác suất P = Favorable / AllCases.`;
+              }
+              break;
+          }
+          case "11_4": {
+              let a = r(2, 6);
+              v.push(2*a);
+              q = `Tính giới hạn: L = lim<sub>x → ${a}</sub> (x² - ${a*a}) / (x - ${a}) = ?`;
+              currentHint = `Rút gọn phân thức trước khi thế số: (x² - a²) / (x - a) = x + a. Giới hạn bằng a + a = 2a.`;
+              break;
+          }
+          case "11_5": {
+              let n = r(2, 4);
+              let a = r(1, 3);
+              let ans = n * Math.pow(a, n-1);
+              v.push(ans);
+              q = `Cho hàm số f(x) = x<sup>${n}</sup>. Tính đạo hàm f'(${a}) ?`;
+              currentHint = `Công thức đạo hàm: (x^n)' = n . x^(n-1). Thay x = ${a} vào kết quả đạo hàm.`;
+              break;
+          }
+
+          // --- KHỐI 12 ---
+          case "12_1": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let a = r(1, 5), b = r(1, 5), c = r(1, 3), d = c * r(-4, 4);
+                  while (d === 0) d = c * r(-4, 4);
+                  let x_asymptote = d / c;
+                  v.push(x_asymptote);
+                  q = `Tìm tiệm cận đứng của đồ thị hàm số: y = (${a}x + ${b}) / (${c === 1 ? '' : c}x ${d < 0 ? '+' : '-'} ${Math.abs(d)})`;
+                  document.getElementById('formatHint').innerText = "Chỉ gõ giá trị x (ví dụ: 2)";
+                  currentHint = `Tiệm cận đứng của hàm phân thức là nghiệm của mẫu số: ${c}x - ${d} = 0.`;
+              } else {
+                  let a = r(1, 3);
+                  let c = r(-5, 5);
+                  v.push(2);
+                  q = `Hàm số bậc ba y = x³ - ${3*a}x² ${c < 0 ? '-' : '+'} ${Math.abs(c)} có bao nhiêu điểm cực trị?`;
+                  currentHint = `Đạo hàm y' = 3x² - ${6*a}x = 0 có hai nghiệm phân biệt x = 0 và x = ${2*a}. Do đó hàm số luôn có 2 cực trị.`;
+              }
+              break;
+          }
+          case "12_2": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let a = [2, 3, 5][r(0, 2)];
+                  let exp = r(2, 4);
+                  let b = Math.pow(a, exp);
+                  v.push(exp);
+                  q = `Tính giá trị của biểu thức logarit: log_${a}(${b}) = ?`;
+                  currentHint = `log_a(a^k) = k. Hãy viết ${b} dưới dạng lũy thừa của ${a}.`;
+              } else {
+                  let a = [2, 3, 5][r(0, 2)];
+                  let b = r(2, 3);
+                  v.push(Math.pow(a, b));
+                  q = `Giải phương trình logarit: log_${a}(x) = ${b}. Tìm x?`;
+                  currentHint = `Định nghĩa logarit: log_a(x) = b <=> x = a^b.`;
+              }
+              break;
+          }
+          case "12_3": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let k = r(2, 6);
+                  while (k % 2 !== 0) k = r(2, 6);
+                  let a = r(1, 4);
+                  v.push((k/2) * a * a);
+                  q = `Tính tích phân tích phân I = ∫₀<sup>${a}</sup> (${k}x) dx = ?`;
+                  currentHint = `Nguyên hàm của ${k}x là ${(k/2)}x². Thế cận từ 0 đến ${a}: ${(k/2)} . ${a}² - 0.`;
+              } else {
+                  let n = r(2, 5);
+                  v.push(n+1);
+                  q = `Nếu F(x) là một nguyên hàm của f(x) = x<sup>${n}</sup> thì bậc của lũy thừa x trong F(x) là bao nhiêu?`;
+                  currentHint = `Công thức nguyên hàm: ∫x^n dx = (x^(n+1)) / (n+1) + C. Bậc tăng lên 1 đơn vị.`;
+              }
+              break;
+          }
+          case "12_4": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  let a = r(-5, 5), b = r(-5, 5);
+                  while (b === 0) b = r(-5, 5);
+                  let askReal = r(0, 1);
+                  v.push(askReal ? a : b);
+                  q = `Cho số phức z = ${a} ${b < 0 ? '-' : '+'} ${Math.abs(b)}i. Hãy tìm phần ${askReal ? 'thực' : 'ảo'} của số phức z?`;
+                  currentHint = `Số phức z = a + bi có phần thực là a, phần ảo là b (không bao gồm i).`;
+              } else {
+                  let choices = [[3, 4, 12, 13], [3, 4, 0, 5], [1, 2, 2, 3]];
+                  let choice = choices[r(0, choices.length-1)];
+                  let a = choice[0], b = choice[1], c = choice[2], d_div = choice[3];
+                  let d = d_div * r(1, 3);
+                  v.push(d / d_div);
+                  q = `Trong không gian Oxyz, tính khoảng cách từ gốc tọa độ O(0;0;0) đến mặt phẳng (P): ${a}x + ${b}y ${c === 0 ? '' : '+ ' + c + 'z'} + ${d} = 0 ?`;
+                  currentHint = `Công thức khoảng cách từ M(x₀,y₀,z₀) đến Ax+By+Cz+D=0 là: d = |Ax₀ + By₀ + Cz₀ + D| / √(A² + B² + C²).`;
+              }
+              break;
+          }
+          case "12_5": {
+              let choices = [[2, 3, 6, 7], [1, 2, 2, 3], [2, 4, 4, 6], [2, 6, 9, 11]];
+              let pair = choices[r(0, choices.length-1)];
+              v.push(pair[3]);
+              q = `Trong không gian Oxyz, tính độ dài (môđun) của vectơ u⃗ = (${pair[0]}; ${pair[1]}; ${pair[2]})?`;
+              currentHint = `Công thức độ dài vectơ: |u⃗| = √(x² + y² + z²).`;
+              break;
+          }
+          case "12_6": {
+              let type = r(1, 2);
+              if (type === 1) {
+                  v.push(4); q = `Tìm giá trị nhỏ nhất (GTNN) của hàm số y = x² - 2x + 5 trên đoạn [0; 2]?`;
+                  currentHint = `Đỉnh của parabol là x = 1 (thuộc đoạn [0; 2]). Giá trị nhỏ nhất đạt được tại đỉnh: y(1) = 1² - 2(1) + 5 = 4.`;
+              } else {
+                  v.push(5); q = `Tìm giá trị lớn nhất (GTLN) của hàm số y = -x² + 4x + 1 trên đoạn [0; 3]?`;
+                  currentHint = `Đỉnh của parabol là x = 2 (thuộc đoạn [0; 3]). Giá trị lớn nhất đạt được tại đỉnh: y(2) = -(2²) + 4(2) + 1 = 5.`;
+              }
+              break;
+          }
           default: { q="Lỗi tải đề. Hãy chọn dạng bài khác!"; v=["error"]; }
+          }
+      } else {
+          let dataPool = [];
+          if (subject === 'vietnamese') {
+              dataPool = vietnameseData[currentTypeId] || [];
+          } else if (subject === 'english') {
+              dataPool = englishData[currentTypeId] || [];
+          } else if (subject === 'science') {
+              dataPool = scienceData[currentTypeId] || [];
+          } else if (subject === 'physics') {
+              dataPool = physicsData[currentTypeId] || [];
+          } else if (subject === 'chemistry') {
+              dataPool = chemistryData[currentTypeId] || [];
+          } else if (subject === 'biology') {
+              dataPool = biologyData[currentTypeId] || [];
+          } else if (subject === 'history') {
+              dataPool = historyData[currentTypeId] || [];
+          }
+          
+          if (dataPool.length > 0) {
+              let item = dataPool[r(0, dataPool.length - 1)];
+              q = item.q;
+              v = item.a;
+              currentHint = item.h || "Con suy nghĩ kỹ nhé!";
+              if (subject === 'vietnamese') {
+                  document.getElementById('formatHint').innerText = "Gõ tiếng Việt có dấu đầy đủ.";
+              } else if (subject === 'english') {
+                  document.getElementById('formatHint').innerText = "Gõ bằng tiếng Anh.";
+              } else if (subject === 'physics' || subject === 'chemistry' || subject === 'biology') {
+                  document.getElementById('formatHint').innerText = "Gõ câu trả lời chính xác.";
+              } else if (subject === 'history') {
+                  document.getElementById('formatHint').innerText = "Gõ tiếng Việt có dấu đầy đủ.";
+              } else {
+                  document.getElementById('formatHint').innerText = "Gõ câu trả lời của con.";
+              }
+          } else {
+              q = "Dạng bài này đang được cập nhật câu hỏi mới!";
+              v = ["dang cap nhat"];
+          }
       }
 
       currentAnswers = v.map(String).map(s => s.trim().toLowerCase());
-      document.getElementById('question').innerText = q;
+      document.getElementById('question').innerHTML = q;
       answerInput.value = "";
       document.getElementById('message').innerText = "";
       answerInput.focus();
@@ -458,37 +1642,62 @@
       }());
   }
 
-  async function captureScoreForZalo() {
+  function drawScoreCanvas() {
       const canvas = document.createElement('canvas'); 
-      canvas.width = 600; canvas.height = 300;
+      canvas.width = 600; canvas.height = 320;
       const ctx = canvas.getContext('2d');
       
       // Draw background
-      let grd = ctx.createLinearGradient(0, 0, 600, 300);
+      let grd = ctx.createLinearGradient(0, 0, 600, 320);
       grd.addColorStop(0, "#eff6ff"); grd.addColorStop(1, "#dbeafe");
-      ctx.fillStyle = grd; ctx.fillRect(0,0,600,300);
+      ctx.fillStyle = grd; ctx.fillRect(0,0,600,320);
       
       // Draw border
-      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 10; ctx.strokeRect(5,5,590,290);
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 10; ctx.strokeRect(5,5,590,310);
       
       // Texts
       ctx.textAlign = "center";
+      
+      // Title
       ctx.font = '900 32px Nunito, Arial'; ctx.fillStyle = '#1d4ed8'; 
-      ctx.fillText('🏆 BẢNG VÀNG XUÂN LÂM 🏆', 300, 60);
+      ctx.fillText('🏆 BẢNG VÀNG XUÂN LÂM 🏆', 300, 55);
       
+      // Timestamp
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+      ctx.font = 'bold 14px Arial'; ctx.fillStyle = '#64748b'; 
+      ctx.fillText(`Thời gian: ${timeStr} - ${dateStr}`, 300, 95);
+      
+      // Details
       ctx.font = 'bold 24px Arial'; ctx.fillStyle = '#334155'; 
-      ctx.fillText(`🎯 Tỉ lệ đúng: ${correctQuestions} / ${totalQuestions} bài`, 300, 130);
-      ctx.fillText(`⏱️ Thời gian ôn luyện: ${formatTime(totalSeconds)}`, 300, 180);
+      ctx.fillText(`🎯 Tỉ lệ đúng: ${correctQuestions} / ${totalQuestions} bài`, 300, 155);
+      ctx.fillText(`⏱️ Thời gian ôn luyện: ${formatTime(totalSeconds)}`, 300, 205);
       
+      // Score
       ctx.font = '900 40px Arial'; ctx.fillStyle = '#10b981'; 
-      ctx.fillText(`Điểm số: ${score} Điểm`, 300, 250);
-      
+      ctx.fillText(`Điểm số: ${score} Điểm`, 300, 275);
+
+      return canvas;
+  }
+
+  async function captureScoreForZalo() {
+      const canvas = drawScoreCanvas();
       canvas.toBlob(blob => {
           const item = new ClipboardItem({ 'image/png': blob });
           navigator.clipboard.write([item])
               .then(() => alert('🎉 Đã chụp xong! Con mở Zalo và dán (Paste) để gửi cho Ba nhé!'))
               .catch(() => window.open(canvas.toDataURL(), '_blank'));
       });
+  }
+
+  function downloadScoreImage() {
+      const canvas = drawScoreCanvas();
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `BangVang_XuanLam_${score}diem.png`;
+      link.href = dataUrl;
+      link.click();
   }
 
   function closeReward() { 
@@ -507,7 +1716,7 @@
   }
 
   // Init
-  window.onload = () => { loadTypes(); startGlobalTimer(); };
+  window.onload = () => { updateSubjectsDropdown(); };
   document.getElementById('answer').addEventListener('keypress', e => { if(e.key==='Enter') check(); });
 
 </script>
