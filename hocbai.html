@@ -75,7 +75,11 @@
       <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
       
       <h1 class="text-3xl font-black mb-2 relative z-10 drop-shadow-md">Trợ Lý Học Tập</h1>
-      <p class="text-brand-100 font-bold tracking-wider uppercase text-sm relative z-10">Bản Đặc Quyền Xuân Lâm V20.0</p>
+      <div class="flex items-center gap-2 mt-1 mb-2 relative z-10 flex-wrap">
+        <p class="text-brand-100 font-bold tracking-wider uppercase text-sm">Bản Đặc Quyền Xuân Lâm V20.0</p>
+        <span id="syncStatus" class="bg-white/10 text-white/50 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all">🏠 Ngoại tuyến</span>
+        <button onclick="toggleAiSettings()" class="bg-white/15 hover:bg-white/25 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all flex items-center gap-1 shadow-sm">⚙️ Cấu hình AI</button>
+      </div>
       
       <!-- Progress Bar -->
       <div class="mt-6 bg-black/20 rounded-full h-4 w-full p-1 relative z-10 shadow-inner">
@@ -172,6 +176,50 @@
         <div id="explanationText" class="text-amber-800 font-bold leading-relaxed pt-2"></div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- AI Settings Modal -->
+  <div id="aiModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 justify-center items-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+      <button onclick="toggleAiSettings()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+      <h3 class="text-xl font-black text-slate-800 mb-4 flex items-center gap-2">🤖 Cấu hình AI & Đề thi</h3>
+      
+      <!-- OpenTDB Switch -->
+      <div class="mb-5 p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+        <div class="pr-2">
+          <h4 class="font-black text-sm text-slate-700">Môn Tiếng Anh từ OpenTDB</h4>
+          <p class="text-xs text-slate-400 leading-relaxed mt-0.5">Tải câu hỏi từ Ngân hàng đề OpenTDB khi Trực tuyến.</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="opentdbEnabled" class="sr-only peer" checked>
+          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+        </label>
+      </div>
+
+      <!-- Gemini AI Switch -->
+      <div class="mb-5 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+        <div class="flex items-center justify-between mb-3">
+          <div class="pr-2">
+            <h4 class="font-black text-sm text-slate-700">Sinh câu hỏi bằng Gemini AI</h4>
+            <p class="text-xs text-slate-400 leading-relaxed mt-0.5">Tự động soạn câu hỏi thông minh theo thời gian thực.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="geminiEnabled" class="sr-only peer" onchange="handleGeminiToggle()">
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+          </label>
+        </div>
+        <div class="mt-2">
+          <label class="block text-xs font-bold text-slate-500 mb-1">Gemini API Key của bạn:</label>
+          <input type="password" id="geminiKey" placeholder="Dán API Key của bạn..." class="w-full bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
+          <p class="text-[10px] text-slate-400 mt-1">Khóa của bạn được lưu an toàn tại bộ nhớ cục bộ trình duyệt (localStorage).</p>
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <button onclick="saveAiSettings()" class="bg-blue-500 hover:bg-blue-600 text-white font-black py-3 rounded-2xl flex-1 shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]">Lưu cấu hình</button>
+        <button onclick="toggleAiSettings()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl px-6 transition-all">Đóng</button>
+      </div>
     </div>
   </div>
 
@@ -274,89 +322,197 @@
   const vietnameseData = {
     "vi_1_1": [
       { q: "Điền 'tr' hoặc 'ch': ...ân lý", a: ["tr"], h: "Chân lý (lẽ phải)." },
-      { q: "Điền 'tr' hoặc 'ch': ...ăm chỉ", a: ["ch"], h: "Chăm chỉ (cần cù học tập)." },
+      { q: "Điền 'tr' hoặc 'ch': ...ăm chỉ", a: ["ch"], h: "Chăm chỉ (cần cù)." },
       { q: "Điền 's' hoặc 'x': ...inh đẹp", a: ["s"], h: "Xinh đẹp bắt đầu bằng chữ s." },
       { q: "Điền 's' hoặc 'x': ...anh lá", a: ["x"], h: "Xanh lá bắt đầu bằng chữ x." },
       { q: "Điền 'c' hoặc 'k': thước ...ẻ", a: ["k"], h: "Trước e, ê, i ta dùng k." },
-      { q: "Điền 'c' hoặc 'k': ...im oanh", a: ["c"], h: "Ta dùng c trước âm i khi viết c-i-m." }
+      { q: "Điền 'c' hoặc 'k': ...im oanh", a: ["c"], h: "Ta dùng c trước âm i." },
+      { q: "Điền 'g' hoặc 'gh': nhà ...a", a: ["g"], h: "Ga tàu lửa." },
+      { q: "Điền 'g' hoặc 'gh': ghế ...ỗ", a: ["gh"], h: "Ghế làm bằng gỗ." },
+      { q: "Điền 'ng' hoặc 'ngh': ...ủ ngon", a: ["ng"], h: "Giấc ngủ ngon lành." },
+      { q: "Điền 'ng' hoặc 'ngh': nghe ...óng", a: ["ngh"], h: "Nghe ngóng tin tức." }
     ],
     "vi_1_2": [
-      { q: "Từ 'chạy' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Chạy thể hiện cử động của cơ thể." },
-      { q: "Từ 'quyển sách' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Quyển sách là đồ vật." }
+      { q: "Từ 'chạy' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Thể hiện chuyển động nhanh bằng chân." },
+      { q: "Từ 'quyển sách' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Sách dùng để đọc." },
+      { q: "Từ 'viết bài' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Hành động cầm bút viết." },
+      { q: "Từ 'bút chì' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Đồ dùng để vẽ, viết." },
+      { q: "Từ 'ngôi nhà' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Nơi để gia đình sinh sống." },
+      { q: "Từ 'ăn cơm' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Hành động nhai nuốt thức ăn." },
+      { q: "Từ 'con mèo' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Động vật nuôi kêu meo meo." },
+      { q: "Từ 'quét nhà' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Hành động làm sạch sàn nhà." },
+      { q: "Từ 'xe đạp' là từ chỉ hoạt động hay sự vật?", a: ["sự vật", "su vat"], h: "Phương tiện di chuyển bằng cách đạp chân." },
+      { q: "Từ 'hát ca' là từ chỉ hoạt động hay sự vật?", a: ["hoạt động", "hoat dong"], h: "Hành động phát ra âm thanh âm nhạc từ miệng." }
     ],
     "vi_2_1": [
-      { q: "Trong câu: 'Em bé cười tươi.', từ nào chỉ hoạt động?", a: ["cười", "cươi"], h: "Hoạt động là hành động như cười, nói, đi, chạy." },
-      { q: "Trong câu: 'Bầu trời xanh ngắt.', từ nào chỉ đặc điểm?", a: ["xanh ngắt", "xanh ngat", "xanh"], h: "Xanh ngắt chỉ màu sắc đặc trưng." }
+      { q: "Từ 'xinh đẹp' chỉ đặc điểm hay hoạt động?", a: ["đặc điểm", "dac diem"], h: "Vẻ đẹp bên ngoài." },
+      { q: "Từ 'chăm chỉ' chỉ đặc điểm hay hoạt động?", a: ["đặc điểm", "dac diem"], h: "Tính nết chịu khó học tập, làm việc." },
+      { q: "Từ 'đọc sách' chỉ đặc điểm hay hoạt động?", a: ["hoạt động", "hoat dong"], h: "Hành động mở sách đọc chữ." },
+      { q: "Từ 'cao lớn' chỉ đặc điểm hay hoạt động?", a: ["đặc điểm", "dac diem"], h: "Chiều cao cơ thể vượt trội." },
+      { q: "Từ 'yêu thương' chỉ tình cảm/thái độ hay hoạt động vật lý?", a: ["tình cảm", "tinh cam", "thái độ", "thai do"], h: "Tình cảm mến thương." },
+      { q: "Từ 'quạt mát' chỉ hoạt động hay đặc điểm?", a: ["hoạt động", "hoat dong"], h: "Hành động làm mát bằng quạt." },
+      { q: "Từ 'thông minh' chỉ đặc điểm hay hoạt động?", a: ["đặc điểm", "dac diem"], h: "Khả năng tư duy nhanh nhạy." },
+      { q: "Từ 'bảng đen' là từ chỉ sự vật hay đặc điểm?", a: ["sự vật", "su vat"], h: "Đồ dùng treo trên tường để viết phấn." },
+      { q: "Từ 'nhanh nhẹn' chỉ đặc điểm hay hoạt động?", a: ["đặc điểm", "dac diem"], h: "Phong cách làm việc, di chuyển nhanh chóng." },
+      { q: "Từ 'ngoan ngoãn' chỉ đặc điểm hay hoạt động?", a: ["đặc điểm", "dac diem"], h: "Tính nết biết vâng lời cha mẹ." }
     ],
     "vi_2_2": [
-      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Em đi học **bằng xe đạp**.' -> Em đi học ...?", a: ["bằng gì", "bang gi"], h: "Hỏi về phương tiện bằng cụm từ 'bằng gì'." },
-      { q: "Đặt câu hỏi cho bộ phận in đậm: '**Mẹ em** là giáo viên.' -> ... là giáo viên?", a: ["ai"], h: "Hỏi về người bằng từ 'ai'." }
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Em đi học **bằng xe đạp**.' -> Em đi học ...?", a: ["bằng gì", "bang gi"], h: "Hỏi về phương tiện." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: '**Mẹ em** là giáo viên.' -> ... là giáo viên?", a: ["ai"], h: "Hỏi về người." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Em thích ăn **táo**.' -> Em thích ăn ...?", a: ["gì", "cái gì", "gi", "cai gi"], h: "Hỏi về đồ vật, quả cây." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Hôm nay trời **rất đẹp**.' -> Hôm nay trời ...?", a: ["thế nào", "the nao"], h: "Hỏi về thời tiết, tính chất." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Bé đang chơi **ở ngoài sân**.' -> Bé đang chơi ...?", a: ["ở đâu", "o dau"], h: "Hỏi về địa điểm." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Vì mưa lớn nên **em không đi chơi**.' -> Vì sao em không đi chơi?", a: ["vì mưa lớn", "vi mua lon"], h: "Hỏi về nguyên nhân." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Bố đi làm lúc **7 giờ sáng**.' -> Bố đi làm ...?", a: ["khi nào", "mấy giờ", "khi nao", "may gio", "lúc mấy giờ", "luc may gio"], h: "Hỏi về thời gian." },
+      { q: "Đặt câu hỏi cho bộ phận in đậm: 'Chú mèo **rất lười**.' -> Chú mèo ...?", a: ["thế nào", "the nao"], h: "Hỏi về tính chất của chú mèo." }
     ],
     "vi_3_1": [
-      { q: "Tìm từ trái nghĩa với từ 'chăm chỉ':", a: ["lười biếng", "lười", "luoi bieng", "luoi"], h: "Từ trái nghĩa với chăm chỉ là lười biếng." },
-      { q: "Tìm từ đồng nghĩa với từ 'bao la':", a: ["mênh mông", "bát ngát", "menh mong", "bat ngat"], h: "Bao la đồng nghĩa với mênh mông, rộng lớn." }
+      { q: "Tìm từ trái nghĩa với từ 'chăm chỉ':", a: ["lười biếng", "lười", "luoi bieng", "luoi"], h: "Lười biếng làm việc, học tập." },
+      { q: "Tìm từ đồng nghĩa với từ 'bao la':", a: ["mênh mông", "bát ngát", "rộng lớn", "menh mong", "bat ngat", "rong lon"], h: "Không gian vô tận rộng rãi." },
+      { q: "Tìm từ trái nghĩa với từ 'dũng cảm':", a: ["hèn nhát", "nhút nhát", "hen nhat", "nhut nhat"], h: "Sợ sệt, không dám đương đầu." },
+      { q: "Tìm từ đồng nghĩa với từ 'tổ quốc':", a: ["đất nước", "quê hương", "dat nuoc", "que huong"], h: "Nơi cha sinh mẹ đẻ của một dân tộc." },
+      { q: "Tìm từ trái nghĩa với từ 'yêu thương':", a: ["ghét bỏ", "căm ghét", "ghen ghét", "ghet bo", "cam ghet", "ghen ghet"], h: "Thái độ thù ghét." },
+      { q: "Tìm từ đồng nghĩa với từ 'chăm chỉ':", a: ["cần cù", "siêng năng", "chịu khó", "can cu", "sieng nang", "chiu kho"], h: "Tính siêng năng cần mẫn." },
+      { q: "Tìm từ trái nghĩa với từ 'ngắn':", a: ["dài", "dai"], h: "Kích thước chiều dài lớn." },
+      { q: "Tìm từ đồng nghĩa với từ 'xinh đẹp':", a: ["đẹp đẽ", "xinh xắn", "tươi đẹp", "dep de", "xinh xan", "tuoi dep"], h: "Có vẻ đẹp cuốn hút." },
+      { q: "Tìm từ trái nghĩa với từ 'khóc':", a: ["cười", "cuoi"], h: "Thể hiện niềm vui phát ra tiếng." },
+      { q: "Tìm từ đồng nghĩa với từ 'học tập':", a: ["học hành", "học", "hoc hanh", "hoc"], h: "Tiếp thu kiến thức mới." }
     ],
     "vi_3_2": [
-      { q: "Câu sau sử dụng phép tu từ nào: 'Trăng ôm khít bóng tre'?", a: ["nhân hóa", "nhan hoa"], h: "Trăng được gán hành động 'ôm' của con người." }
+      { q: "Câu sau dùng phép tu từ nào: 'Trẻ em như búp trên cành'?", a: ["so sánh", "so sanh"], h: "Từ so sánh là từ 'như'." },
+      { q: "Câu sau dùng phép tu từ nào: 'Trăng ôm khít bóng tre'?", a: ["nhân hóa", "nhan hoa"], h: "Trăng được gán cho hành động 'ôm' của con người." },
+      { q: "Câu sau dùng phép tu từ nào: 'Những ngôi sao thức ngoài kia'?", a: ["nhân hóa", "nhan hoa"], h: "Ngôi sao 'thức' như con người." },
+      { q: "Mặt trời đỏ như quả bóng lửa sử dụng biện pháp gì?", a: ["so sánh", "so sanh"], h: "So sánh Mặt Trời với quả bóng lửa." },
+      { q: "Câu sau dùng phép tu từ nào: 'Bác kim sợi chỉ đi trước'?", a: ["nhân hóa", "nhan hoa"], h: "Kim được gọi là 'Bác' và có hành động đi." },
+      { q: "Câu sau dùng phép tu từ nào: 'Dòng sông uốn lượn như dải lụa'?", a: ["so sánh", "so sanh"], h: "Dòng sông được so sánh với dải lụa." },
+      { q: "Câu sau dùng phép tu từ nào: 'Chị gió reo vui trên cành lá'?", a: ["nhân hóa", "nhan hoa"], h: "Gió được nhân hóa thành 'chị gió'." },
+      { q: "Câu sau dùng phép tu từ nào: 'Tiếng suối trong như tiếng hát xa'?", a: ["so sánh", "so sanh"], h: "Ví tiếng suối với tiếng hát." }
     ],
     "vi_4_1": [
-      { q: "Điền từ còn thiếu vào câu tục ngữ: 'Ăn quả nhớ kẻ ...'", a: ["trồng cây", "trong cay"], h: "Nhớ ơn người gieo trồng." },
-      { q: "Điền từ còn thiếu vào câu tục ngữ: 'Lá lành đùm lá ...'", a: ["rách", "rach"], h: "Đùm bọc cưu mang lúc khó khăn." }
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Ăn quả nhớ kẻ ...'", a: ["trồng cây", "trong cay"], h: "Biết ơn người tạo ra thành quả." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Lá lành đùm lá ...'", a: ["rách", "rach"], h: "Tương thân tương ái, đùm bọc lẫn nhau." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Uống nước nhớ ...'", a: ["nguồn", "nguon"], h: "Uống nước nhớ nguồn." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Tốt gỗ hơn tốt ...'", a: ["nước sơn", "nuoc son"], h: "Đánh giá nội dung tốt hơn hình thức bề ngoài." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Có công mài sắt có ngày ...'", a: ["nên kim", "nen kim"], h: "Kiên trì ắt thành công." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Gần mực thì đen, gần đèn thì ...'", a: ["sáng", "sang"], h: "Môi trường ảnh hưởng đến nhân cách." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Công cha như núi ...'", a: ["thái sơn", "thai son"], h: "Công cha to lớn khôn cùng." },
+      { q: "Điền từ còn thiếu vào tục ngữ: 'Nghĩa mẹ như nước trong ... chảy ra'", a: ["nguồn", "nguon"], h: "Tình thương vô hạn của người mẹ." },
+      { q: "Điền từ còn thiếu: 'Một cây làm chẳng nên non, ba cây chụm lại nên hòn ... cao'", a: ["núi", "nui"], h: "Sức mạnh của sự đoàn kết." },
+      { q: "Điền từ còn thiếu: 'Bầu ơi thương lấy bí cùng, tuy rằng khác giống nhưng chung một ...'", a: ["giàn", "gian"], h: "Tình anh em đồng bào ruột thịt." }
     ],
     "vi_4_2": [
-      { q: "Từ 'xinh xắn' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Xinh xắn có sự lặp lại âm đầu và vần." },
-      { q: "Từ 'xe đạp' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Xe và đạp đều có nghĩa cụ thể." }
+      { q: "Từ 'xinh xắn' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Lặp âm đầu x và vần." },
+      { q: "Từ 'xe đạp' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Xe và đạp đều có nghĩa độc lập tạo nên nghĩa mới." },
+      { q: "Từ 'đoàn kết' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Ghép nghĩa của hai từ lại." },
+      { q: "Từ 'long lanh' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Láy âm đầu l." },
+      { q: "Từ 'mạnh mẽ' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Láy âm đầu m." },
+      { q: "Từ 'bàn ghế' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Ghép đẳng lập chỉ vật dụng ngồi học/làm việc." },
+      { q: "Từ 'học tập' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Ghép các từ có nghĩa tương cận." },
+      { q: "Từ 'rì rầm' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Láy âm đầu r mô tả âm thanh nhỏ." },
+      { q: "Từ 'mơ mộng' là từ ghép hay từ láy?", a: ["từ ghép", "tu ghep", "ghép", "ghep"], h: "Mơ và mộng đều có nghĩa chỉ mơ tưởng." },
+      { q: "Từ 'ấm áp' là từ ghép hay từ láy?", a: ["từ láy", "tu lay", "láy", "lay"], h: "Láy khuyết âm đầu âm vần." }
     ],
     "vi_5_1": [
-      { q: "Xác định chủ ngữ trong câu: 'Mùa xuân đã về.'", a: ["mùa xuân", "mua xuan"], h: "Bộ phận trả lời cho câu hỏi: Cái gì đã về?" },
-      { q: "Xác định vị ngữ trong câu: 'Học sinh đang đọc bài.'", a: ["đang đọc bài", "đang đọc", "dang doc bai", "dang doc"], h: "Vị ngữ chỉ hoạt động đang diễn ra." }
+      { q: "Xác định chủ ngữ trong câu: 'Mùa xuân đã về.'", a: ["mùa xuân", "mua xuan"], h: "Cái gì đã về?" },
+      { q: "Xác định vị ngữ trong câu: 'Học sinh đang đọc bài.'", a: ["đang đọc bài", "đang đọc", "dang doc bai", "dang doc"], h: "Bộ phận chỉ hoạt động của học sinh." },
+      { q: "Xác định chủ ngữ trong câu: 'Cánh cò bay lả bay la.'", a: ["cánh cò", "canh co"], h: "Cái gì bay lả bay la?" },
+      { q: "Xác định vị ngữ trong câu: 'Mẹ em rất hiền hậu.'", a: ["rất hiền hậu", "rat hien hau"], h: "Bộ phận chỉ tính chất của người mẹ." },
+      { q: "Xác định chủ ngữ trong câu: 'Dưới trăng, dòng sông lấp lánh.'", a: ["dòng sông", "dong song"], h: "Bộ phận trạng ngữ là 'Dưới trăng'." },
+      { q: "Xác định vị ngữ trong câu: 'Chim hót líu lo trên cành.'", a: ["hót líu lo trên cành", "hot liu lo tren canh", "hót líu lo", "hot liu lo"], h: "Chỉ hoạt động tiếng hót của chim." },
+      { q: "Xác định chủ ngữ trong câu: 'Chúng em là tương lai đất nước.'", a: ["chúng em", "chung em"], h: "Ai là tương lai đất nước?" },
+      { q: "Xác định vị ngữ trong câu: 'Trời mưa như trút nước.'", a: ["mưa như trút nước", "mua nhu trut nuoc", "mưa", "mua"], h: "Mô tả thời tiết đang xảy ra." }
     ],
     "vi_5_2": [
-      { q: "Từ 'chân' trong 'chân bàn' và 'chân người' là từ đồng âm hay nhiều nghĩa?", a: ["nhiều nghĩa", "tu nhieu nghia", "nhieu nghia"], h: "Có sự chuyển nghĩa từ chân người sang chân bàn." }
+      { q: "Từ 'chân' trong 'chân bàn' và 'chân người' là từ đồng âm hay nhiều nghĩa?", a: ["nhiều nghĩa", "nhieu nghia"], h: "Có sự tương đồng về vị trí nâng đỡ." },
+      { q: "Từ 'đường' trong 'con đường' và 'muỗng đường' là từ đồng âm hay nhiều nghĩa?", a: ["đồng âm", "dong am"], h: "Cùng cách viết nhưng hoàn toàn khác nghĩa." },
+      { q: "Từ 'kính' trong 'đeo kính' và 'kính trọng' là từ đồng âm hay nhiều nghĩa?", a: ["đồng âm", "dong am"], h: "Đồng âm dị nghĩa." },
+      { q: "Từ 'cánh' trong 'cánh chim' và 'cánh buồm' là từ đồng âm hay nhiều nghĩa?", a: ["nhiều nghĩa", "nhieu nghia"], h: "Chỉ bộ phận có hình dáng tấm mỏng đưa ra ngoài." },
+      { q: "Từ 'mũi' trong 'mũi người' and 'mũi thuyền' là từ đồng âm hay nhiều nghĩa?", a: ["nhiều nghĩa", "nhieu nghia"], h: "Bộ phận nhọn hướng về phía trước." },
+      { q: "Từ 'đá' trong 'hòn đá' và 'đá bóng' là từ đồng âm hay nhiều nghĩa?", a: ["đồng âm", "dong am"], h: "Đồng âm hoàn toàn." },
+      { q: "Từ 'lá' trong 'lá thư' và 'lá cây' là từ đồng âm hay nhiều nghĩa?", a: ["nhiều nghĩa", "nhieu nghia"], h: "Nhóm từ có hình dáng mỏng dẹt." },
+      { q: "Từ 'ba' trong 'ba tuổi' và 'ba mẹ' là từ đồng âm hay nhiều nghĩa?", a: ["đồng âm", "dong am"], h: "Ba (số 3) và ba (bố/cha)." }
     ],
     "vi_6_1": [
-      { q: "Phép tu từ nào so sánh ngầm hai sự vật có nét tương đồng gọi là gì? (Ẩn dụ / Hoán dụ)", a: ["ẩn dụ", "an du"], h: "Ẩn dụ là so sánh ngầm." }
+      { q: "Phép tu từ so sánh ngầm hai sự vật có nét tương đồng gọi là gì?", a: ["ẩn dụ", "an du"], h: "Ẩn dụ thường được coi là so sánh ngầm." },
+      { q: "Câu thơ: 'Đầu tường lửa lựu lập lòe đơm bông' sử dụng ẩn dụ màu hoa lựu với vật gì?", a: ["lửa", "ngọn lửa", "ngon lua"], h: "Màu đỏ rực rỡ như ngọn lửa." },
+      { q: "Phép tu từ lấy tên sự vật này gọi tên sự vật khác dựa trên mối quan hệ gần gũi gọi là gì?", a: ["hoán dụ", "hoan du"], h: "Ví dụ: 'Áo nâu liền với áo xanh'." },
+      { q: "Câu: 'Bàn tay ta làm nên tất cả' sử dụng biện pháp tu từ gì ở từ 'bàn tay'?", a: ["hoán dụ", "hoan du"], h: "Dùng bộ phận bàn tay thay thế cho toàn thể con người lao động." },
+      { q: "Câu thơ: 'Ngày ngày mặt trời đi qua trên lăng / Thấy một mặt trời trong lăng rất đỏ' sử dụng biện pháp tu từ gì ở từ 'mặt trời' thứ hai?", a: ["ẩn dụ", "an du"], h: "Hình ảnh ẩn dụ ví Bác Hồ như vầng thái dương chiếu sáng đất nước." }
     ],
     "vi_6_2": [
-      { q: "Truyền thuyết nào giải thích nguồn gốc con Rồng cháu Tiên của dân tộc Việt Nam?", a: ["con rồng cháu tiên", "con rong chau tien"], h: "Nói về Lạc Long Quân và Âu Cơ." }
+      { q: "Truyền thuyết nào giải thích nguồn gốc dân tộc Việt Nam qua hình tượng bọc trăm trứng?", a: ["con rồng cháu tiên", "con rong chau tien"], h: "Lạc Long Quân và Âu Cơ." },
+      { q: "Nhân vật truyền thuyết nào lên ba không nói không cười nhưng khi nghe sứ giả tìm người cứu nước liền xin đi đánh giặc?", a: ["thánh gióng", "thanh giong", "phù đổng thiên vương", "phu dong thien vuong"], h: "Người anh hùng làng Gióng cưỡi ngựa sắt dẹp giặc Ân." },
+      { q: "Truyện cổ tích nào răn dạy về lòng trung thực và sự tích chiếc bánh chưng, bánh giầy?", a: ["bánh chưng bánh giầy", "banh chung banh giay", "sự tích bánh chưng bánh giầy"], h: "Nhân vật chính Lang Liêu dâng lễ vật làm từ gạo nếp." },
+      { q: "Sự tích nào giải thích nguồn gốc hồ Hoàn Kiếm và tên gọi của nó?", a: ["sự tích hồ gươm", "hồ gươm", "su tich ho guom", "ho guom"], h: "Vua Lê Lợi trả gươm thần cho Rùa Vàng." }
     ],
     "vi_7_1": [
-      { q: "Yếu tố 'gia' trong 'gia định' có nghĩa là gì? (nhà / tăng thêm / người)", a: ["nhà", "nha"], h: "Gia đình có nghĩa gốc gia là nhà." }
+      { q: "Yếu tố Hán Việt 'gia' trong 'gia đình' có nghĩa là gì?", a: ["nhà", "nha"], h: "Ngôi nhà nơi ở." },
+      { q: "Yếu tố Hán Việt 'quốc' trong 'quốc gia' có nghĩa là gì?", a: ["nước", "nuoc", "đất nước", "dat nuoc"], h: "Quốc nghĩa là đất nước." },
+      { q: "Yếu tố Hán Việt 'mẫu' trong 'mẫu thân' có nghĩa là gì?", a: ["mẹ", "me"], h: "Mẹ đẻ." },
+      { q: "Yếu tố Hán Việt 'phụ' trong 'phụ mẫu' có nghĩa là gì?", a: ["cha", "bố", "ba"], h: "Cha mẹ." },
+      { q: "Yếu tố Hán Việt 'thủy' trong 'thủy triều' có nghĩa là gì?", a: ["nước", "nuoc"], h: "Thủy là nước." },
+      { q: "Yếu tố Hán Việt 'hỏa' trong 'hỏa hoạn' có nghĩa là gì?", a: ["lửa", "lua"], h: "Hỏa là lửa." },
+      { q: "Yếu tố Hán Việt 'mộc' trong 'thảo mộc' có nghĩa là gì?", a: ["cây", "cay", "gỗ", "go"], h: "Cây cối." },
+      { q: "Yếu tố Hán Việt 'thiên' trong 'thiên địa' có nghĩa là gì?", a: ["trời", "troi"], h: "Thiên là trời, địa là đất." }
     ],
     "vi_7_2": [
-      { q: "Hoàn thành câu ca dao: 'Công cha như núi thái sơn, nghĩa mẹ như nước trong ... chảy ra'", a: ["nguồn", "nguon"], h: "Nghĩa mẹ dạt dào khôn xiết." }
+      { q: "Hoàn thành câu ca dao: 'Công cha như núi thái sơn, nghĩa mẹ như nước trong ... chảy ra'", a: ["nguồn", "nguon"], h: "Tấm lòng mẹ bao la dạt dào." },
+      { q: "Hoàn thành câu ca dao: 'Bầu ơi thương lấy bí cùng, tuy rằng khác giống nhưng chung một ...'", a: ["giàn", "gian"], h: "Đồng bào cùng sống dưới một mái nhà." },
+      { q: "Hoàn thành câu ca dao: 'Thân cò lặn lội bờ ao, gánh gạo nuôi chồng tiếng khóc ...'", a: ["nỉ non", "ni non"], h: "Khắc họa nỗi vất vả cực nhọc của người phụ nữ xưa." },
+      { q: "Hoàn thành câu ca dao: 'Nhiễu điều phủ lấy giá gương, người trong một nước phải ... nhau cùng'", a: ["thương", "thuong"], h: "Lòng nhân ái đùm bọc lẫn nhau." }
     ],
     "vi_8_1": [
-      { q: "Câu 'Vì trời mưa nên đường trơn.' liên kết với nhau bằng quan hệ từ chỉ quan hệ gì? (Nguyên nhân - Kết quả / Điều kiện / Tương phản)", a: ["nguyên nhân - kết quả", "nguyên nhân kết quả", "nguyen nhan ket qua"], h: "Vì... nên..." }
+      { q: "Câu 'Vì trời mưa to nên đường trơn.' liên kết bằng quan hệ từ chỉ mối quan hệ gì?", a: ["nguyên nhân - kết quả", "nguyên nhân kết quả", "nguyen nhan ket qua"], h: "Quan hệ nguyên nhân - kết quả (Vì... nên...)." },
+      { q: "Câu 'Tuy nhà nghèo nhưng bạn Nam vẫn học rất giỏi.' liên kết bằng quan hệ từ chỉ quan hệ gì?", a: ["tương phản", "nghịch lý", "tuong phan"], h: "Quan hệ tương phản (Tuy... nhưng...)." },
+      { q: "Câu 'Nếu chủ nhật trời đẹp thì chúng ta sẽ đi dã ngoại.' liên kết bằng quan hệ từ chỉ quan hệ gì?", a: ["giả thiết - kết quả", "điều kiện - kết quả", "gia thiet ket qua", "dieu kien ket qua"], h: "Quan hệ giả thiết/điều kiện (Nếu... thì...)." },
+      { q: "Câu 'Không những Lan học giỏi mà bạn ấy còn rất hát hay.' thể hiện quan hệ gì?", a: ["tăng tiến", "tang tien"], h: "Quan hệ tăng tiến (Không những... mà còn...)." }
     ],
     "vi_8_2": [
-      { q: "Bài thơ 'Sông núi nước Nam' (Nam quốc sơn hà) thường được tương truyền là của ai?", a: ["lý thường kiệt", "ly thuong kiet"], h: "Vị tướng anh hùng thời Lý." }
+      { q: "Tác phẩm kiệt tác truyện Nôm 'Đoạn trường tân thanh' của đại thi hào Nguyễn Du còn được gọi là truyện gì?", a: ["truyện kiều", "truyen kieu"], h: "Kể về cuộc đời nàng Vương Thúy Kiều tài hoa bạc mệnh." },
+      { q: "Bài thơ nào được coi là bản 'Tuyên ngôn độc lập' đầu tiên của nước Việt Nam?", a: ["sông núi nước nam", "nam quốc sơn hà", "song nui nuoc nam", "nam quoc son ha"], h: "Nam quốc sơn hà nam đế cư..." },
+      { q: "Tác phẩm 'Hịch tướng sĩ' do danh tướng nào viết thời nhà Trần nhằm khích lệ tinh thần quân sĩ chống Nguyên - Mông?", a: ["trần quốc tuấn", "trần hưng đạo", "tran quoc tuan", "tran hung dao"], h: "Hưng Đạo Đại Vương." },
+      { q: "Ai là tác giả của áng thiên cổ hùng văn 'Bình Ngô đại cáo'?", a: ["nguyễn trãi", "nguyen trai"], h: "Nhà khai quốc công thần nhà Hậu Lê, viết năm 1428." }
     ],
     "vi_9_1": [
-      { q: "Ai là tác giả của bài thơ 'Đồng chí' viết về tình đồng đội?", a: ["chính hữu", "chinh huu"], h: "Nhà thơ quân đội viết về người lính thời kháng Pháp." }
+      { q: "Ai là tác giả của bài thơ 'Đồng chí' viết về tình đồng đội keo sơn gắn bó?", a: ["chính hữu", "chinh huu"], h: "Súng bên súng, đầu sát bên đầu..." },
+      { q: "Bài thơ 'Bài thơ về tiểu đội xe không kính' là của nhà thơ nào?", a: ["phạm tiến duật", "pham tien duat"], h: "Nhà thơ tiêu biểu thời kỳ kháng chiến chống Mỹ cứu nước." },
+      { q: "Ai là tác giả của bài thơ 'Ánh trăng' gợi nhắc đạo lý uống nước nhớ nguồn?", a: ["nguyễn duy", "nguyen duy"], h: "Giật mình mình ngắm vầng trăng xưa." },
+      { q: "Bài thơ 'Viếng lăng Bác' đầy xúc động được viết bởi nhà thơ miền Nam nào?", a: ["viễn phương", "vien phuong"], h: "Con ở miền Nam ra thăm lăng Bác." }
     ],
     "vi_9_2": [
-      { q: "Truyện ngắn 'Làng' của nhà văn Kim Lân viết về nhân vật chính tên là gì?", a: ["ông hai", "ong hai"], h: "Người nông dân yêu làng yêu nước." }
+      { q: "Truyện ngắn 'Làng' của nhà văn Kim Lân viết về nhân vật chính yêu làng yêu nước sâu sắc tên là gì?", a: ["ông hai", "ong hai"], h: "Người nông dân rời làng tản cư kháng chiến." },
+      { q: "Tác phẩm 'Chiếc lược ngà' của Nguyễn Quang Sáng kể về mối tình phụ tử sâu sắc giữa bé Thu và nhân vật nào?", a: ["ông sáu", "anh sáu", "ong sau", "anh sau"], h: "Người chiến sĩ cách mạng ra đi kháng chiến." },
+      { q: "Nhân vật anh thanh niên làm công tác khí tượng trên đỉnh Yên Sơn xuất hiện trong tác phẩm nào của Nguyễn Thành Long?", a: ["lặng lẽ sa pa", "lang le sa pa"], h: "Những con người âm thầm cống hiến cho đất nước." },
+      { q: "Truyện ngắn 'Chữ người tử tù' ban đầu có tên là gì, do Nguyễn Tuân sáng tác?", a: ["dòng chữ cuối cùng", "dong chu cuoi cung"], h: "Sau này được in trong tập Vang bóng một thời." }
     ],
     "vi_10_1": [
-      { q: "Sử thi anh hùng của Tây Nguyên nổi tiếng kể về người tù trưởng Đăm Săn có tên là gì?", a: ["đăm săn", "dam san", "bài ca chàng đăm săn"], h: "Anh hùng săn bắt thú dữ và chiến đấu vì buôn làng." }
+      { q: "Sử thi anh hùng tiêu biểu nhất của đồng bào Ê-đê kể về chiến công của người tù trưởng nào?", a: ["đăm săn", "dam san", "bài ca chàng đăm săn"], h: "Chàng Đăm Săn chiến đấu bảo vệ buôn làng." },
+      { q: "Tác phẩm truyền thuyết cổ về thành Cổ Loa gắn liền với mối tình bi kịch của ai?", a: ["mị châu - trọng thủy", "mị châu trọng thủy", "mi chau trong thuy"], h: "Nàng công chúa rắc lông ngỗng dẫn đường." }
     ],
     "vi_10_2": [
-      { q: "Bình Ngô đại cáo của Nguyễn Trãi viết sau chiến thắng quân xâm lược nào?", a: ["minh", "quân minh", "quan minh"], h: "Chiến thắng giặc Minh phương Bắc." }
+      { q: "Áng thiên cổ hùng văn 'Bình Ngô đại cáo' được Nguyễn Trãi thừa lệnh ai để viết?", a: ["lê lợi", "le loi", "vua lê thái tổ", "le thai to"], h: "Viết sau chiến thắng Lam Sơn lẫy lừng." },
+      { q: "Trong 'Bình Ngô đại cáo', Nguyễn Trãi đã chỉ ra giặc phương Bắc phạm vào những tội ác ghê tởm nào? (Gõ tên giặc xâm lược)", a: ["minh", "giặc minh", "quan minh"], h: "Nướng dân đen trên ngọn lửa hung tàn..." }
     ],
     "vi_11_1": [
-      { q: "Tác phẩm 'Chí Phèo' lúc đầu có tên là gì?", a: ["cái lò gạch cũ", "cai lo gach cu"], h: "Biểu tượng của sự nghèo đói và bế tắc." }
+      { q: "Nhân vật người nông dân bị tha hóa, lưu manh hóa cuối cùng chết trong bế tắc tên là gì?", a: ["chí phèo", "chi pheo"], h: "Tác phẩm kiệt tác của Nam Cao viết năm 1941." },
+      { q: "Chị Dậu là nhân vật chính chịu cảnh sưu thuế áp bức nặng nề trong tiểu thuyết 'Tắt đèn' của ai?", a: ["ngô tất tố", "ngo tat to"], h: "Nhà văn hiện thực quê ở Đông Anh, Hà Nội." },
+      { q: "Truyện ngắn 'Chữ người tử tù' ca ngợi vẻ đẹp của nhân vật tài hoa khí phách nào?", a: ["huấn cao", "huan cao"], h: "Hình tượng lấy cảm hứng từ Cao Bá Quát." }
     ],
     "vi_11_2": [
-      { q: "Tác giả của bài thơ 'Đây thôn Vĩ Dạ' là ai?", a: ["hàn mặc tử", "han mac tu"], h: "Nhà thơ lãng mạn quê miền Trung." }
+      { q: "Ai được mệnh danh là nhà thơ của làng cảnh Việt Nam với chùm thơ thu nổi tiếng?", a: ["nguyễn khuyến", "nguyen khuyen"], h: "Thu điếu, Thu ẩm, Thu vịnh." },
+      { q: "Ai là tác giả của bài thơ tình lãng mạn 'Đây thôn Vĩ Dạ'?", a: ["hàn mặc tử", "han mac tu"], h: "Sao anh không về chơi thôn Vĩ?" }
     ],
     "vi_12_1": [
-      { q: "Bài thơ kháng chiến chống Pháp nổi tiếng 'Tây Tiến' là của nhà thơ nào?", a: ["quang dũng", "quang dung"], h: "Đoàn binh Tây Tiến anh hùng hào hoa." },
-      { q: "Bài thơ được coi là khúc tráng ca kháng chiến chống Pháp của Tố Hữu mang tên địa danh chiến khu nào?", a: ["việt bắc", "viet bac"], h: "Mười lăm năm ấy thiết tha mặn nồng." }
+      { q: "Ai là tác giả của bài thơ 'Tây Tiến' vẽ nên bức tranh lẫm liệt, kiêu hùng của đoàn binh Tây Tiến?", a: ["quang dũng", "quang dung"], h: "Tây Tiến đoàn binh không mọc tóc..." },
+      { q: "Bài thơ 'Việt Bắc' của Tố Hữu viết về cuộc chia tay lịch sử giữa nhân dân Việt Bắc và cán bộ kháng chiến vào năm nào?", a: ["1954"], h: "Sau hiệp định Giơ-ne-vơ lập lại hòa bình." },
+      { q: "Đoạn trích 'Đất Nước' học trong chương trình ngữ văn 12 thuộc trường ca 'Mặt đường khát vọng' của nhà thơ nào?", a: ["nguyễn khoa điềm", "nguyen khoa diem"], h: "Đất Nước có từ ngày xửa ngày xưa..." },
+      { q: "Ai viết bài thơ 'Sóng' nói về khát vọng tình yêu mãnh liệt, thủy chung của người phụ nữ?", a: ["xuân quỳnh", "xuan quynh"], h: "Sóng bắt đầu từ gió, gió bắt đầu từ đâu?" }
     ],
     "vi_12_2": [
-      { q: "Ai là tác giả của truyện ngắn 'Chiếc thuyền ngoài xa'?", a: ["nguyễn minh châu", "nguyen minh chau"], h: "Nhà văn quân đội mở đường đổi mới văn học." },
-      { q: "Nhân vật ông lái đò vượt thác giữ sóng thác Sông Đà xuất hiện trong tùy bút của nhà văn nào?", a: ["nguyễn tuân", "nguyen tuan"], h: "Người nghệ sĩ suốt đời đi tìm cái đẹp độc đáo." }
+      { q: "Ai viết truyện ngắn 'Vợ chồng A Phủ' kể về cuộc đời đau khổ và vùng dậy của Mị và A Phủ ở Hồng Ngài?", a: ["tô hoài", "to hoai"], h: "Tác giả nổi tiếng của Dế Mèn phiêu lưu ký." },
+      { q: "Nhân vật Tràng và thị trong nạn đói 1945 xuất hiện trong truyện ngắn 'Vợ nhặt' của nhà văn nào?", a: ["kim lân", "kim lan"], h: "Nhà văn chuyên viết về nông thôn và người nông dân." },
+      { q: "Tác phẩm tùy bút 'Người lái đò Sông Đà' nổi tiếng với phong cách độc đáo của ai?", a: ["nguyễn tuân", "nguyen tuan"], h: "Con sông Đà hung bạo và trữ tình." },
+      { q: "Tác phẩm bút ký nổi tiếng khảo cứu về văn hóa địa lý 'Ai đã đặt tên cho dòng sông?' của nhà văn nào?", a: ["hoàng phủ ngọc tường", "hoang phu ngoc tuong"], h: "Viết về dòng sông Hương thơ mộng của xứ Huế." }
     ]
   };
 
@@ -364,231 +520,468 @@
     "en_1_1": [
       { q: "Màu đỏ trong tiếng Anh là gì?", a: ["red"], h: "Bắt đầu bằng chữ r." },
       { q: "Số 3 tiếng Anh viết là gì?", a: ["three"], h: "t-h-r-e-e" },
-      { q: "Màu xanh lá cây tiếng Anh là gì?", a: ["green"], h: "g-r-e-e-n" }
+      { q: "Màu xanh lá cây tiếng Anh là gì?", a: ["green"], h: "g-r-e-e-n" },
+      { q: "Màu vàng tiếng Anh là gì?", a: ["yellow"], h: "y-e-l-l-o-w" },
+      { q: "Số 5 tiếng Anh viết là gì?", a: ["five"], h: "f-i-v-e" },
+      { q: "Màu xanh da trời tiếng Anh là gì?", a: ["blue"], h: "b-l-u-e" },
+      { q: "Số 10 tiếng Anh viết là gì?", a: ["ten"], h: "t-e-n" },
+      { q: "Màu đen tiếng Anh là gì?", a: ["black"], h: "b-l-a-c-k" },
+      { q: "Trái táo tiếng Anh là gì?", a: ["apple"], h: "a-p-p-l-e" },
+      { q: "Xin chào trong tiếng Anh là gì?", a: ["hello", "hi"], h: "Từ chào hỏi cơ bản nhất." }
     ],
     "en_2_1": [
       { q: "Con mèo tiếng Anh là gì?", a: ["cat"], h: "c-a-t" },
+      { q: "Con chó tiếng Anh là gì?", a: ["dog"], h: "d-o-g" },
       { q: "Quả táo tiếng Anh là gì?", a: ["apple"], h: "a-p-p-l-e" },
-      { q: "Con chó tiếng Anh là gì?", a: ["dog"], h: "d-o-g" }
+      { q: "Quả chuối tiếng Anh là gì?", a: ["banana"], h: "b-a-n-a-n-a" },
+      { q: "Con chim tiếng Anh là gì?", a: ["bird"], h: "b-i-r-d" },
+      { q: "Con cá tiếng Anh là gì?", a: ["fish"], h: "f-i-s-h" },
+      { q: "Con khỉ tiếng Anh là gì?", a: ["monkey"], h: "m-o-n-k-e-y" },
+      { q: "Quả cam tiếng Anh là gì?", a: ["orange"], h: "o-r-a-n-g-e" },
+      { q: "Mặt trời tiếng Anh là gì?", a: ["sun"], h: "s-u-n" },
+      { q: "Bầu trời tiếng Anh là gì?", a: ["sky"], h: "s-k-y" }
     ],
     "en_3_1": [
       { q: "Quyển sách tiếng Anh là gì?", a: ["book"], h: "b-o-o-k" },
       { q: "Bút chì tiếng Anh là gì?", a: ["pencil"], h: "p-e-n-c-i-l" },
-      { q: "Gia đình tiếng Anh là gì?", a: ["family"], h: "f-a-m-i-l-y" }
+      { q: "Gia đình tiếng Anh là gì?", a: ["family"], h: "f-a-m-i-l-y" },
+      { q: "Thước kẻ tiếng Anh là gì?", a: ["ruler"], h: "r-u-l-e-r" },
+      { q: "Trường học tiếng Anh là gì?", a: ["school"], h: "s-c-h-o-o-l" },
+      { q: "Phòng học tiếng Anh là gì?", a: ["classroom"], h: "c-l-a-s-s-r-o-o-m" },
+      { q: "Bố/Cha tiếng Anh thân mật là gì?", a: ["dad", "father"], h: "d-a-d" },
+      { q: "Mẹ tiếng Anh thân mật là gì?", a: ["mom", "mother"], h: "m-o-m" },
+      { q: "Anh/em trai tiếng Anh là gì?", a: ["brother"], h: "b-r-o-t-h-e-r" },
+      { q: "Chị/em gái tiếng Anh là gì?", a: ["sister"], h: "s-i-s-t-e-r" }
     ],
     "en_4_1": [
-      { q: "The pen is ... the table (trên bàn). Điền giới từ?", a: ["on"], h: "Ở trên bề mặt ta dùng 'on'." },
-      { q: "The dog is ... the house (trong nhà). Điền giới từ?", a: ["in"], h: "Ở bên trong ta dùng 'in'." }
+      { q: "The pen is ... the table (trên bàn). Điền giới từ?", a: ["on"], h: "Ở trên bề mặt vật dùng 'on'." },
+      { q: "The cat is ... the box (trong hộp). Điền giới từ?", a: ["in"], h: "Ở bên trong vật dùng 'in'." },
+      { q: "The ball is ... the chair (dưới ghế). Điền giới từ?", a: ["under"], h: "u-n-d-e-r" },
+      { q: "The picture is ... the wall (trên tường). Điền giới từ?", a: ["on"], h: "Treo trên tường." },
+      { q: "My house is next ... the school. Điền từ còn thiếu?", a: ["to"], h: "Next to (kế bên)." },
+      { q: "I sit between Lan ... Nam. Điền từ còn thiếu?", a: ["and"], h: "Between ... and ... (ở giữa)." },
+      { q: "He is hiding ... the door (sau cánh cửa). Điền giới từ?", a: ["behind"], h: "b-e-h-i-n-d" },
+      { q: "The library is in front ... the classroom. Điền từ còn thiếu?", a: ["of"], h: "In front of (phía trước)." }
     ],
     "en_4_2": [
-      { q: "How are you? -> I am ..., thank you. (Gõ từ chỉ sức khỏe tốt)", a: ["fine", "good", "well"], h: "Fine hoặc Good." }
+      { q: "How are you? -> I am ..., thank you. (Gõ từ chỉ sức khỏe tốt)", a: ["fine", "good", "well"], h: "Fine hoặc Good." },
+      { q: "What is your ...? -> My name is Xuan Lam.", a: ["name"], h: "Hỏi tên." },
+      { q: "How ... are you? -> I am 9 years old.", a: ["old"], h: "Hỏi tuổi." },
+      { q: "Where are you ...? -> I am from Vietnam.", a: ["from"], h: "Hỏi xuất xứ." },
+      { q: "Nice to ... you. -> Nice to meet you too.", a: ["meet"], h: "Rất vui được gặp bạn." },
+      { q: "What ... is it? -> It's red.", a: ["color", "colour"], h: "Hỏi màu sắc." },
+      { q: "Who is ...? -> He is my brother.", a: ["he"], h: "Hỏi anh ấy là ai?" },
+      { q: "What is this? -> ... is an apple.", a: ["it", "this"], h: "Trả lời đồ vật số ít." }
     ],
     "en_5_1": [
-      { q: "Dạng so sánh hơn của 'tall' là gì?", a: ["taller"], h: "Tính từ ngắn thêm đuôi '-er'." },
-      { q: "Dạng so sánh hơn của 'good' là gì?", a: ["better"], h: "Đây là tính từ bất quy tắc." }
+      { q: "Dạng so sánh hơn của 'tall' là gì?", a: ["taller"], h: "Thêm đuôi '-er' vào sau tính từ ngắn." },
+      { q: "Dạng so sánh hơn của 'good' là gì?", a: ["better"], h: "Tính từ bất quy tắc đặc biệt." },
+      { q: "Dạng so sánh hơn của 'bad' là gì?", a: ["worse"], h: "Bất quy tắc." },
+      { q: "Dạng so sánh hơn của 'beautiful' là gì?", a: ["more beautiful"], h: "Tính từ dài dùng 'more'." },
+      { q: "Dạng so sánh hơn của 'hot' là gì?", a: ["hotter"], h: "Gấp đôi chữ t rồi thêm -er." },
+      { q: "Dạng so sánh hơn của 'happy' là gì?", a: ["happier"], h: "Đổi y thành i rồi thêm -er." },
+      { q: "Dạng so sánh hơn của 'fast' là gì?", a: ["faster"], h: "Tính từ ngắn." },
+      { q: "Dạng so sánh hơn của 'expensive' là gì?", a: ["more expensive"], h: "Tính từ dài." }
     ],
     "en_5_2": [
-      { q: "She ... (go) to school every day. Điền dạng đúng của động từ?", a: ["goes"], h: "Chủ ngữ là ngôi thứ ba số ít 'She'." }
+      { q: "She ... (go) to school every day. Điền dạng đúng?", a: ["goes"], h: "Chủ ngữ số ít 'She'." },
+      { q: "They ... (be) students.", a: ["are"], h: "Đi với danh từ số nhiều 'They'." },
+      { q: "He ... (have) a black dog.", a: ["has"], h: "Ngôi thứ ba số ít dùng 'has'." },
+      { q: "We ... (not like) carrots. Điền dạng đúng của động từ?", a: ["don't like", "do not like"], h: "Chủ ngữ We." },
+      { q: "You ... (study) English now. (Thì hiện tại tiếp diễn)", a: ["are studying"], h: "To be + V-ing." },
+      { q: "Look! The bird ... (fly) in the sky.", a: ["is flying"], h: "Hành động đang diễn ra tại thời điểm nói." },
+      { q: "It usually ... (rain) in summer.", a: ["rains"], h: "Thì hiện tại đơn." },
+      { q: "What ... you doing? -> I am reading.", a: ["are"], h: "Hỏi hiện tại tiếp diễn với 'you'." }
     ],
     "en_6_1": [
-      { q: "Quá khứ (V2) của động từ 'go' là gì?", a: ["went"], h: "Động từ bất quy tắc." },
-      { q: "Quá khứ (V2) của động từ 'buy' là gì?", a: ["bought"], h: "Bắt đầu bằng chữ b." }
+      { q: "Quá khứ đơn (V2) của động từ 'go' là gì?", a: ["went"], h: "Went." },
+      { q: "Quá khứ đơn (V2) của động từ 'buy' là gì?", a: ["bought"], h: "Bought." },
+      { q: "Quá khứ đơn (V2) của động từ 'see' là gì?", a: ["saw"], h: "Saw." },
+      { q: "Quá khứ đơn (V2) của động từ 'have' là gì?", a: ["had"], h: "Had." },
+      { q: "Quá khứ đơn (V2) của động từ 'do' là gì?", a: ["did"], h: "Did." },
+      { q: "Quá khứ đơn (V2) của động từ 'make' là gì?", a: ["made"], h: "Made." },
+      { q: "Quá khứ đơn (V2) của động từ 'write' là gì?", a: ["wrote"], h: "Wrote." },
+      { q: "Quá khứ đơn (V2) của động từ 'take' là gì?", a: ["took"], h: "Took." }
     ],
     "en_6_2": [
-      { q: "Dạng so sánh nhất của 'big' là gì?", a: ["biggest"], h: "Gấp đôi phụ âm cuối rồi thêm '-est'." }
+      { q: "Dạng so sánh nhất của 'big' là gì?", a: ["biggest", "the biggest"], h: "Gấp đôi g rồi thêm '-est'." },
+      { q: "Dạng so sánh nhất của 'happy' là gì?", a: ["happiest", "the happiest"], h: "Đổi y thành i ngắn rồi thêm '-est'." },
+      { q: "Dạng so sánh nhất của 'good' là gì?", a: ["best", "the best"], h: "Bất quy tắc." },
+      { q: "Dạng so sánh nhất của 'beautiful' là gì?", a: ["most beautiful", "the most beautiful"], h: "Tính từ dài dùng 'most'." },
+      { q: "Dạng so sánh nhất của 'fast' là gì?", a: ["fastest", "the fastest"], h: "Tính từ ngắn." },
+      { q: "Dạng so sánh nhất của 'bad' là gì?", a: ["worst", "the worst"], h: "Bất quy tắc." },
+      { q: "Dạng so sánh nhất của 'long' là gì?", a: ["longest", "the longest"], h: "Tính từ ngắn." },
+      { q: "Dạng so sánh nhất của 'difficult' là gì?", a: ["most difficult", "the most difficult"], h: "Tính từ dài." }
     ],
     "en_7_1": [
-      { q: "We ... (will/would) travel to Da Nang next week.", a: ["will"], h: "Thì tương lai diễn tả hành động sắp tới." }
+      { q: "They ... (will/would) visit us tomorrow.", a: ["will"], h: "Thì tương lai đơn chỉ tương lai gần." },
+      { q: "If it rains, we ... (will/would) stay at home.", a: ["will"], h: "Điều kiện loại 1." },
+      { q: "We ... (will/would) play football if it is sunny.", a: ["will"], h: "Điều kiện loại 1." },
+      { q: "If you study hard, you ... (will/would) pass the exam.", a: ["will"], h: "Điều kiện loại 1." },
+      { q: "I think it ... (will/would) rain tonight.", a: ["will"], h: "Dự đoán tương lai." },
+      { q: "She ... (will/would) be 15 next month.", a: ["will"], h: "Sự thật ở tương lai." },
+      { q: "If he ... (study) hard, he will pass.", a: ["studies"], h: "Vế 'if' ở điều kiện loại 1 chia hiện tại đơn." },
+      { q: "If they don't hurry, they ... (miss) the train.", a: ["will miss"], h: "Vế chính điều kiện loại 1." }
     ],
     "en_7_2": [
-      { q: "You ... (should/shouldn't) stay up late. It's bad for health.", a: ["shouldn't", "should not"], h: "Không nên thức khuya." }
+      { q: "You ... (should/shouldn't) eat too much candy. It's bad for your teeth.", a: ["shouldn't", "should not"], h: "Lời khuyên không nên." },
+      { q: "He ... (should/shouldn't) study harder to pass the exam.", a: ["should"], h: "Khuyên nên học chăm hơn." },
+      { q: "You ... (should/shouldn't) stay up late. It's bad for health.", a: ["shouldn't", "should not"], h: "Không nên thức khuya." },
+      { q: "We ... (should/shouldn't) protect the environment.", a: ["should"], h: "Nên bảo vệ môi trường." },
+      { q: "Children ... (should/shouldn't) drink beer.", a: ["shouldn't", "should not"], h: "Trẻ em không được uống bia." },
+      { q: "You ... (should/shouldn't) do exercise every day.", a: ["should"], h: "Tập thể dục hàng ngày là thói quen tốt." }
     ],
     "en_8_1": [
-      { q: "Dạng quá khứ phân từ (V3) của 'write' là gì?", a: ["written"], h: "w-r-i-t-t-e-n" }
+      { q: "Quá khứ phân từ (V3) của 'write' là gì?", a: ["written"], h: "w-r-i-t-t-e-n" },
+      { q: "Quá khứ phân từ (V3) của 'speak' là gì?", a: ["spoken"], h: "s-p-o-k-e-n" },
+      { q: "Quá khứ phân từ (V3) của 'do' là gì?", a: ["done"], h: "d-o-n-e" },
+      { q: "Quá khứ phân từ (V3) của 'take' là gì?", a: ["taken"], h: "t-a-k-e-n" },
+      { q: "Quá khứ phân từ (V3) của 'go' là gì?", a: ["gone"], h: "g-o-n-e" },
+      { q: "Quá khứ phân từ (V3) của 'see' là gì?", a: ["seen"], h: "s-e-e-n" },
+      { q: "Quá khứ phân từ (V3) của 'eat' là gì?", a: ["eaten"], h: "e-a-t-e-n" },
+      { q: "Quá khứ phân từ (V3) của 'buy' là gì?", a: ["bought"], h: "b-o-u-g-h-t" }
     ],
     "en_8_2": [
-      { q: "Chuyển sang bị động: 'He bought a car.' -> A car was ... by him.", a: ["bought"], h: "Sử dụng phân từ hai (V3) của buy." }
+      { q: "Chuyển bị động: 'They build a house.' -> A house is ... by them.", a: ["built"], h: "Phân từ hai của build là built." },
+      { q: "Chuyển bị động: 'She cleans the room.' -> The room is ... by her.", a: ["cleaned"], h: "Thêm đuôi '-ed'." },
+      { q: "Chuyển bị động: 'He bought the book.' -> The book was ... by him.", a: ["bought"], h: "Thì quá khứ đơn bị động." },
+      { q: "Chuyển bị động: 'Shakespeare wrote Hamlet.' -> Hamlet was ... by Shakespeare.", a: ["written"], h: "V3 của write." },
+      { q: "Active: 'They make cars here.' -> Passive: 'Cars are ... here.'", a: ["made"], h: "V3 của make." },
+      { q: "Active: 'He broke the vase.' -> Passive: 'The vase was ... by him.'", a: ["broken"], h: "V3 của break." }
     ],
     "en_9_1": [
-      { q: "The man ... lives next door is a doctor. Điền đại từ quan hệ?", a: ["who", "that"], h: "Chỉ người đóng vai trò chủ ngữ." }
+      { q: "The man ... lives next door is a teacher. Điền đại từ quan hệ?", a: ["who", "that"], h: "Chỉ người đóng vai trò chủ ngữ." },
+      { q: "The book ... is on the table is very interesting. Điền đại từ quan hệ?", a: ["which", "that"], h: "Chỉ vật." },
+      { q: "The girl ... we met yesterday was very nice. Điền đại từ quan hệ?", a: ["whom", "who", "that"], h: "Chỉ người đóng vai trò tân ngữ." },
+      { q: "This is the house ... my grandfather built. Điền đại từ quan hệ?", a: ["which", "that"], h: "Chỉ vật." },
+      { q: "The doctor ... treated my mom was very kind. Điền đại từ quan hệ?", a: ["who", "that"], h: "Chỉ người." },
+      { q: "I know the boy ... dog was lost. Điền từ chỉ sở hữu?", a: ["whose"], h: "Chỉ sở hữu (whose + danh từ)." }
     ],
     "en_9_2": [
-      { q: "If I ... you, I would study harder. (was/were)?", a: ["were"], h: "Câu điều kiện loại 2, dùng were cho mọi ngôi." }
+      { q: "If I ... you, I would study medicine. (was/were)?", a: ["were"], h: "Câu điều kiện loại 2 giả định trái thực tế ở hiện tại." },
+      { q: "If he had enough money, he ... (will/would) buy that car.", a: ["would"], h: "Điều kiện loại 2 vế sau dùng would." },
+      { q: "If she ... (know) the answer, she would tell you.", a: ["knew"], h: "Vế 'if' của điều kiện loại 2 dùng quá khứ đơn." },
+      { q: "What would you do if you ... (win) the lottery?", a: ["won"], h: "Quá khứ của win." },
+      { q: "If they ... (be) here, they would help us.", a: ["were"], h: "To be của điều kiện loại 2 luôn dùng 'were'." },
+      { q: "If it snowed, we ... (go) skiing.", a: ["would go"], h: "Vế chính điều kiện loại 2." }
     ],
     "en_10_1": [
-      { q: "He said: 'I am tired.' -> He said that he ... tired (is/was)?", a: ["was"], h: "Lùi thì từ hiện tại đơn sang quá khứ đơn." }
+      { q: "He said: 'I will go.' -> He said that he ... go.", a: ["would"], h: "Lùi thì của 'will' thành 'would'." },
+      { q: "She said: 'I am happy.' -> She said that she ... happy.", a: ["was"], h: "Lùi thì của 'am' thành 'was'." },
+      { q: "They said: 'We have finished.' -> They said that they ... finished.", a: ["had"], h: "Lùi thì hiện tại hoàn thành thành quá khứ hoàn thành." },
+      { q: "Tom said: 'I can swim.' -> Tom said that he ... swim.", a: ["could"], h: "Lùi thì 'can' thành 'could'." },
+      { q: "She asked me: 'Where do you live?' -> She asked me where I ...", a: ["lived"], h: "Lùi thì hiện tại đơn thành quá khứ đơn." },
+      { q: "He said: 'I went to school yesterday.' -> He said that he ... to school the day before.", a: ["had gone"], h: "Lùi quá khứ đơn thành quá khứ hoàn thành." }
     ],
     "en_11_1": [
-      { q: "You ... (must/mustn't) park here. It is forbidden.", a: ["mustn't", "must not"], h: "Bị cấm đoán." }
+      { q: "You ... (must/mustn't) touch that hot pan. It is dangerous.", a: ["mustn't", "must not"], h: "Cấm đoán." },
+      { q: "She ... (can/must) speak English fluently because she lived in London for 5 years.", a: ["can"], h: "Khả năng làm gì." },
+      { q: "Students ... (must/mustn't) cheat in exams.", a: ["mustn't", "must not"], h: "Không được phép." },
+      { q: "You ... (don't have to / mustn't) wash the dishes. I did it already.", a: ["don't have to", "do not have to"], h: "Không cần thiết." },
+      { q: "Drivers ... (must/can) stop when the traffic light is red.", a: ["must"], h: "Bắt buộc theo luật." },
+      { q: "We ... (should/mustn't) throw trash on the street.", a: ["shouldn't", "should not"], h: "Lời khuyên không nên làm gì." }
     ],
     "en_12_1": [
-      { q: "I look forward to ... (hear) from you soon.", a: ["hearing"], h: "Look forward to + V-ing." }
+      { q: "I look forward to ... (hear) from you.", a: ["hearing"], h: "Look forward to + V-ing." },
+      { q: "She decided to go ... (on/with) studying despite difficulties.", a: ["on"], h: "Go on: tiếp tục." },
+      { q: "It's no use ... (cry) over spilt milk.", a: ["crying"], h: "It's no use + V-ing." },
+      { q: "They managed ... (finish) the project on time.", a: ["to finish"], h: "Manage + to V." },
+      { q: "He suggested ... (go) to the cinema.", a: ["going"], h: "Suggest + V-ing." },
+      { q: "Would you mind ... (open) the window?", a: ["opening"], h: "Would you mind + V-ing?" }
     ]
   };
 
   const scienceData = {
     "sci_1_1": [
       { q: "Bộ phận nào trên cơ thể dùng để nghe âm thanh?", a: ["tai"], h: "Đôi tai xinh xắn." },
-      { q: "Lưỡi là cơ quan dùng để làm gì? (nếm / nhìn / nghe)", a: ["nếm", "nem"], h: "Dùng để thưởng thức mùi vị thức ăn." }
+      { q: "Lưỡi là cơ quan dùng để làm gì? (nếm / nhìn / nghe)", a: ["nếm", "nem"], h: "Dùng để thưởng thức mùi vị thức ăn." },
+      { q: "Giác quan nào dùng để ngửi mùi hương?", a: ["mũi", "khứu giác", "mui", "khuu giac"], h: "Chiếc mũi xinh trên khuôn mặt." },
+      { q: "Mắt là cơ quan của giác quan nào? (thị giác / thính giác / xúc giác)", a: ["thị giác", "thi giac"], h: "Dùng để nhìn." },
+      { q: "Da là cơ quan của giác quan nào? (xúc giác / vị giác / khứu giác)", a: ["xúc giác", "xuc giac"], h: "Nhận biết nóng lạnh, đau đớn." },
+      { q: "Bộ phận nào nâng đỡ cơ thể và bảo vệ các cơ quan bên trong?", a: ["xương", "khung xương", "xuong", "khung xuong"], h: "Khung xương của cơ thể." },
+      { q: "Chúng ta dùng bộ phận nào của tay để cầm nắm đồ vật?", a: ["ngón tay", "bàn tay", "ngon tay", "ban tay"], h: "Bàn tay hoặc ngón tay." },
+      { q: "Răng dùng để làm gì khi chúng ta ăn thức ăn?", a: ["nhai", "nghiền", "nhai nghiền"], h: "Nhai nhỏ thức ăn." }
     ],
     "sci_2_1": [
       { q: "Cây hút nước từ đất lên nhờ bộ phận nào?", a: ["rễ", "rễ cây", "re", "re cay"], h: "Bộ phận cắm sâu dưới lòng đất." },
-      { q: "Động vật nào ăn thịt trong các loài sau: trâu, bò, hổ, thỏ?", a: ["hổ", "ho"], h: "Chúa sơn lâm." }
+      { q: "Động vật nào ăn thịt trong các loài sau: trâu, bò, hổ, thỏ?", a: ["hổ", "ho"], h: "Chúa sơn lâm." },
+      { q: "Lá cây thường có màu gì nhờ chất diệp lục?", a: ["xanh", "xanh lá", "xanh lá cây", "xanh la", "xanh la cay"], h: "Màu xanh lục." },
+      { q: "Động vật nào đẻ trứng trong các loài sau: gà, chó, lợn, bò?", a: ["gà", "ga"], h: "Gà đẻ trứng rồi ấp thành con." },
+      { q: "Hoa của cây thường dùng để thực hiện chức năng gì? (sinh sản / quang hợp / hút nước)", a: ["sinh sản", "sinh san"], h: "Nơi thụ phấn tạo quả và hạt." },
+      { q: "Động vật nào sau đây là động vật ăn cỏ: sư tử, hươu cao cổ, cá mập?", a: ["hươu cao cổ", "huou cao co"], h: "Loài thú cổ rất dài thích ăn lá cây." },
+      { q: "Quả của cây được hình thành từ bộ phận nào sau khi hoa được thụ phấn?", a: ["bầu nhụy", "bầu noãn", "hoa", "bau nhuy"], h: "Phát triển từ nhụy hoa." },
+      { q: "Động vật nào có thể sống cả trên cạn lẫn dưới nước: cá chép, ếch, mèo?", a: ["ếch", "ech", "ếch đồng"], h: "Động vật lưỡng cư." }
     ],
     "sci_3_1": [
-      { q: "Chất dinh dưỡng nào có nhiều trong thịt, cá, trứng giúp xây dựng cơ thể?", a: ["chất đạm", "đạm", "protein", "chat dam", "dam"], h: "Chất đạm hay còn gọi là protein." }
+      { q: "Chất dinh dưỡng nào có nhiều trong thịt, cá, trứng giúp xây dựng cơ thể?", a: ["chất đạm", "đạm", "protein", "chat dam", "dam"], h: "Chất đạm hay còn gọi`đạm` hoặc `protein`." },
+      { q: "Vitamin nào có nhiều trong cam, bưởi giúp tăng sức đề kháng?", a: ["c", "vitamin c"], h: "Chất chua giàu vitamin C." },
+      { q: "Chất dinh dưỡng nào cung cấp năng lượng chính cho cơ thể có nhiều trong cơm, bánh mì?", a: ["chất bột đường", "tinh bột", "tinh bot", "chat bot duong", "cacbohidrat"], h: "Tinh bột hay gluxit." },
+      { q: "Chất béo có nhiều trong loại thực phẩm nào sau đây: rau cải, mỡ heo, gạo?", a: ["mỡ heo", "dầu ăn", "mo heo", "dau an"], h: "Mỡ động vật hoặc dầu thực vật." },
+      { q: "Thiếu sắt cơ thể con người dễ mắc bệnh gì?", a: ["thiếu máu", "thieu mau"], h: "Sắt tạo hồng cầu mang oxy đi nuôi cơ thể." },
+      { q: "Thiếu canxi trẻ em dễ mắc bệnh gì về xương?", a: ["còi xương", "loãng xương", "coi xuong", "loang xuong"], h: "Canxi cấu tạo nên xương." },
+      { q: "Để tránh bệnh bướu cổ, chúng ta cần bổ sung chất gì vào muối ăn hàng ngày?", a: ["i-ốt", "iot", "i ốt"], h: "Nguyên tố vi lượng I-ốt." },
+      { q: "Chất xơ có vai trò quan trọng trong việc ngăn ngừa bệnh gì ở hệ tiêu hóa?", a: ["táo bón", "tao bon"], h: "Rau xanh chứa nhiều chất xơ giúp nhuận tràng." }
     ],
     "sci_4_1": [
       { q: "Nhiệt độ đóng băng của nước tinh khiết là bao nhiêu độ C?", a: ["0", "0 độ", "0 do c"], h: "Nước đóng băng ở không độ." },
-      { q: "Khí nào cần thiết cho sự thở của sinh vật?", a: ["oxy", "oxygen", "ô-xy"], h: "Khí O₂." }
+      { q: "Khí nào cần thiết cho sự thở của sinh vật?", a: ["oxy", "oxygen", "ô-xy"], h: "Khí O₂ chiếm 21% khí quyển." },
+      { q: "Nhiệt độ sôi của nước tinh khiết ở áp suất chuẩn là bao nhiêu độ C?", a: ["100", "100 độ", "100 do c"], h: "Nhiệt độ nước sôi sùng sục." },
+      { q: "Khí nào thoát ra ngoài khi ta thở ra?", a: ["cacbonic", "co2", "cacbon điôxít", "carbon dioxide"], h: "Khí CO2." },
+      { q: "Vòng tuần hoàn của nước trong tự nhiên bao gồm các hiện tượng bay hơi và gì nữa để tạo mưa?", a: ["ngưng tụ", "ngung tu"], h: "Hơi nước ngưng tụ thành mây rồi mưa." },
+      { q: "Nước tồn tại ở mấy thể chính trong tự nhiên?", a: ["3", "ba thể", "ba the"], h: "Rắn, lỏng, khí." },
+      { q: "Không khí xung quanh chúng ta là một chất không màu, không mùi, đúng hay sai?", a: ["đúng", "dung"], h: "Đặc điểm của không khí tinh khiết." },
+      { q: "Chất khí nào chiếm tỉ lệ thể tích lớn nhất trong không khí (khoảng 78%)?", a: ["nitơ", "nitrogen", "nito"], h: "Khí Nitơ." }
     ],
     "sci_5_1": [
-      { q: "Năng lượng gió, năng lượng mặt trời là các nguồn năng lượng tái tạo hay không tái tạo?", a: ["tái tạo", "tai tao"], h: "Có thể hồi sinh vô hạn." }
+      { q: "Năng lượng gió, năng lượng mặt trời là các nguồn năng lượng tái tạo hay không tái tạo?", a: ["tái tạo", "tai tao"], h: "Có thể tự hồi phục vô tận." },
+      { q: "Năng lượng từ dầu mỏ, than đá là năng lượng tái tạo hay không tái tạo?", a: ["không tái tạo", "khong tai tao"], h: "Khai thác dần sẽ cạn kiệt." },
+      { q: "Thiết bị chuyển đổi năng lượng mặt trời thành điện năng gọi là gì? (pin ...)", a: ["pin mặt trời", "pin mat troi", "pin quang điện", "pin quang dien"], h: "Tấm pin hấp thụ ánh sáng mặt trời." },
+      { q: "Để tiết kiệm điện năng khi không sử dụng, chúng ta nên làm gì?", a: ["tắt thiết bị", "tắt điện", "tat thiet bi", "tat dien"], h: "Tắt nguồn các thiết bị điện." },
+      { q: "Vật liệu nào sau đây dẫn điện tốt nhất: đồng, nhựa, gỗ khô?", a: ["đồng", "dong"], h: "Kim loại dùng làm lõi dây điện." },
+      { q: "Vật liệu nào sau đây cách điện tốt: cao su, sắt, nhôm?", a: ["cao su", "nhựa", "cao su, nhựa"], h: "Được dùng để bọc ngoài dây điện." },
+      { q: "Hành động cắm nhiều thiết bị công suất lớn vào một ổ cắm điện dễ gây ra hiện tượng gì nguy hiểm?", a: ["chập điện", "cháy nổ", "quá tải", "chap dien", "chay no"], h: "Gây quá tải nhiệt và chập cháy." }
     ],
     "sci_6_1": [
-      { q: "Đơn vị cấu tạo nên mọi cơ thể sinh vật được gọi là gì?", a: ["tế bào", "te bao"], h: "Thành phần nhỏ nhất của sự sống." }
+      { q: "Đơn vị cấu tạo cơ bản của mọi sinh vật được gọi là gì?", a: ["tế bào", "te bao"], h: "Tất cả các sinh vật đều được cấu tạo từ tế bào." },
+      { q: "Tế bào nhân thực khác tế bào nhân sơ ở điểm quan trọng nào? (có ... hoàn chỉnh)", a: ["nhân", "nhân tế bào", "nhan", "nhan te bao"], h: "Tế bào nhân thực có màng nhân bao bọc." },
+      { q: "Thực vật tự chế tạo chất hữu cơ bằng quá trình gì?", a: ["quang hợp", "quang hop"], h: "Hấp thụ ánh sáng mặt trời và khí cacbonic." },
+      { q: "Nhóm thực vật nào có hoa, quả và hạt được bảo vệ trong quả?", a: ["hạt kín", "hat kin", "thực vật hạt kín"], h: "Nhóm tiến hóa nhất." },
+      { q: "Động vật lưỡng cư (như ếch) hô hấp bằng phổi và cơ quan nào khác?", a: ["da", "màng da", "lớp da"], h: "Da của chúng luôn ẩm ướt để trao đổi khí." },
+      { q: "Động vật nào đẻ con và nuôi con bằng sữa mẹ?", a: ["thú", "lớp thú", "động vật có vú", "thu", "lop thu"], h: "Lớp Thú." }
     ],
     "sci_6_2": [
-      { q: "Hành tinh nào được gọi là 'Hành tinh Đỏ'?", a: ["sao hỏa", "sao hoa"], h: "Mars." }
+      { q: "Hành tinh nào được gọi là 'Hành tinh Đỏ'?", a: ["sao hỏa", "sao hoa"], h: "Mars có màu đỏ rực." },
+      { q: "Trái Đất mất bao nhiêu ngày để quay hết một vòng quanh Mặt Trời?", a: ["365", "365 ngày", "365 ngày 6 giờ", "365.25", "365,25"], h: "Khoảng 1 năm dương lịch." },
+      { q: "Mặt Trăng là vệ tinh tự nhiên của hành tinh nào?", a: ["trái đất", "trai dat"], h: "Quay xung quanh Trái Đất của chúng ta." },
+      { q: "Hiện tượng thủy triều trên Trái Đất xảy ra chủ yếu do lực hấp dẫn của thiên thể nào?", a: ["mặt trăng", "mat trang", "mặt trăng và mặt trời"], h: "Vệ tinh tự nhiên gần nhất." },
+      { q: "Hành tinh nào gần Mặt Trời nhất trong Hệ Mặt Trời?", a: ["sao thủy", "sao thuy"], h: "Mercury." },
+      { q: "Hành tinh nào có kích thước lớn nhất trong Hệ Mặt Trời?", a: ["sao mộc", "sao moc"], h: "Jupiter." }
     ],
     "sci_7_1": [
-      { q: "Công thức tính vận tốc trung bình là v = ? (dùng s và t)", a: ["s/t", "s : t"], h: "Quãng đường chia cho thời gian." }
+      { q: "Công thức tính vận tốc trung bình là v = ? (dùng s và t)", a: ["s/t", "s : t"], h: "Quãng đường chia cho thời gian." },
+      { q: "Đơn vị đo lực trong hệ đo lường quốc tế là gì?", a: ["newton", "n", "niu-tơn"], h: "Lấy tên của nhà vật lý Isaac Newton." },
+      { q: "Khi ánh sáng đi từ không khí vào nước, hướng truyền của tia sáng bị lệch đi. Đây là hiện tượng gì?", a: ["khúc xạ", "khúc xạ ánh sáng", "khuc xa"], h: "Khúc xạ ánh sáng." },
+      { q: "Âm thanh truyền nhanh nhất trong môi trường nào? (rắn / lỏng / khí)", a: ["rắn", "ran"], h: "Tốc độ âm thanh: Rắn > Lỏng > Khí." },
+      { q: "Tần số dao động của nguồn âm càng lớn thì âm phát ra càng như thế nào? (cao / thấp / to / nhỏ)", a: ["cao", "bổng", "cao (bổng)"], h: "Âm cao hay âm bổng." }
     ],
     "sci_8_1": [
-      { q: "Ký hiệu hóa học của nguyên tố Oxygen là gì?", a: ["o"], h: "Chữ cái đầu tiên." },
-      { q: "Công thức hóa học của nước tinh khiết là gì?", a: ["h2o"], h: "Gồm 2 nguyên tử Hydro và 1 nguyên tử Oxy." }
+      { q: "Ký hiệu hóa học của nguyên tố Oxygen là gì?", a: ["o"], h: "Chữ cái đầu tiên của Oxygen." },
+      { q: "Công thức hóa học của nước tinh khiết là gì?", a: ["h2o"], h: "Gồm 2 nguyên tử Hydro và 1 nguyên tử Oxy." },
+      { q: "Ký hiệu hóa học của nguyên tố Hydrogen là gì?", a: ["h"], h: "Chữ cái đầu tiên." },
+      { q: "Nguyên tử trung hòa về điện gồm hạt nhân mang điện dương và lớp vỏ chứa hạt nào mang điện âm?", a: ["electron", "êlectrôn", "e"], h: "Hạt electron." },
+      { q: "Công thức hóa học của muối ăn là gì?", a: ["nacl"], h: "Natri Clorua." }
     ],
     "sci_9_1": [
-      { q: "Axit đêôxiribônuclêic là tên đầy đủ của phân tử nào?", a: ["adn", "dna"], h: "Phân tử mang thông tin di truyền." }
+      { q: "Axit đêôxiribônuclêic là tên đầy đủ của phân tử nào?", a: ["adn", "dna"], h: "Chuỗi xoắn kép mang thông tin di truyền." },
+      { q: "Bản đồ di truyền quy định mọi tính trạng của cơ thể sinh vật nằm trên cấu trúc nào trong nhân tế bào?", a: ["nhiễm sắc thể", "nhiem sac the", "adn"], h: "Nhiễm sắc thể cấu tạo từ ADN và protein." },
+      { q: "Hiện tượng cơ thể sinh vật xuất hiện các đặc điểm dị hình đột ngột so với bố mẹ do biến đổi vật chất di truyền gọi là gì?", a: ["đột biến", "dot bien"], h: "Đột biến gen hoặc đột biến nhiễm sắc thể." }
     ],
     "sci_10_1": [
-      { q: "Trái Đất tự quay quanh trục của nó theo hướng từ tây sang đông hay từ đông sang tây?", a: ["từ tây sang đông", "tu tay sang dong"], h: "Gây ra hiện tượng Mặt Trời mọc hướng Đông lặn hướng Tây." }
+      { q: "Trái Đất tự quay quanh trục của nó theo hướng nào? (từ tây sang đông / từ đông sang tây)", a: ["từ tây sang đông", "tu tay sang dong"], h: "Làm cho Mặt Trời mọc đằng Đông lặn đằng Tây." },
+      { q: "Hợp chất hữu cơ phức tạp chứa carbon là thành phần chính cấu tạo nên tế bào cơ bắp gọi là gì?", a: ["prôtêin", "protein", "chất đạm"], h: "Chuỗi axit amin liên kết peptit." }
     ],
     "sci_11_1": [
       { q: "Ký hiệu hóa học của Sắt là gì?", a: ["fe"], h: "Ferrum." },
-      { q: "Kim loại nào dẫn điện tốt nhất?", a: ["bạc", "bac"], h: "Ag." }
+      { q: "Kim loại nào dẫn điện tốt nhất?", a: ["bạc", "bac"], h: "Argentum (Ag)." },
+      { q: "Hợp chất hóa học nào có công thức NH3 có mùi khai đặc trưng?", a: ["amoniac", "ammonia"], h: "Khí Amoniac." }
     ],
     "sci_12_1": [
       { q: "Định luật Vạn vật Hấp dẫn nổi tiếng được gắn liền với quả táo rơi của nhà khoa học nào?", a: ["newton", "isaac newton"], h: "Nhà khoa học người Anh." },
-      { q: "Ai được coi là cha đẻ của Thuyết tương đối?", a: ["einstein", "albert einstein"], h: "Nhà vật lý lỗi lạc thế kỷ 20." }
+      { q: "Ai được coi là cha đẻ của Thuyết tương đối?", a: ["einstein", "albert einstein"], h: "E = mc²." }
     ]
   };
 
   const physicsData = {
     "phy_6_1": [
       { q: "Đơn vị đo khối lượng hợp pháp của Việt Nam là gì? (Kí hiệu viết tắt)", a: ["kg"], h: "Kilôgam." },
-      { q: "Dụng cụ dùng để đo lực là gì?", a: ["lực kế", "luc ke"], h: "Bắt đầu bằng chữ 'lực'." }
+      { q: "Dụng cụ dùng để đo lực là gì?", a: ["lực kế", "luc ke"], h: "Bắt đầu bằng chữ 'lực'." },
+      { q: "Đơn vị đo lực là gì? (Kí hiệu viết tắt)", a: ["n", "newton", "niu-tơn"], h: "Được đặt tên theo Newton." },
+      { q: "Để đo thể tích chất lỏng, người ta thường dùng dụng cụ gì?", a: ["bình chia độ", "ca đong", "binh chia do", "ca dong"], h: "Bình có các vạch chia thể tích." },
+      { q: "Trọng lượng của vật 1kg ở Trái Đất xấp xỉ bằng bao nhiêu Newton?", a: ["10", "10n"], h: "P = 10m." },
+      { q: "Lực hút của Trái Đất tác dụng lên vật gọi là gì?", a: ["trọng lực", "luc hut trai dat", "trong luc"], h: "Trọng lực có phương thẳng đứng." },
+      { q: "Độ biến dạng của lò xo càng lớn thì lực đàn hồi của nó như thế nào? (càng lớn / càng nhỏ)", a: ["càng lớn", "cang lon"], h: "Tỉ lệ thuận với độ biến dạng." },
+      { q: "Khối lượng riêng của nước nguyên chất là bao nhiêu kg/m³?", a: ["1000"], h: "Xấp xỉ 1000 kg trên 1 mét khối." }
     ],
     "phy_7_1": [
       { q: "Ảnh của một vật tạo bởi gương phẳng có độ lớn như thế nào so với vật? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "Gương phẳng cho ảnh ảo bằng vật." },
-      { q: "Góc phản xạ như thế nào so với góc tới? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "Định luật phản xạ ánh sáng: i' = i." }
+      { q: "Góc phản xạ như thế nào so với góc tới? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "Định luật phản xạ ánh sáng: i' = i." },
+      { q: "Vùng phía sau vật cản không nhận được ánh sáng từ nguồn sáng truyền tới gọi là gì?", a: ["bóng tối", "bong toi"], h: "Bóng tối hoàn toàn." },
+      { q: "Vật tự phát ra ánh sáng gọi là gì? (nguồn sáng / vật sáng)", a: ["nguồn sáng", "nguon sang"], h: "Ví dụ: Mặt Trời, ngọn nến đang cháy." },
+      { q: "Hiện tượng tia sáng bị đổi hướng khi đi qua mặt phân cách giữa hai môi trường trong suốt gọi là gì?", a: ["khúc xạ ánh sáng", "khúc xạ", "khuc xa anh sang", "khuc xa"], h: "Sự gãy khúc của tia sáng." },
+      { q: "Gương có bề mặt phản xạ là mặt ngoài của một phần hình cầu gọi là gương gì?", a: ["gương cầu lồi", "guong cau loi"], h: "Cho ảnh ảo nhỏ hơn vật." },
+      { q: "Gương cầu lõm cho ảnh ảo như thế nào so với vật? (lớn hơn / nhỏ hơn / bằng)", a: ["lớn hơn", "lon hon"], h: "Cho ảnh ảo lớn hơn vật khi đặt vật gần gương." },
+      { q: "Tốc độ truyền âm lớn nhất trong môi trường nào? (rắn / lỏng / khí)", a: ["rắn", "ran"], h: "Môi trường chất rắn truyền âm tốt nhất." }
     ],
     "phy_8_1": [
       { q: "Đơn vị của áp suất là gì? (Kí hiệu viết tắt hoặc tên)", a: ["pa", "pascal"], h: "Pascal." },
-      { q: "Khi đi trên sàn đá hoa mới lau dễ bị ngã do lực ma sát nào bị giảm? (ma sát trượt / ma sát lăn / ma sát nghỉ)", a: ["ma sát trượt", "ma sat truot"], h: "Lực ma sát cản trở chuyển động trượt giảm đi do nước trơn trượt." }
+      { q: "Khi đi trên sàn đá hoa mới lau dễ bị ngã do lực ma sát nào bị giảm? (ma sát trượt / ma sát lăn / ma sát nghỉ)", a: ["ma sát trượt", "ma sat truot"], h: "Lực ma sát trượt giảm." },
+      { q: "Công thức tính áp suất là p = F / ? (Điền ký hiệu diện tích bị ép)", a: ["s"], h: "S là diện tích bề mặt bị ép." },
+      { q: "Lực đẩy do chất lỏng tác dụng lên vật nhúng trong nó hướng thẳng đứng lên trên gọi là gì?", a: ["lực đẩy ác-si-mét", "lực đẩy ác si mét", "luc day ac si met", "lực đẩy archimedes"], h: "Lực đẩy Archimedes." },
+      { q: "Đại lượng đặc trưng cho khả năng bảo toàn vận tốc của vật gọi là gì? (quán tính / khối lượng)", a: ["quán tính", "quan tinh"], h: "Mọi vật đều có quán tính." },
+      { q: "Khi một vật nổi trên mặt nước thì lực đẩy Ác-si-mét tác dụng lên vật có độ lớn như thế nào so với trọng lượng vật? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "F_A = P khi vật nổi cân bằng." },
+      { q: "Lực xuất hiện cản trở chuyển động của vật khi vật trượt trên bề mặt vật khác gọi là lực ma sát gì?", a: ["ma sát trượt", "ma sat truot"], h: "Lực ma sát trượt." }
     ],
     "phy_9_1": [
-      { q: "Hệ thức của Định luật Ohm là I = ? (dùng U và R)", a: ["u/r", "u : r"], h: "Cường độ dòng điện tỉ lệ thuận với hiệu điện thế và tỉ lệ nghịch với điện trở." },
-      { q: "Cho hai điện trở R1 = 5 Ohm, R2 = 10 Ohm mắc NỐI TIẾP. Điện trở tương đương của mạch là bao nhiêu Ohm?", a: ["15"], h: "Mắc nối tiếp: R = R1 + R2." }
+      { q: "Hệ thức của Định luật Ohm là I = ? (dùng U và R)", a: ["u/r", "u : r"], h: "Cường độ tỷ lệ thuận U, tỷ lệ nghịch R." },
+      { q: "Cho hai điện trở R1 = 5 Ohm, R2 = 10 Ohm mắc NỐI TIẾP. Điện trở tương đương của mạch là bao nhiêu Ohm?", a: ["15"], h: "R_nt = R1 + R2." },
+      { q: "Đơn vị đo điện trở là gì? (Kí hiệu hoặc tên chữ)", a: ["ohm", "ôm"], h: "Ôm (Ω)." },
+      { q: "Cho hai điện trở R1 = 10 Ohm, R2 = 10 Ohm mắc SONG SONG. Điện trở tương đương của mạch là bao nhiêu Ohm?", a: ["5"], h: "1/R_ss = 1/R1 + 1/R2." },
+      { q: "Thiết bị dùng để đo cường độ dòng điện trong mạch gọi là gì?", a: ["ampe kế", "ampe ke"], h: "Mắc nối tiếp trong mạch điện." },
+      { q: "Công suất điện tiêu thụ của một đoạn mạch được tính bằng công thức P = U x ...?", a: ["i"], h: "U nhân với cường độ dòng điện I." },
+      { q: "Dòng điện cảm ứng xuất hiện trong cuộn dây dẫn kín khi số đường sức từ xuyên qua tiết diện cuộn dây như thế nào?", a: ["biến thiên", "thay đổi", "bien thien", "thay doi"], h: "Biến thiên (tăng hoặc giảm)." }
     ],
     "phy_10_1": [
       { q: "Gia tốc rơi tự do thường được lấy giá trị xấp xỉ bằng bao nhiêu m/s²?", a: ["10", "9.8", "9,8"], h: "Thường lấy g = 9.8 hoặc 10." },
-      { q: "Một xe máy đi được quãng đường 60km trong 1,5 giờ. Vận tốc trung bình của xe là bao nhiêu km/h?", a: ["40"], h: "v = s / t = 60 / 1.5." }
+      { q: "Một xe máy đi được quãng đường 60km trong 1,5 giờ. Vận tốc trung bình của xe là bao nhiêu km/h?", a: ["40"], h: "v = s / t = 60 / 1.5." },
+      { q: "Đại lượng vật lý đặc trưng cho sự thay đổi nhanh hay chậm của vận tốc gọi là gì?", a: ["gia tốc", "gia toc"], h: "a = (v - v0) / t." },
+      { q: "Trong chuyển động thẳng đều, gia tốc của vật bằng bao nhiêu?", a: ["0", "không"], h: "Vận tốc không đổi nên không có gia tốc." },
+      { q: "Lực hướng tâm tác dụng lên vật chuyển động tròn đều hướng về đâu?", a: ["tâm", "tâm quỹ đạo", "tam", "tam quy dao"], h: "Hướng về tâm của vòng tròn." },
+      { q: "Định luật I Newton còn được gọi là định luật về cái gì?", a: ["quán tính", "quan tinh"], h: "Vật giữ nguyên trạng thái đứng yên hoặc chuyển động thẳng đều." },
+      { q: "Lực ma sát nghỉ xuất hiện khi vật có xu hướng chuyển động nhưng chưa chuyển động có giá trị như thế nào so với ngoại lực song song mặt tiếp xúc? (lớn hơn / nhỏ hơn / bằng)", a: ["bằng", "bang"], h: "Cân bằng với thành phần ngoại lực kéo vật." }
     ],
     "phy_11_1": [
       { q: "Đơn vị của điện tích là gì? (Kí hiệu viết tắt)", a: ["c", "coulomb"], h: "Cu-lông." },
-      { q: "Hạt mang điện tích âm trong nguyên tử là hạt nào?", a: ["electron", "ê-lec-trôn", "êlectrôn"], h: "Hạt chuyển động xung quanh hạt nhân." }
+      { q: "Hạt mang điện tích âm trong nguyên tử là hạt nào?", a: ["electron", "ê-lec-trôn", "êlectrôn"], h: "Electron ở lớp vỏ." },
+      { q: "Đơn vị đo hiệu điện thế là gì? (Kí hiệu viết tắt)", a: ["v", "volt", "vôn"], h: "Vôn." },
+      { q: "Dòng điện là dòng dịch chuyển có hướng của các hạt nào?", a: ["hạt mang điện", "hạt điện tích", "hat mang dien", "hat dien tich", "electron"], h: "Các hạt điện tích dịch chuyển có hướng." },
+      { q: "Định luật Coulomb xác định lực tương tác giữa các điện tích đứng yên đặt ở đâu? (chân không / chất lỏng)", a: ["chân không", "chan khong"], h: "Môi trường chân không." },
+      { q: "Một nguồn điện có suất điện động 6V, khi mắc vào mạch kín tạo ra hiệu điện thế. Suất điện động đặc trưng cho khả năng làm gì của nguồn điện?", a: ["thực hiện công", "thuc hien cong"], h: "Khả năng thực hiện công của lực lạ." }
     ],
     "phy_12_1": [
-      { q: "Chu kỳ dao động T và tần số f liên hệ với nhau qua công thức nào? (f = ...)", a: ["1/t"], h: "Tần số là nghịch đảo của chu kỳ." },
-      { q: "Vận tốc truyền sóng phụ thuộc chủ yếu vào yếu tố nào? (chu kỳ / tần số / môi trường truyền sóng)", a: ["môi trường truyền sóng", "moi truong truyen song", "môi trường", "moi truong"], h: "Tùy thuộc bản chất của môi trường đàn hồi (rắn, lỏng, khí)." }
+      { q: "Chu kỳ dao động T và tần số f liên hệ với nhau qua công thức nào? (f = ...)", a: ["1/t"], h: "Tần số là nghịch đảo chu kỳ." },
+      { q: "Vận tốc truyền sóng phụ thuộc chủ yếu vào yếu tố nào? (chu kỳ / tần số / môi trường truyền sóng)", a: ["môi trường truyền sóng", "moi truong truyen song", "môi trường", "moi truong"], h: "Phụ thuộc vào bản chất môi trường đàn hồi." },
+      { q: "Con lắc lò xo gồm vật khối lượng m và lò xo độ cứng k có chu kỳ dao động tự do T = 2pi x căn của ...?", a: ["m/k"], h: "m chia k." },
+      { q: "Sóng dọc là sóng trong đó các phần tử môi trường dao động theo phương như thế nào so với phương truyền sóng? (trùng / vuông góc)", a: ["trùng", "trung"], h: "Sóng dọc trùng phương truyền sóng, sóng ngang vuông góc." },
+      { q: "Hiện tượng hai sóng kết hợp gặp nhau tạo ra các cực đại và cực tiểu giao nhau gọi là hiện tượng gì?", a: ["giao thoa", "giao thoa sóng", "giao thoa song"], h: "Hiện tượng giao thoa đặc trưng của sóng." }
     ]
   };
 
   const chemistryData = {
     "chm_8_1": [
       { q: "Ký hiệu hóa học của nguyên tố Sodium (Natri) là gì?", a: ["na"], h: "Natri." },
-      { q: "Tính phân tử khối của Nước (H2O)? (Cho H=1, O=16)", a: ["18"], h: "M = 1 x 2 + 16." },
-      { q: "Ký hiệu hóa học của nguyên tố Đồng (Copper) là gì?", a: ["cu"], h: "Cuprum." }
+      { q: "Tính phân tử khối của Nước (H2O)? (Cho H=1, O=16)", a: ["18"], h: "1 x 2 + 16 = 18." },
+      { q: "Ký hiệu hóa học of nguyên tố Đồng (Copper) là gì?", a: ["cu"], h: "Cuprum." },
+      { q: "Ký hiệu hóa học của nguyên tố Potassium (Kali) là gì?", a: ["k"], h: "Kalium." },
+      { q: "Hạt trung hòa về điện nằm trong hạt nhân nguyên tử là hạt nào?", a: ["neutron", "nơ-trôn", "nơtrôn"], h: "Nơ-trôn không mang điện." },
+      { q: "Hạt mang điện tích dương trong hạt nhân nguyên tử là hạt nào?", a: ["proton", "prô-tôn", "prôtôn"], h: "Prô-tôn mang điện tích dương." },
+      { q: "Ký hiệu hóa học của nguyên tố Sắt (Iron) là gì?", a: ["fe"], h: "Ferrum." },
+      { q: "Tính phân tử khối của khí Cacbonic (CO2)? (Cho C=12, O=16)", a: ["44"], h: "12 + 16 x 2 = 44." }
     ],
     "chm_9_1": [
       { q: "Axit clohiđric có công thức hóa học là gì?", a: ["hcl"], h: "Hydro và Clo." },
-      { q: "Độ pH của một dung dịch axit luôn như thế nào so với 7? (< 7 / > 7 / = 7)", a: ["< 7", "nho hon 7", "bé hơn 7"], h: "Axit có pH nhỏ hơn 7, bazơ lớn hơn 7." }
+      { q: "Độ pH của một dung dịch axit luôn như thế nào so với 7? (< 7 / > 7 / = 7)", a: ["< 7", "nho hon 7", "bé hơn 7"], h: "Axit có pH nhỏ hơn 7." },
+      { q: "Dung dịch bazơ (kiềm) làm quỳ tím chuyển sang màu gì?", a: ["xanh", "màu xanh", "mau xanh"], h: "Làm quỳ tím hóa xanh." },
+      { q: "Phản ứng giữa axit và bazơ tạo thành muối và nước gọi là phản ứng gì?", a: ["trung hòa", "trung hoa"], h: "Phản ứng trung hòa." },
+      { q: "Chất khí nào làm đục nước vôi trong dư?", a: ["co2", "cacbonic", "cacbon điôxít"], h: "Tạo ra kết tủa CaCO3." },
+      { q: "Kim loại nào phản ứng mãnh liệt với nước ở nhiệt độ thường trong các kim loại: Fe, Cu, Na, Al?", a: ["na", "natri", "sodium"], h: "Natri phản ứng tỏa nhiệt mạnh giải phóng H2." }
     ],
     "chm_10_1": [
       { q: "Lớp electron thứ nhất (sát hạt nhân nhất) chứa tối đa bao nhiêu electron?", a: ["2"], h: "Phân lớp 1s²." },
-      { q: "Phản ứng hóa học có sự thay đổi số oxi hóa của các nguyên tố gọi là phản ứng gì?", a: ["oxi hóa khử", "oxi hóa - khử", "oxi hoa khu"], h: "Phản ứng oxi hóa - khử." }
+      { q: "Phản ứng hóa học có sự thay đổi số oxi hóa của các nguyên tố gọi là phản ứng gì?", a: ["oxi hóa khử", "oxi hóa - khử", "oxi hoa khu"], h: "Phản ứng oxi hóa - khử." },
+      { q: "Liên kết được hình thành do lực hút tĩnh điện giữa các ion mang điện tích trái dấu gọi là liên kết gì?", a: ["liên kết ion", "ion", "lien ket ion"], h: "Liên kết ion." },
+      { q: "Số electron tối đa trong phân lớp p là bao nhiêu?", a: ["6"], h: "Phân lớp p chứa tối đa 6e." },
+      { q: "Nguyên tố có độ âm điện lớn nhất trong bảng tuần hoàn là nguyên tố nào?", a: ["f", "flo", "fluorine"], h: "Flo có độ âm điện 3.98." },
+      { q: "Quá trình nhường electron của một chất gọi là quá trình gì? (oxi hóa / khử)", a: ["oxi hóa", "oxi hoa"], h: "Chất khử nhường e, quá trình là oxi hóa." }
     ],
     "chm_11_1": [
       { q: "Chất khí hữu cơ đơn giản nhất thuộc dãy đồng đẳng Ankan có công thức CH4 tên là gì?", a: ["metan", "methane"], h: "Mê-tan." },
-      { q: "Dung dịch chất nào sau đây làm quỳ tím hóa đỏ: HCl hay NaOH?", a: ["hcl"], h: "Axit làm quỳ tím hóa đỏ." }
+      { q: "Axit axetic (chất có trong giấm ăn) có công thức hóa học là gì?", a: ["ch3cooh"], h: "C_H_3_C_O_O_H." },
+      { q: "Chất nào sau đây là chất điện li mạnh: nước cất hay muối ăn (NaCl)?", a: ["nacl", "muối ăn", "muoi an"], h: "NaCl phân li hoàn toàn trong nước." },
+      { q: "Hợp chất hữu cơ chỉ chứa hai nguyên tố Cacbon và Hydro gọi là gì?", a: ["hydrocacbon", "hiđrôcacbon"], h: "Hydro và Cacbon." },
+      { q: "Anken là các hydrocacbon không no mạch hở chứa một liên kết gì trong phân tử? (đơn / đôi / ba)", a: ["đôi", "doi", "liên kết đôi"], h: "Chứa một liên kết đôi C=C." }
     ],
     "chm_12_1": [
-      { q: "Kim loại dẫn điện tốt nhất trong các kim loại sau: Cu, Al, Ag, Fe?", a: ["ag", "bạc", "bac"], h: "Bạc dẫn điện tốt nhất, sau đó đến đồng (Cu)." },
-      { q: "Công thức hóa học của Glucozơ là gì?", a: ["c6h12o6"], h: "C_6_H_12_O_6." }
+      { q: "Kim loại dẫn điện tốt nhất trong các kim loại sau: Cu, Al, Ag, Fe?", a: ["ag", "bạc", "bac"], h: "Bạc (Ag)." },
+      { q: "Công thức hóa học của Glucozơ là gì?", a: ["c6h12o6"], h: "C_6_H_12_O_6." },
+      { q: "Este được tạo thành từ phản ứng giữa axit cacboxylic và chất nào?", a: ["ancol", "rượu", "alcohol", "ruou"], h: "Phản ứng este hóa giữa axit và ancol." },
+      { q: "Thành phần chính của mỡ động vật và dầu thực vật là chất gì?", a: ["chất béo", "lipit", "lipid", "chat beo", "triglyceride"], h: "Chất béo (triglixerit)." },
+      { q: "Polime thiên nhiên là thành phần chính của bông, tre, gỗ có tên là gì?", a: ["xenlulozơ", "cellulose", "xenlulozo"], h: "Xenlulozơ." },
+      { q: "Kim loại có nhiệt độ nóng chảy cao nhất dùng làm dây tóc bóng đèn là kim loại nào?", a: ["vonfram", "w", "wolfram"], h: "Vôn-fram (W)." }
     ]
   };
 
   const biologyData = {
     "bio_6_1": [
       { q: "Cây xanh chế tạo chất hữu cơ nhờ quá trình gì dưới ánh sáng Mặt Trời?", a: ["quang hợp", "quang hop"], h: "Quang hợp lấy CO2 giải phóng O2." },
-      { q: "Nấm có chứa chất diệp lục để tự quang hợp không? (có / không)", a: ["không", "khong"], h: "Nấm sống dị dưỡng ký sinh hoặc hoại sinh." }
+      { q: "Nấm có chứa chất diệp lục để tự quang hợp không? (có / không)", a: ["không", "khong"], h: "Nấm sống dị dưỡng ký sinh hoặc hoại sinh." },
+      { q: "Nhóm thực vật nào sau đây chưa có rễ, thân, lá thật sự: rêu hay dương xỉ?", a: ["rêu", "reu"], h: "Rêu có cấu tạo rất đơn giản." },
+      { q: "Cơ quan sinh sản của cây thông là gì? (hoa / quả / nón)", a: ["nón", "non"], h: "Thông hạt trần sinh sản bằng nón." }
     ],
     "bio_7_1": [
-      { q: "Động vật nào sau đây thuộc nhóm không xương sống: giun đất, cá chép, chim bồ câu?", a: ["giun đất", "giun dat"], h: "Giun đất không có cột sống." },
-      { q: "Động vật nào sau đây thuộc lớp Thú: cá voi, cá mập, cá chép?", a: ["cá voi", "ca voi"], h: "Cá voi đẻ con và nuôi con bằng sữa mẹ." }
+      { q: "Động vật nào sau đây thuộc nhóm không xương sống: giun đất, cá chép, chim bồ câu?", a: ["giun đất", "giun dat"], h: "Giun đất thuộc ngành Giun đốt." },
+      { q: "Động vật nào sau đây thuộc lớp Thú: cá voi, cá mập, cá chép?", a: ["cá voi", "ca voi"], h: "Cá voi đẻ con và nuôi con bằng sữa mẹ." },
+      { q: "Thủy tức sinh sản vô tính chủ yếu bằng hình thức nào? (mọc chồi / phân đôi)", a: ["mọc chồi", "moc choi"], h: "Từ cơ thể mẹ mọc ra chồi non." },
+      { q: "Đại diện nào sau đây thuộc ngành Thân mềm: mực ống, tôm sông, châu chấu?", a: ["mực ống", "mực", "muc ong", "muc"], h: "Mực có thân mềm, vỏ tiêu giảm." }
     ],
     "bio_8_1": [
       { q: "Nhóm máu nào được gọi là nhóm máu chuyên cho (có thể truyền cho mọi nhóm máu khác)?", a: ["o", "nhóm máu o", "nhom mau o"], h: "Nhóm máu O không có kháng nguyên trên hồng cầu." },
-      { q: "Cơ quan nào trong hệ tiêu hóa của người đảm nhận chức năng hấp thụ chất dinh dưỡng chủ yếu?", a: ["ruột non", "ruot non"], h: "Nơi có các lông cực nhỏ để hấp thụ chất dinh dưỡng." }
+      { q: "Cơ quan nào trong hệ tiêu hóa của người đảm nhận chức năng hấp thụ chất dinh dưỡng chủ yếu?", a: ["ruột non", "ruot non"], h: "Có bề mặt chứa nhiều nếp gấp lông hút." },
+      { q: "Hệ cơ quan nào thực hiện chức năng lọc và thải chất độc hại từ máu ra môi trường ngoài dưới dạng nước tiểu?", a: ["hệ bài tiết", "he bai tiet"], h: "Cơ quan chính là thận." },
+      { q: "Trung tâm điều khiển mọi hoạt động của cơ thể con người nằm ở đâu?", a: ["não", "não bộ", "nao", "nao bo"], h: "Hệ thần kinh trung ương." }
     ],
     "bio_9_1": [
-      { q: "Nhà khoa học được coi là ông tổ của ngành Di truyền học là ai?", a: ["men-đen", "menden", "mendel", "gregor mendel"], h: "Người lai các giống đậu Hà Lan." },
-      { q: "Một phân tử ADN mạch kép có Nu loại A = 20%. Tỉ lệ Nu loại T là bao nhiêu phần trăm?", a: ["20", "20%"], h: "Theo nguyên tắc bổ sung: A = T." }
+      { q: "Nhà khoa học được coi là ông tổ của ngành Di truyền học là ai?", a: ["men-đen", "menden", "mendel", "gregor mendel"], h: "Người nghiên cứu đậu Hà Lan." },
+      { q: "Một phân tử ADN mạch kép có Nu loại A = 20%. Tỉ lệ Nu loại T là bao nhiêu phần trăm?", a: ["20", "20%"], h: "Theo nguyên tắc bổ sung: A = T." },
+      { q: "Phép lai phân tích là phép lai giữa cá thể mang tính trạng trội cần xác định kiểu gen với cá thể mang tính trạng gì?", a: ["lặn", "tính trạng lặn", "lan", "tinh trang lan"], h: "Lai với cá thể đồng hợp lặn." },
+      { q: "Bộ nhiễm sắc thể lưỡng bội (2n) của loài người chứa bao nhiêu chiếc nhiễm sắc thể?", a: ["46"], h: "Gồm 23 cặp nhiễm sắc thể." }
     ],
     "bio_10_1": [
       { q: "Bào quan nào được ví là 'nhà máy năng lượng' của tế bào nhân thực?", a: ["ti thể", "ti the", "mitochondria"], h: "Nơi hô hấp tế bào tạo ATP." },
-      { q: "Virut có cấu tạo tế bào hoàn chỉnh chưa? (có / chưa)", a: ["chưa", "chua", "chưa có", "chua co"], h: "Virut chỉ gồm lõi axit nucleic và vỏ protein." }
+      { q: "Virut có cấu tạo tế bào hoàn chỉnh chưa? (có / chưa)", a: ["chưa", "chua", "chưa có", "chua co"], h: "Chỉ gồm lõi gen và vỏ protein." },
+      { q: "Bào quan nào chỉ có ở tế bào thực vật thực hiện chức năng quang hợp?", a: ["lục lạp", "luc lap"], h: "Chứa chất diệp lục hấp thụ ánh sáng." },
+      { q: "Màng tế bào được cấu tạo chủ yếu từ hai thành phần nào? (phốtpholipit và ...)", a: ["prôtêin", "protein"], h: "Màng sinh chất khảm động." }
     ],
     "bio_11_1": [
-      { q: "Hiện tượng cây hướng về phía nguồn ánh sáng được gọi là gì?", a: ["hướng sáng", "huong sang", "hướng động", "huong dong"], h: "Tính hướng sáng của thực vật." }
+      { q: "Hiện tượng cây hướng về phía nguồn ánh sáng được gọi là gì?", a: ["hướng sáng", "huong sang", "hướng động", "huong dong"], h: "Tính hướng sáng của ngọn cây." },
+      { q: "Cơ quan hô hấp của chim giúp bay lượn hiệu quả cao là gì?", a: ["phổi và túi khí", "phổi", "túi khí", "phoi"], h: "Hệ thống túi khí hỗ trợ phổi." }
     ],
     "bio_12_1": [
       { q: "Ai là tác giả của tác phẩm nổi tiếng 'Nguồn gốc các loài' nêu thuyết tiến hóa chọn lọc tự nhiên?", a: ["đác-uyn", "dac uyn", "darwin", "charles darwin"], h: "Nhà sinh học người Anh." },
-      { q: "Đơn vị cấu trúc cơ bản của hệ sinh thái gồm quần xã sinh vật và sinh cảnh gọi là gì?", a: ["hệ sinh thái", "he sinh thai"], h: "Hệ sinh thái." }
+      { q: "Đơn vị cấu trúc cơ bản của hệ sinh thái gồm quần xã sinh vật và sinh cảnh gọi là gì?", a: ["hệ sinh thái", "he sinh thai"], h: "Hệ sinh thái." },
+      { q: "Nhóm sinh vật có khả năng tự tổng hợp chất hữu cơ từ chất vô cơ gọi là gì? (sinh vật ...)", a: ["sản xuất", "sinh vật sản xuất", "san xuat"], h: "Thực vật, tảo quang hợp." }
     ]
   };
 
   const historyData = {
     "his_4_1": [
       { q: "Triều đại Hùng Vương truyền được bao nhiêu đời vua Hùng?", a: ["18", "mười tám"], h: "Con số 18 đời vua Hùng Vương dựng nước." },
-      { q: "Kinh đô đầu tiên của nhà nước Văn Lang nước ta tên là gì?", a: ["phong châu", "phong chau"], h: "Nằm ở tỉnh Phú Thọ ngày nay." }
+      { q: "Kinh đô đầu tiên của nhà nước Văn Lang nước ta tên là gì?", a: ["phong châu", "phong chau"], h: "Nằm ở tỉnh Phú Thọ ngày nay." },
+      { q: "Thành Cổ Loa là công trình quốc phòng vĩ đại của triều đại nào?", a: ["an dương vương", "thục phán", "an duong vuong", "thuc phan"], h: "Triều đại Âu Lạc của Thục Phán." },
+      { q: "Nữ anh hùng nào cùng em gái dựng cờ khởi nghĩa chống quân Đông Hán năm 40?", a: ["hai bà trưng", "trưng trắc", "hai ba trung", "trung trac"], h: "Trưng Trắc và Trưng Nhị." }
     ],
     "his_5_1": [
       { q: "Ai được phong là 'Bình Tây Đại Nguyên Soái' trong cuộc kháng chiến chống Pháp ở Nam Kì?", a: ["trương định", "truong dinh"], h: "Một danh tướng nghĩa khí ở Gò Công." },
-      { q: "Ai là người dâng bản 'Điều trần' canh tân đất nước lên vua Tự Đức?", a: ["nguyễn trường tộ", "nguyen truong to"], h: "Nhà cải cách công giáo quê Nghệ An." }
+      { q: "Ai là người dâng bản 'Điều trần' canh tân đất nước lên vua Tự Đức?", a: ["nguyễn trường tộ", "nguyen truong to"], h: "Nhà cải cách công giáo quê Nghệ An." },
+      { q: "Phong trào Đông Du do nhà yêu nước nào khởi xướng đầu thế kỷ XX?", a: ["phan bội châu", "phan boi chau"], h: "Đưa học sinh sang Nhật Bản du học học hỏi tự cường." },
+      { q: "Người anh hùng thiếu niên đã bóp nát quả cam vì không được dự bàn việc quân chống giặc Nguyên là ai?", a: ["trần quốc toản", "tran quoc toan"], h: "Lá cờ thêu sáu chữ vàng." }
     ],
     "his_6_1": [
       { q: "Kỳ quan cổ đại 'Kim tự tháp Giza' là thành tựu của nền văn minh cổ đại nào?", a: ["ai cập", "ai cap"], h: "Nằm bên dòng sông Nile." },
-      { q: "Quê hương của Thế vận hội Olympic cổ đại ở quốc gia cổ đại nào?", a: ["hy lạp", "hy lap", "lạp"], h: "Đất nước của các vị thần trên đỉnh Olympus." }
+      { q: "Quê hương của Thế vận hội Olympic cổ đại ở quốc gia cổ đại nào?", a: ["hy lạp", "hy lap", "lạp"], h: "Đất nước của các vị thần trên đỉnh Olympus." },
+      { q: "Bộ luật thành văn cổ xưa nhất thế giới mang tên vị vua nào của Lưỡng Hà?", a: ["hammurabi", "ha-mu-ra-bi"], h: "Bộ luật Hammurabi." }
     ],
     "his_7_1": [
       { q: "Ai là vị vua đầu tiên của triều đại nhà Lý?", a: ["lý thái tổ", "lý công uẩn", "ly thai to", "ly cong uan"], h: "Người dời đô từ Hoa Lư về Thăng Long năm 1010." },
-      { q: "Ba lần kháng chiến chống quân Nguyên - Mông thắng lợi lẫy lừng diễn ra ở triều đại nào?", a: ["trần", "nhà trần", "tran", "nha tran"], h: "Gắn liền với các vị vua Trần và Hưng Đạo Vương Trần Quốc Tuấn." }
+      { q: "Ba lần kháng chiến chống quân Nguyên - Mông thắng lợi lẫy lừng diễn ra ở triều đại nào?", a: ["trần", "nhà trần", "tran", "nha tran"], h: "Gắn liền với các vị vua Trần và Hưng Đạo Vương Trần Quốc Tuấn." },
+      { q: "Trận chiến trên sông Bạch Đằng năm 938 đánh tan quân Nam Hán do ai chỉ huy?", a: ["ngô quyền", "ngo quyen"], h: "Mở ra thời kỳ độc lập tự chủ lâu dài." },
+      { q: "Vị hoàng đế nào đã đại phá quân Thanh vào dịp Tết Kỷ Dậu năm 1789?", a: ["quang trung", "nguyễn huệ", "quang trung nguyen hue"], h: "Anh hùng áo vải Tây Sơn." }
     ],
     "his_8_1": [
       { q: "Cuộc cách mạng tư sản đầu tiên trên thế giới nổ ra ở nước nào?", a: ["hà lan", "ha lan"], h: "Nước Hà Lan vào thế kỷ XVI." },
-      { q: "Vị vua nào của triều Nguyễn đã ban chiếu Cần Vương kêu gọi nhân dân giúp vua cứu nước?", a: ["hàm nghi", "ham nghi"], h: "Vị vua trẻ yêu nước bị thực dân Pháp lưu đày." }
+      { q: "Vị vua nào của triều Nguyễn đã ban chiếu Cần Vương kêu gọi nhân dân giúp vua cứu nước?", a: ["hàm nghi", "ham nghi"], h: "Vị vua trẻ yêu nước bị thực dân Pháp lưu đày." },
+      { q: "Tuyên ngôn Nhân quyền và Dân quyền (1789) là văn kiện lịch sử của cuộc cách mạng nước nào?", a: ["pháp", "nước pháp", "phap", "nuoc phap"], h: "Cách mạng tư sản Pháp." }
     ],
     "his_9_1": [
       { q: "Chiến thắng Điện Biên Phủ 'lừng lẫy năm châu, chấn động địa cầu' diễn ra vào năm nào?", a: ["1954"], h: "Chấm dứt chiến tranh xâm lược của thực dân Pháp." },
-      { q: "Tổng tư lệnh chiến dịch Điện Biên Phủ năm 1954 là vị đại tướng nào?", a: ["võ nguyên giáp", "vo nguyen giap"], h: "Người anh cả của Quân đội Nhân dân Việt Nam." }
+      { q: "Tổng tư lệnh chiến dịch Điện Biên Phủ năm 1954 là vị đại tướng nào?", a: ["võ nguyên giáp", "vo nguyen giap"], h: "Người anh cả của Quân đội Nhân dân Việt Nam." },
+      { q: "Nguyễn Tất Thành ra đi tìm đường cứu nước vào ngày 5 tháng 6 năm 1911 tại bến cảng nào?", a: ["nhà rồng", "bến nhà rồng", "nha rong", "ben nha rong"], h: "Bến cảng Nhà Rồng ở Sài Gòn." },
+      { q: "Chiến dịch Hồ Chí Minh lịch sử giải phóng hoàn toàn miền Nam kết thúc thắng lợi vào năm nào?", a: ["1975"], h: "Mùa xuân năm 1975." }
     ],
     "his_10_1": [
       { q: "Trống đồng Đông Sơn là biểu tượng của nền văn minh cổ nào ở Việt Nam?", a: ["đông sơn", "dong son", "văn minh đông sơn"], h: "Giai đoạn văn hóa đồ đồng phát triển rực rỡ ở Bắc Bộ." }
     ],
     "his_11_1": [
-      { q: "Chiến tranh thế giới thế hai kết thúc vào năm nào?", a: ["1945"], h: "Năm phát xít Nhật, Đức đầu hàng đồng minh." },
+      { q: "Chiến tranh thế giới thứ hai kết thúc vào năm nào?", a: ["1945"], h: "Năm phát xít Nhật, Đức đầu hàng đồng minh." },
       { q: "Sự kiện lịch sử nào mở đầu cho thời kỳ cận đại của thế giới vào năm 1789?", a: ["cách mạng pháp", "cach mang phap", "cách mạng tư sản pháp"], h: "Sự sụp đổ của ngục Bastille ở nước Pháp." }
     ],
     "his_12_1": [
@@ -754,7 +1147,978 @@
   const btnNextHtml = `<button class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg px-6 py-3 rounded-2xl transition-all" onclick="newQuestion()">Đổi đề ⏭️</button>`;
   const btnRetryHtml = `<button class="bg-warning-400 hover:bg-warning-500 text-white font-black text-lg px-8 py-3 rounded-2xl shadow-md transition-all flex-1 max-w-[200px]" onclick="retryQuestion()">Thử lại 🔄</button>`;
 
-  function newQuestion() {
+
+
+// Dynamic question generator engine
+function generateDynamicQuestion(subject, grade, typeId) {
+    // Helper randomizer
+    const rInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const rArr = (arr) => arr[rInt(0, arr.length - 1)];
+
+    // Shared data pools
+    const names = ["Lan", "Nam", "Bình", "An", "Minh", "Hoa", "Tuấn", "Hùng", "Mai", "Vinh"];
+    
+    // Spelling words (for vi_1_1)
+    const spellingPool = [
+        { word: "chân lý", missing: "tr", blank: "...ân lý", ans: ["tr"], hint: "Chân lý (lẽ phải)." },
+        { word: "chăm chỉ", missing: "ch", blank: "...ăm chỉ", ans: ["ch"], hint: "Chăm chỉ (cần cù)." },
+        { word: "trung thực", missing: "tr", blank: "...ung thực", ans: ["tr"], hint: "Ăn ngay nói thật." },
+        { word: "chúng ta", missing: "ch", blank: "...úng ta", ans: ["ch"], hint: "Từ chỉ chúng mình." },
+        { word: "tròn trịa", missing: "tr", blank: "...òn trịa", ans: ["tr"], hint: "Tròn trịa." },
+        { word: "chú ý", missing: "ch", blank: "...ú ý", ans: ["ch"], hint: "Tập trung chú ý." },
+        { word: "xinh đẹp", missing: "s", blank: "...inh đẹp", ans: ["s"], hint: "Xinh đẹp bắt đầu bằng s." },
+        { word: "xanh lá", missing: "x", blank: "...anh lá", ans: ["x"], hint: "Màu xanh lá bắt đầu bằng x." },
+        { word: "sạch sẽ", missing: "s", blank: "...ạch sẽ", ans: ["s"], hint: "Sạch sẽ ngăn nắp." },
+        { word: "xem phim", missing: "x", blank: "...em phim", ans: ["x"], hint: "Hành động giải trí xem phim." },
+        { word: "thước kẻ", missing: "k", blank: "thước ...ẻ", ans: ["k"], hint: "Trước e, ê, i ta dùng k." },
+        { word: "con kênh", missing: "k", blank: "con ...ênh", ans: ["k"], hint: "Dòng nước chảy qua." },
+        { word: "chim oanh", missing: "c", blank: "...im oanh", ans: ["c"], hint: "Ta dùng c trước âm i." },
+        { word: "cá chép", missing: "c", blank: "...á chép", ans: ["c"], hint: "Cá chép sông." },
+        { word: "ghế gỗ", missing: "gh", blank: "ghế ...ỗ", ans: ["gh"], hint: "Ghế làm bằng gỗ." },
+        { word: "nhà ga", missing: "g", blank: "nhà ...a", ans: ["g"], hint: "Nơi ga tàu lửa." },
+        { word: "nghe ngóng", missing: "ngh", blank: "nghe ...óng", ans: ["ngh"], hint: "Trước e, ê, i dùng ngh." },
+        { word: "giấc ngủ", missing: "ng", blank: "giấc ...ủ", ans: ["ng"], hint: "Giấc ngủ ngon lành." },
+        { word: "nghề nghiệp", missing: "ngh", blank: "...ề nghiệp", ans: ["ngh"], hint: "Công việc hàng ngày." }
+    ];
+
+    // Word types (for vi_1_2 and vi_2_1)
+    const nouns = ["quyển sách", "bút chì", "ngôi nhà", "con mèo", "xe đạp", "bông hoa", "bảng đen", "quả táo", "cái bàn", "vở viết", "cây bàng", "con chó", "chim sẻ", "quần áo", "đôi dép", "mặt trời", "dòng sông", "bầu trời", "cơn mưa", "ngôi trường"];
+    const verbs = ["chạy", "đọc sách", "viết bài", "ăn cơm", "quét nhà", "hát ca", "chơi bóng", "học tập", "tưới cây", "nấu ăn", "đi học", "nhảy dây", "vẽ tranh", "nghe nhạc", "thảo luận", "ngủ ngon", "lau bàn", "rửa bát", "gấp giấy", "bơi lội"];
+    const adjectives = ["xinh đẹp", "chăm chỉ", "thông minh", "cao lớn", "yêu thương", "nhanh nhẹn", "ngoan ngoãn", "dũng cảm", "hiền lành", "tốt bụng", "cần cù", "mạnh mẽ", "yếu ớt", "siêng năng", "rộng lớn", "mênh mông", "tươi đẹp", "rực rỡ", "ngọt ngào", "mát mẻ"];
+
+    // Synonym pairs
+    const synonyms = [
+        { w1: "bao la", w2: "mênh mông", hint: "Rộng rãi khôn cùng." },
+        { w1: "chăm chỉ", w2: "cần cù", hint: "Siêng năng chịu khó." },
+        { w1: "dũng cảm", w2: "gan dạ", hint: "Không sợ nguy hiểm." },
+        { w1: "tổ quốc", w2: "đất nước", hint: "Quê hương của đất nước." },
+        { w1: "học tập", w2: "học hành", hint: "Học tập tiếp thu kiến thức." },
+        { w1: "yêu thương", w2: "mến thương", hint: "Tình cảm mến thương." },
+        { w1: "hiền lành", w2: "hiền từ", hint: "Tính nết hiền hòa." },
+        { w1: "vui vẻ", w2: "hớn hở", hint: "Trạng thái vui tươi." },
+        { w1: "nhanh nhẹn", w2: "hoạt bát", hint: "Di chuyển, phản ứng nhanh." },
+        { w1: "đẹp đẽ", w2: "xinh đẹp", hint: "Có vẻ ngoài cuốn hút." }
+    ];
+
+    // Antonym pairs
+    const antonyms = [
+        { w1: "chăm chỉ", w2: "lười biếng", hint: "Lười biếng." },
+        { w1: "vui vẻ", w2: "buồn bã", hint: "Cảm giác buồn chán." },
+        { w1: "khóc", w2: "cười", hint: "Cười vui." },
+        { w1: "dũng cảm", w2: "hèn nhát", hint: "Sợ sệt." },
+        { w1: "cao", w2: "thấp", hint: "Kích thước chiều cao." },
+        { w1: "đẹp", w2: "xấu", hint: "Vẻ bề ngoài." },
+        { w1: "ngoan", w2: "hư", hint: "Vâng lời và không vâng lời." },
+        { w1: "nhanh", w2: "chậm", hint: "Tốc độ di chuyển." },
+        { w1: "ấm áp", w2: "lạnh lẽo", hint: "Nhiệt độ cảm nhận." },
+        { w1: "khôn ngoan", w2: "dại khờ", hint: "Trí tuệ." }
+    ];
+
+    // Sino-Vietnamese roots
+    const hviRoots = [
+        { root: "gia", mean: "nhà", hint: "Gia đình, gia thất." },
+        { root: "quốc", mean: "nước", hint: "Quốc gia, quốc kỳ." },
+        { root: "mẫu", mean: "mẹ", hint: "Mẫu thân, mẫu từ." },
+        { root: "phụ", mean: "cha", hint: "Phụ tử, phụ thân." },
+        { root: "thủy", mean: "nước", hint: "Thủy triều, thủy điện." },
+        { root: "hỏa", mean: "lửa", hint: "Hỏa hoạn, hỏa tiễn." },
+        { root: "mộc", mean: "cây", hint: "Thảo mộc, thảo dược." },
+        { root: "thiên", mean: "trời", hint: "Thiên địa, thiên lý." },
+        { root: "địa", mean: "đất", hint: "Địa hình, địa dư." },
+        { root: "nhân", mean: "người", hint: "Nhân dân, nhân loại." },
+        { root: "tâm", mean: "lòng", hint: "Tâm hồn, trung tâm." },
+        { root: "sơn", mean: "núi", hint: "Sơn lâm, giang sơn." },
+        { root: "hải", mean: "biển", hint: "Hải đảo, hải sản." },
+        { root: "long", mean: "rồng", hint: "Thăng Long, phi long." },
+        { root: "quân", mean: "vua", hint: "Quân chủ, quân vương." }
+    ];
+
+    // Proverbs database
+    const proverbs = [
+        { p: "Ăn quả nhớ kẻ trồng cây", blank: "trồng cây", hint: "Biết ơn người tạo ra thành quả." },
+        { p: "Lá lành đùm lá rách", blank: "rách", hint: "Tương thân tương ái, đùm bọc lẫn nhau." },
+        { p: "Uống nước nhớ nguồn", blank: "nguồn", hint: "Nhớ cội nguồn quê hương." },
+        { p: "Tốt gỗ hơn tốt nước sơn", blank: "nước sơn", hint: "Đánh giá thực chất hơn bề ngoài." },
+        { p: "Có công mài sắt có ngày nên kim", blank: "nên kim", hint: "Kiên trì ắt thành công." },
+        { p: "Gần mực thì đen gần đèn thì sáng", blank: "sáng", hint: "Môi trường ảnh hưởng nhân cách." },
+        { p: "Công cha như núi thái sơn", blank: "thái sơn", hint: "Công cha to lớn khôn cùng." },
+        { p: "Nghĩa mẹ như nước trong nguồn chảy ra", blank: "nguồn", hint: "Tình thương vô hạn của mẹ." },
+        { p: "Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi cao", blank: "núi", hint: "Sức mạnh đoàn kết." },
+        { p: "Bầu ơi thương lấy bí cùng, tuy rằng khác giống nhưng chung một giàn", blank: "giàn", hint: "Tình đồng bào anh em." }
+    ];
+
+    // ----------------- VIETNAMESE GENERATOR -----------------
+    if (subject === "vietnamese") {
+        if (typeId === "vi_1_1") {
+            const item = rArr(spellingPool);
+            const name = rArr(names);
+            const sentenceTemplates = [
+                `Bé hãy điền âm đúng vào chỗ trống: ${item.blank}`,
+                `Bạn ${name} đang tìm từ đúng điền vào chỗ trống: ${item.blank}`,
+                `Bé điền âm '${item.missing}' hoặc các âm khác phù hợp để hoàn thành từ: ${item.blank}`
+            ];
+            return {
+                q: rArr(sentenceTemplates),
+                a: item.ans,
+                h: item.hint,
+                formatHint: "Gõ chữ cái cần điền (viết thường)."
+            };
+        }
+        if (typeId === "vi_1_2") {
+            const name = rArr(names);
+            const n = rArr(nouns);
+            const v = rArr(verbs);
+            const type = rInt(1, 3);
+            if (type === 1) {
+                return {
+                    q: `Từ '${n}' là từ chỉ hoạt động hay sự vật?`,
+                    a: ["sự vật", "su vat"],
+                    h: `Sự vật xung quanh ta.`,
+                    formatHint: "Trả lời 'hoạt động' hoặc 'sự vật'."
+                };
+            } else if (type === 2) {
+                return {
+                    q: `Từ '${v}' là từ chỉ hoạt động hay sự vật?`,
+                    a: ["hoạt động", "hoat dong"],
+                    h: `Chỉ hoạt động thực hiện bởi người hoặc vật.`,
+                    formatHint: "Trả lời 'hoạt động' hoặc 'sự vật'."
+                };
+            } else {
+                return {
+                    q: `Trong câu 'Bạn ${name} đang ${v} với ${n}', từ nào là từ chỉ hoạt động?`,
+                    a: [v],
+                    h: `Hoạt động đang diễn ra của bạn ${name}.`,
+                    formatHint: "Gõ từ chỉ hoạt động đó."
+                };
+            }
+        }
+        if (typeId === "vi_2_1") {
+            const name = rArr(names);
+            const n = rArr(nouns);
+            const v = rArr(verbs);
+            const adj = rArr(adjectives);
+            const type = rInt(1, 4);
+            if (type === 1) {
+                return {
+                    q: `Từ '${adj}' là từ chỉ đặc điểm, hoạt động hay sự vật?`,
+                    a: ["đặc điểm", "dac diem", "tính chất", "tinh chat"],
+                    h: `Chỉ tính nết, hình dáng, màu sắc.`,
+                    formatHint: "Trả lời 'đặc điểm', 'hoạt động' hoặc 'sự vật'."
+                };
+            } else if (type === 2) {
+                return {
+                    q: `Trong câu 'Bạn ${name} rất ${adj} khi ${v}.', từ nào là từ chỉ đặc điểm?`,
+                    a: [adj],
+                    h: `Đặc tính của bạn ${name}.`,
+                    formatHint: "Gõ từ chỉ đặc điểm trong câu."
+                };
+            } else if (type === 3) {
+                return {
+                    q: `Trong câu 'Bố mua cho ${name} cái ${n} rất ${adj}.', từ nào là từ chỉ sự vật?`,
+                    a: [n],
+                    h: `Tên gọi đồ vật được mua.`,
+                    formatHint: "Gõ từ chỉ sự vật trong câu."
+                };
+            } else {
+                return {
+                    q: `Trong câu 'Mẹ khuyên ${name} nên chăm chỉ ${v} hàng ngày.', từ nào là từ chỉ hoạt động?`,
+                    a: [v],
+                    h: `Hành động mẹ khuyên nên thực hiện.`,
+                    formatHint: "Gõ từ chỉ hoạt động trong câu."
+                };
+            }
+        }
+        if (typeId === "vi_2_2") {
+            const name = rArr(names);
+            const vehicles = ["xe đạp", "xe máy", "ô tô", "xe buýt", "tàu hỏa"];
+            const veh = rArr(vehicles);
+            const locations = ["ngoài sân", "trong nhà", "ở công viên", "trong lớp học", "ở thư viện"];
+            const loc = rArr(locations);
+            const reasons = ["trời mưa lớn", "bị ốm", "bận việc gia đình", "xe hỏng"];
+            const reas = rArr(reasons);
+            const type = rInt(1, 3);
+            if (type === 1) {
+                return {
+                    q: `Đặt câu hỏi cho bộ phận in đậm: 'Bạn ${name} đi học **bằng ${veh}**.' -> Bạn ${name} đi học ...?`,
+                    a: ["bằng gì", "bang gi"],
+                    h: `Hỏi về phương tiện đi lại.`,
+                    formatHint: "Gõ câu hỏi phù hợp."
+                };
+            } else if (type === 2) {
+                return {
+                    q: `Đặt câu hỏi cho bộ phận in đậm: 'Bé đang chơi **${loc}**.' -> Bé đang chơi ...?`,
+                    a: ["ở đâu", "o dau"],
+                    h: `Hỏi về nơi chốn, vị trí.`,
+                    formatHint: "Gõ câu hỏi phù hợp."
+                };
+            } else {
+                return {
+                    q: `Đặt câu hỏi cho bộ phận in đậm: 'Vì **${reas}** nên ${name} được nghỉ học.' -> ... nên ${name} được nghỉ học?`,
+                    a: ["vì sao", "vi sao", "tại sao", "tai sao"],
+                    h: `Hỏi về nguyên nhân lý do.`,
+                    formatHint: "Gõ cụm từ để hỏi."
+                };
+            }
+        }
+        if (typeId === "vi_3_1") {
+            const syn = rArr(synonyms);
+            const ant = rArr(antonyms);
+            const type = rInt(1, 2);
+            if (type === 1) {
+                return {
+                    q: `Tìm từ đồng nghĩa với từ '${syn.w1}':`,
+                    a: [syn.w2],
+                    h: syn.hint,
+                    formatHint: "Gõ từ đồng nghĩa tiếng Việt đầy đủ."
+                };
+            } else {
+                return {
+                    q: `Tìm từ trái nghĩa với từ '${ant.w1}':`,
+                    a: [ant.w2],
+                    h: ant.hint,
+                    formatHint: "Gõ từ trái nghĩa tiếng Việt đầy đủ."
+                };
+            }
+        }
+        if (typeId === "vi_3_2") {
+            const compItems = [
+                { s: "Trẻ em", o: "búp trên cành", h: "Thơ Bác Hồ." },
+                { s: "Dòng sông", o: "dải lụa", h: "Mô tả sông uốn lượn." },
+                { s: "Mặt trời", o: "quả bóng lửa", h: "Mô tả mặt trời buổi sớm." },
+                { s: "Trăng tròn", o: "cái đĩa vàng", h: "Mô tả ánh trăng sáng." },
+                { s: "Mắt bé", o: "ngôi sao", h: "Mô tả đôi mắt tinh anh." }
+            ];
+            const humActions = ["vẫy tay chào", "reo vui", "mặc áo giáp đen", "thì thầm trò chuyện", "chải đầu soi gương"];
+            const humActors = ["chị gió", "bác mặt trời", "ông trăng", "chú chim sâu", "chị tre"];
+            const type = rInt(1, 2);
+            if (type === 1) {
+                const item = rArr(compItems);
+                return {
+                    q: `Câu sau sử dụng biện pháp nghệ thuật nào: '${item.s} như ${item.o}'?`,
+                    a: ["so sánh", "so sanh"],
+                    h: item.h,
+                    formatHint: "Gõ tên biện pháp nghệ thuật (ví dụ: so sánh)."
+                };
+            } else {
+                const actor = rArr(humActors);
+                const act = rArr(humActions);
+                return {
+                    q: `Câu sau sử dụng biện pháp nghệ thuật nào: '${actor} đang ${act} dưới nắng thu'?`,
+                    a: ["nhân hóa", "nhan hoa", "nhân hoá"],
+                    h: "Sử dụng từ ngữ chỉ người cho vật.",
+                    formatHint: "Gõ tên biện pháp nghệ thuật."
+                };
+            }
+        }
+        if (typeId === "vi_4_1") {
+            const item = rArr(proverbs);
+            return {
+                q: `Điền cụm từ còn thiếu vào tục ngữ sau: '${item.p.replace(item.blank, "...")}'`,
+                a: [item.blank],
+                h: item.hint,
+                formatHint: "Điền chữ có dấu đầy đủ."
+            };
+        }
+        if (typeId === "vi_4_2") {
+            const wL = ["long lanh", "rì rầm", "xinh xắn", "chăm chỉ", "mạnh mẽ", "ấm áp", "mơ mộng", "nhỏ nhắn", "lấp lánh", "phập phồng"];
+            const wG = ["xe đạp", "bàn ghế", "học tập", "đoàn kết", "nhà cửa", "sách vở", "bút chì", "cây cối", "chạy nhảy", "ăn uống"];
+            const wl = rArr(wL);
+            const wg = rArr(wG);
+            const type = rInt(1, 2);
+            if (type === 1) {
+                return {
+                    q: `Từ '${wl}' là từ ghép hay từ láy?`,
+                    a: ["từ láy", "tu lay", "láy", "lay"],
+                    h: "Sự lặp âm hoặc vần ở các tiếng.",
+                    formatHint: "Trả lời 'từ ghép' hoặc 'từ láy'."
+                };
+            } else {
+                return {
+                    q: `Từ '${wg}' là từ ghép hay từ láy?`,
+                    a: ["từ ghép", "tu ghep", "ghép", "ghep"],
+                    h: "Ghép hai tiếng có nghĩa riêng biệt để tạo nghĩa mới.",
+                    formatHint: "Trả lời 'từ ghép' hoặc 'từ láy'."
+                };
+            }
+        }
+        if (typeId === "vi_5_1") {
+            const subjp = [
+                { s: "Mùa xuân", v: "đã về trên bản làng" },
+                { s: "Học sinh", v: "đang tung tăng tới trường" },
+                { s: "Đàn cò trắng", v: "bay lả bay la" },
+                { s: "Những bông hoa hồng", v: "nở rộ khoe sắc thắm" },
+                { s: "Mẹ em", v: "đang cấy lúa dưới ruộng" },
+                { s: "Chú mèo mướp", v: "đang nằm sưởi nắng" },
+                { s: "Dòng sông quê hương", v: "uốn lượn hiền hòa" }
+            ];
+            const item = rArr(subjp);
+            const type = rInt(1, 2);
+            if (type === 1) {
+                return {
+                    q: `Xác định chủ ngữ trong câu: '${item.s} ${item.v}.'`,
+                    a: [item.s.toLowerCase()],
+                    h: "Đặt câu hỏi: Cái gì / Ai / Con gì?",
+                    formatHint: "Gõ chủ ngữ tìm được."
+                };
+            } else {
+                return {
+                    q: `Xác định vị ngữ trong câu: '${item.s} ${item.v}.'`,
+                    a: [item.v.toLowerCase()],
+                    h: "Đặt câu hỏi: Làm gì / Thế nào / Là gì?",
+                    formatHint: "Gõ vị ngữ tìm được."
+                };
+            }
+        }
+        if (typeId === "vi_5_2") {
+            const poly = [
+                { w: "chân", p1: "chân người", p2: "chân bàn", ans: "nhiều nghĩa", h: "Tương đồng nâng đỡ dưới đáy." },
+                { w: "mũi", p1: "mũi người", p2: "mũi thuyền", ans: "nhiều nghĩa", h: "Bộ phận nhọn nhô ra trước." },
+                { w: "lá", p1: "lá cây", p2: "lá thư", ans: "nhiều nghĩa", h: "Cùng hình dạng mỏng dẹt." },
+                { w: "cánh", p1: "cánh chim", p2: "cánh quạt", ans: "nhiều nghĩa", h: "Bộ phận mỏng xòe ra để quạt/bay." }
+            ];
+            const homo = [
+                { w: "đường", p1: "con đường đi học", p2: "muỗng đường ăn", ans: "đồng âm", h: "Viết giống nhưng nghĩa hoàn toàn khác biệt." },
+                { w: "kính", p1: "đeo mắt kính", p2: "kính trọng người già", ans: "đồng âm", h: "Đồng âm dị nghĩa." },
+                { w: "đá", p1: "hòn đá tảng", p2: "đá bóng ngoài sân", ans: "đồng âm", h: "Danh từ và động từ đồng âm." },
+                { w: "ba", p1: "ba tuổi đầu", p2: "ba mẹ yêu con", ans: "đồng âm", h: "Số ba và ba (bố/cha)." }
+            ];
+            const type = rInt(1, 2);
+            if (type === 1) {
+                const item = rArr(poly);
+                return {
+                    q: `Từ '${item.w}' trong '${item.p1}' và '${item.p2}' là từ đồng âm hay nhiều nghĩa?`,
+                    a: ["nhiều nghĩa", "nhieu nghia"],
+                    h: item.h,
+                    formatHint: "Gõ 'đồng âm' hoặc 'nhiều nghĩa'."
+                };
+            } else {
+                const item = rArr(homo);
+                return {
+                    q: `Từ '${item.w}' trong '${item.p1}' and '${item.p2}' là từ đồng âm hay nhiều nghĩa?`,
+                    a: ["đồng âm", "dong am"],
+                    h: item.h,
+                    formatHint: "Gõ 'đồng âm' hoặc 'nhiều nghĩa'."
+                };
+            }
+        }
+        if (typeId === "vi_7_1") {
+            const item = rArr(hviRoots);
+            return {
+                q: `Yếu tố Hán Việt '${item.root}' trong từ ghép Hán Việt có nghĩa thuần Việt là gì?`,
+                a: [item.mean],
+                h: item.hint,
+                formatHint: "Gõ một từ thuần Việt tương ứng."
+            };
+        }
+    }
+
+    // ----------------- ENGLISH GENERATOR -----------------
+    if (subject === "english") {
+        const colors = [
+            { vi: "đỏ", en: "red" }, { vi: "xanh lá", en: "green" }, { vi: "vàng", en: "yellow" },
+            { vi: "xanh da trời", en: "blue" }, { vi: "đen", en: "black" }, { vi: "trắng", en: "white" },
+            { vi: "hồng", en: "pink" }, { vi: "tím", en: "purple" }, { vi: "cam", en: "orange" }, { vi: "nâu", en: "brown" }
+        ];
+        const numbers = [
+            { vi: "một", en: "one", val: 1 }, { vi: "hai", en: "two", val: 2 }, { vi: "ba", en: "three", val: 3 },
+            { vi: "bốn", en: "four", val: 4 }, { vi: "năm", en: "five", val: 5 }, { vi: "sáu", en: "six", val: 6 },
+            { vi: "bảy", en: "seven", val: 7 }, { vi: "tám", en: "eight", val: 8 }, { vi: "chín", en: "nine", val: 9 },
+            { vi: "mười", en: "ten", val: 10 }
+        ];
+        const animals = [
+            { vi: "mèo", en: "cat" }, { vi: "chó", en: "dog" }, { vi: "chim", en: "bird" },
+            { vi: "cá", en: "fish" }, { vi: "khỉ", en: "monkey" }, { vi: "thỏ", en: "rabbit" },
+            { vi: "hổ", en: "tiger" }, { vi: "sư tử", en: "lion" }, { vi: "voi", en: "elephant" }, { vi: "gấu", en: "bear" }
+        ];
+        const fruits = [
+            { vi: "táo", en: "apple" }, { vi: "chuối", en: "banana" }, { vi: "cam", en: "orange" },
+            { vi: "xoài", en: "mango" }, { vi: "chanh", en: "lemon" }, { vi: "nho", en: "grape" },
+            { vi: "đào", en: "peach" }, { vi: "dưa hấu", en: "watermelon" }
+        ];
+        const schoolItems = [
+            { vi: "sách", en: "book" }, { vi: "bút", en: "pen" }, { vi: "bút chì", en: "pencil" },
+            { vi: "thước kẻ", en: "ruler" }, { vi: "tẩy", en: "eraser" }, { vi: "cặp sách", en: "bag" },
+            { vi: "vở", en: "notebook" }, { vi: "bàn học", en: "desk" }
+        ];
+        const family = [
+            { vi: "bố", en: "father" }, { vi: "mẹ", en: "mother" }, { vi: "anh em trai", en: "brother" },
+            { vi: "chị em gái", en: "sister" }, { vi: "ông", en: "grandfather" }, { vi: "bà", en: "grandmother" }
+        ];
+
+        if (typeId === "en_1_1") {
+            const type = rInt(1, 4);
+            if (type === 1) {
+                const item = rArr(colors);
+                return {
+                    q: `Màu '${item.vi}' trong tiếng Anh viết là gì?`,
+                    a: [item.en],
+                    h: `Bắt đầu bằng chữ cái '${item.en[0]}'.`,
+                    formatHint: "Gõ bằng tiếng Anh (chữ thường)."
+                };
+            } else if (type === 2) {
+                const item = rArr(colors);
+                return {
+                    q: `Từ '${item.en}' trong tiếng Việt nghĩa là màu gì?`,
+                    a: [item.vi, `màu ${item.vi}`],
+                    h: `Màu sắc quen thuộc.`,
+                    formatHint: "Gõ tiếng Việt đầy đủ."
+                };
+            } else if (type === 3) {
+                const item = rArr(numbers);
+                return {
+                    q: `Số '${item.vi}' trong tiếng Anh viết là gì?`,
+                    a: [item.en],
+                    h: `Chữ cái đầu: ${item.en[0]}.`,
+                    formatHint: "Gõ từ tiếng Anh."
+                };
+            } else {
+                const item = rArr(numbers);
+                return {
+                    q: `Từ tiếng Anh '${item.en}' là số mấy?`,
+                    a: [item.val.toString(), item.vi],
+                    h: `Số đếm.`,
+                    formatHint: "Gõ số hoặc chữ số tiếng Việt."
+                };
+            }
+        }
+        if (typeId === "en_2_1") {
+            const type = rInt(1, 2);
+            if (type === 1) {
+                const item = rArr(animals);
+                return {
+                    q: `Con '${item.vi}' trong tiếng Anh viết là gì?`,
+                    a: [item.en],
+                    h: `Bắt đầu bằng '${item.en[0]}'.`,
+                    formatHint: "Gõ từ tiếng Anh."
+                };
+            } else {
+                const item = rArr(fruits);
+                return {
+                    q: `Quả '${item.vi}' trong tiếng Anh viết là gì?`,
+                    a: [item.en],
+                    h: `Bắt đầu bằng '${item.en[0]}'.`,
+                    formatHint: "Gõ từ tiếng Anh."
+                };
+            }
+        }
+        if (typeId === "en_3_1") {
+            const type = rInt(1, 2);
+            if (type === 1) {
+                const item = rArr(schoolItems);
+                return {
+                    q: `Cái '${item.vi}' trong tiếng Anh viết là gì?`,
+                    a: [item.en],
+                    h: `Bắt đầu bằng '${item.en[0]}'.`,
+                    formatHint: "Gõ từ tiếng Anh."
+                };
+            } else {
+                const item = rArr(family);
+                return {
+                    q: `Thành viên '${item.vi}' trong tiếng Anh viết là gì?`,
+                    a: [item.en],
+                    h: `Bắt đầu bằng '${item.en[0]}'.`,
+                    formatHint: "Gõ từ tiếng Anh."
+                };
+            }
+        }
+        if (typeId === "en_4_1") {
+            const preps = [
+                { en: "on", vi: "ở trên", h: "Trên bề mặt vật." },
+                { en: "in", vi: "ở trong", h: "Bên trong lòng vật." },
+                { en: "under", vi: "ở dưới", h: "Ngay dưới chân/đáy vật." },
+                { en: "behind", vi: "phía sau", h: "Sau vật cản." }
+            ];
+            const p = rArr(preps);
+            const a = rArr(animals);
+            const s = rArr(schoolItems);
+            return {
+                q: `Complete the sentence: 'The ${a.en} is ... the ${s.en}.' (Con ${a.vi} ${p.vi} cái ${s.vi})`,
+                a: [p.en],
+                h: p.h,
+                formatHint: "Điền giới từ thích hợp."
+            };
+        }
+        if (typeId === "en_5_1" || typeId === "en_6_2") {
+            const adjs = [
+                { en: "tall", comp: "taller", sup: "the tallest" },
+                { en: "short", comp: "shorter", sup: "the shortest" },
+                { en: "big", comp: "bigger", sup: "the biggest" },
+                { en: "small", comp: "smaller", sup: "the smallest" },
+                { en: "fast", comp: "faster", sup: "the fastest" },
+                { en: "slow", comp: "slower", sup: "the slowest" },
+                { en: "good", comp: "better", sup: "the best" },
+                { en: "bad", comp: "worse", sup: "the worst" }
+            ];
+            const item = rArr(adjs);
+            if (typeId === "en_5_1") {
+                return {
+                    q: `What is the comparative form (so sánh hơn) of '${item.en}'?`,
+                    a: [item.comp],
+                    h: `So sánh hơn của tính từ '${item.en}'.`,
+                    formatHint: "Gõ dạng so sánh hơn."
+                };
+            } else {
+                return {
+                    q: `What is the superlative form (so sánh nhất) of '${item.en}'?`,
+                    a: [item.sup, item.sup.replace("the ", "")],
+                    h: `So sánh nhất của '${item.en}'.`,
+                    formatHint: "Gõ dạng so sánh nhất."
+                };
+            }
+        }
+    }
+
+    // ----------------- SCIENCE GENERATOR -----------------
+    if (subject === "science") {
+        if (typeId === "sci_7_1") {
+            const type = rInt(1, 2);
+            if (type === 1) {
+                // Velocity v = s / t
+                const t = rInt(1, 5);
+                const v = rInt(10, 80);
+                const s = v * t;
+                return {
+                    q: `Một vật chuyển động đều quãng đường s = ${s} km trong thời gian t = ${t} giờ. Tính vận tốc v của vật theo km/h?`,
+                    a: [v.toString()],
+                    h: `Công thức: v = s / t.`,
+                    formatHint: "Chỉ gõ giá trị số."
+                };
+            } else {
+                // Force F = m * a
+                const m = rInt(1, 10);
+                const a = rInt(1, 5);
+                const F = m * a;
+                return {
+                    q: `Tính lực tác dụng F (theo đơn vị Newton) lên một vật khối lượng m = ${m} kg đang chuyển động với gia tốc a = ${a} m/s²?`,
+                    a: [F.toString()],
+                    h: `Công thức Định luật II Newton: F = m . a`,
+                    formatHint: "Chỉ gõ giá trị số."
+                };
+            }
+        }
+        if (typeId === "sci_8_1") {
+            const elements = [
+                { sym: "h", name: "hydrogen", vi: "hydro" },
+                { sym: "o", name: "oxygen", vi: "oxy" },
+                { sym: "n", name: "nitrogen", vi: "nitơ" },
+                { sym: "fe", name: "iron", vi: "sắt" },
+                { sym: "cu", name: "copper", vi: "đồng" },
+                { sym: "na", name: "sodium", vi: "natri" },
+                { sym: "cl", name: "chlorine", vi: "clo" }
+            ];
+            const item = rArr(elements);
+            const type = rInt(1, 2);
+            if (type === 1) {
+                return {
+                    q: `Kí hiệu hóa học của nguyên tố '${item.vi.toUpperCase()}' là gì?`,
+                    a: [item.sym],
+                    h: `Kí hiệu viết tắt quốc tế.`,
+                    formatHint: "Gõ kí hiệu (không phân biệt hoa thường)."
+                };
+            } else {
+                return {
+                    q: `Kí hiệu hóa học '${item.sym.toUpperCase()}' là của nguyên tố nào?`,
+                    a: [item.vi, item.name],
+                    h: `Tên gọi tiếng Việt của nguyên tố.`,
+                    formatHint: "Gõ tên nguyên tố bằng tiếng Việt."
+                };
+            }
+        }
+        if (typeId === "sci_9_1") {
+            const A = rInt(10, 40);
+            const G = 50 - A;
+            return {
+                q: `Một phân tử ADN mạch kép có số nuclêôtit loại A chiếm ${A}%. Tính tỉ lệ phần trăm nuclêôtit loại G?`,
+                a: [G.toString(), `${G}%`],
+                h: `Theo nguyên tắc bổ sung: A + G = 50% tổng số nuclêôtit.`,
+                formatHint: "Chỉ gõ giá trị số phần trăm."
+            };
+        }
+    }
+
+    // ----------------- PHYSICS GENERATOR -----------------
+    if (subject === "physics") {
+        if (typeId === "phy_6_1") {
+            const m = rInt(1, 50);
+            const P = m * 10;
+            return {
+                q: `Một vật có khối lượng m = ${m} kg. Trọng lượng của vật đó trên mặt đất xấp xỉ bằng bao nhiêu Newton?`,
+                a: [P.toString(), `${P}n`],
+                h: `Công thức tính trọng lượng: P = 10m.`,
+                formatHint: "Chỉ gõ giá trị số."
+            };
+        }
+        if (typeId === "phy_8_1") {
+            const s = rInt(1, 10);
+            const p = rInt(5, 50);
+            const f = p * s;
+            return {
+                q: `Một áp lực F = ${f} Newton tác dụng đều lên diện tích bị ép S = ${s} m². Tính áp suất p tạo ra (đơn vị Pascal)?`,
+                a: [p.toString(), `${p}pa`],
+                h: `Công thức tính áp suất: p = F / S.`,
+                formatHint: "Chỉ gõ giá trị số."
+            };
+        }
+        if (typeId === "phy_9_1") {
+            const type = rInt(1, 3);
+            if (type === 1) {
+                const r = rInt(2, 20) * 5;
+                const i = rInt(1, 4);
+                const u = i * r;
+                return {
+                    q: `Tính hiệu điện thế U (đơn vị Vôn) đặt vào hai đầu điện trở R = ${r} Ohm khi dòng điện qua nó là I = ${i} Ampe?`,
+                    a: [u.toString()],
+                    h: `Định luật Ohm: U = I . R.`,
+                    formatHint: "Chỉ gõ giá trị số."
+                };
+            } else if (type === 2) {
+                const r1 = rInt(2, 30);
+                const r2 = rInt(2, 30);
+                const rEq = r1 + r2;
+                return {
+                    q: `Cho hai điện trở R1 = ${r1} Ohm, R2 = ${r2} Ohm mắc NỐI TIẾP. Điện trở tương đương của mạch là bao nhiêu Ohm?`,
+                    a: [rEq.toString()],
+                    h: `Mạch nối tiếp: R_eq = R1 + R2.`,
+                    formatHint: "Chỉ gõ giá trị số."
+                };
+            } else {
+                const r = rInt(1, 20) * 2;
+                const rEq = r / 2;
+                return {
+                    q: `Cho hai điện trở bằng nhau R1 = R2 = ${r} Ohm mắc SONG SONG. Điện trở tương đương của mạch bằng bao nhiêu Ohm?`,
+                    a: [rEq.toString()],
+                    h: `Mạch song song có hai điện trở giống nhau: R_eq = R / 2.`,
+                    formatHint: "Chỉ gõ giá trị số."
+                };
+            }
+        }
+        if (typeId === "phy_10_1") {
+            const v = rInt(10, 100);
+            const t = rInt(1, 4);
+            const s = v * t;
+            return {
+                q: `Một vật chuyển động thẳng đều đi được quãng đường s = ${s} km trong thời gian t = ${t} giờ. Vận tốc của vật là bao nhiêu km/h?`,
+                a: [v.toString()],
+                h: `Công thức: v = s / t.`,
+                formatHint: "Chỉ gõ giá trị số."
+            };
+        }
+        if (typeId === "phy_12_1") {
+            const type = rInt(1, 2);
+            if (type === 1) {
+                const periods = [0.1, 0.2, 0.5, 0.01, 0.02, 0.05, 1, 2, 4];
+                const T = rArr(periods);
+                const f = 1 / T;
+                return {
+                    q: `Một nguồn dao động có chu kỳ T = ${T} giây. Tần số dao động f của nguồn âm đó là bao nhiêu Hz?`,
+                    a: [f.toString()],
+                    h: `Tần số và chu kỳ là nghịch đảo của nhau: f = 1 / T.`,
+                    formatHint: "Chỉ gõ giá trị số."
+                };
+            } else {
+                const frequencies = [10, 20, 50, 100, 200, 500];
+                const f = rArr(frequencies);
+                const T = 1 / f;
+                return {
+                    q: `Một nguồn sóng dao động có tần số f = ${f} Hz. Tính chu kỳ dao động T (đơn vị giây) của nguồn sóng này?`,
+                    a: [T.toString()],
+                    h: `T = 1 / f.`,
+                    formatHint: "Gõ giá trị số thập phân hoặc nguyên."
+                };
+            }
+        }
+    }
+
+    // ----------------- CHEMISTRY GENERATOR -----------------
+    if (subject === "chemistry") {
+        const chemicalWeights = [
+            { formula: "H2O", name: "Nước", weight: 18, elements: "H=1, O=16" },
+            { formula: "CO2", name: "Cacbon đioxit (cacbonic)", weight: 44, elements: "C=12, O=16" },
+            { formula: "NaCl", name: "Muối ăn (Natri clorua)", weight: 58.5, elements: "Na=23, Cl=35.5" },
+            { formula: "HCl", name: "Axit clohiđric", weight: 36.5, elements: "H=1, Cl=35.5" },
+            { formula: "NaOH", name: "Natri hiđroxit", weight: 40, elements: "Na=23, O=16, H=1" },
+            { formula: "CaCO3", name: "Đá vôi (Canxi cacbonat)", weight: 100, elements: "Ca=40, C=12, O=16" },
+            { formula: "H2SO4", name: "Axit sunfuric", weight: 98, elements: "H=1, S=32, O=16" },
+            { formula: "CH4", name: "Khí metan", weight: 16, elements: "C=12, H=1" }
+        ];
+        if (typeId === "chm_8_1") {
+            const item = rArr(chemicalWeights);
+            return {
+                q: `Tính phân tử khối của ${item.name} (${item.formula})? (Cho ${item.elements})`,
+                a: [item.weight.toString()],
+                h: `Cộng nguyên tử khối của từng nguyên tử nhân với chỉ số chân của nó.`,
+                formatHint: "Chỉ gõ giá trị số."
+            };
+        }
+        if (typeId === "chm_9_1") {
+            const acids = ["HCl", "H2SO4", "HNO3"];
+            const bases = ["NaOH", "KOH", "Ca(OH)2"];
+            const type = rInt(1, 2);
+            if (type === 1) {
+                const item = rArr(acids);
+                return {
+                    q: `Dung dịch chất '${item}' làm quỳ tím hóa đỏ, xanh hay không đổi màu?`,
+                    a: ["đỏ", "hóa đỏ", "do", "hoa do"],
+                    h: `Dung dịch axit làm quỳ tím chuyển sang màu đỏ.`,
+                    formatHint: "Trả lời 'đỏ', 'xanh' hoặc 'không đổi màu'."
+                };
+            } else {
+                const item = rArr(bases);
+                return {
+                    q: `Dung dịch chất '${item}' làm quỳ tím hóa đỏ, xanh hay không đổi màu?`,
+                    a: ["xanh", "hóa xanh", "xanh lá", "xanh lam"],
+                    h: `Dung dịch bazơ kiềm làm quỳ tím chuyển sang màu xanh.`,
+                    formatHint: "Trả lời 'đỏ', 'xanh' hoặc 'không đổi màu'."
+                };
+            }
+        }
+    }
+
+    // ----------------- BIOLOGY GENERATOR -----------------
+    if (subject === "biology") {
+        if (typeId === "bio_9_1") {
+            const a = rInt(200, 1000) * 10;
+            const g = rInt(200, 1000) * 10;
+            const n = 2 * (a + g);
+            return {
+                q: `Một phân tử ADN mạch kép có số lượng nuclêôtit loại A = ${a} và loại G = ${g}. Tính tổng số nuclêôtit (N) của phân tử ADN này?`,
+                a: [n.toString()],
+                h: `Công thức: N = 2 . (A + G) vì A = T và G = C.`,
+                formatHint: "Chỉ gõ giá trị số."
+            };
+        }
+    }
+
+    // ----------------- HISTORY GENERATOR -----------------
+    if (subject === "history") {
+        const events = [
+            { ev: "Chiến thắng Điện Biên Phủ", year: "1954", h: "Kết thúc chiến tranh chống thực dân Pháp." },
+            { ev: "Giải phóng miền Nam, thống nhất đất nước", year: "1975", h: "Xe tăng húc đổ cổng Dinh Độc Lập ngày 30/4." },
+            { ev: "Thành lập Đảng Cộng sản Việt Nam", year: "1930", h: "Nguyễn Ái Quốc chủ trì Hội nghị thành lập Đảng ngày 3/2." },
+            { ev: "Cách mạng tháng Tám thành công", year: "1945", h: "Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập ngày 2/9." },
+            { ev: "Ký kết Hiệp định Giơ-ne-vơ về Việt Nam", year: "1954", h: "Chia cắt đất nước tại vĩ tuyến 17 tạm thời." },
+            { ev: "Ký kết Hiệp định Pa-ri về Việt Nam", year: "1973", h: "Mỹ rút quân khỏi miền Nam Việt Nam." },
+            { ev: "Trận chiến trên sông Bạch Đằng do Ngô Quyền lãnh đạo đánh tan quân Nam Hán", year: "938", h: "Mốc độc lập tự chủ lâu dài." },
+            { ev: "Vua Quang Trung đại phá quân Thanh vào dịp Tết Kỷ Dậu", year: "1789", h: "Tây Sơn khởi nghĩa phá Thanh." }
+        ];
+        const figures = [
+            { name: "Võ Nguyên Giáp", action: "chỉ huy Chiến dịch Điện Biên Phủ 1954", h: "Đại tướng huyền thoại." },
+            { name: "Lý Thái Tổ", action: "dời đô từ Hoa Lư về Thăng Long năm 1010", h: "Lý Công Uẩn." },
+            { name: "Hồ Chí Minh", action: "đọc bản Tuyên ngôn Độc lập khai sinh nước Việt Nam Dân chủ Cộng hòa năm 1945", h: "Bác Hồ kính yêu." },
+            { name: "Trần Hưng Đạo", action: "chỉ huy quân dân nhà Trần ba lần kháng chiến thắng lợi chống quân Nguyên - Mông", h: "Hưng Đạo Đại Vương Trần Quốc Tuấn." },
+            { name: "Ngô Quyền", action: "lãnh đạo trận chiến Bạch Đằng đánh tan quân Nam Hán năm 938", h: "Người mở nền độc lập vững chắc." }
+        ];
+        const type = rInt(1, 2);
+        if (type === 1) {
+            const item = rArr(events);
+            return {
+                q: `Sự kiện lịch sử '${item.ev}' diễn ra vào năm nào?`,
+                a: [item.year],
+                h: item.h,
+                formatHint: "Gõ năm dương lịch (ví dụ: 1945)."
+            };
+        } else {
+            const item = rArr(figures);
+            return {
+                q: `Ai là người đã ${item.action}?`,
+                a: [item.name.toLowerCase()],
+                h: item.h,
+                formatHint: "Gõ tên nhân vật lịch sử đầy đủ."
+            };
+        }
+    }
+
+    // --- ULTIMATE FALLBACK: Pick from static question databases ---
+    let pool = [];
+    if (subject === 'vietnamese') pool = vietnameseData[typeId] || [];
+    else if (subject === 'english') pool = englishData[typeId] || [];
+    else if (subject === 'science') pool = scienceData[typeId] || [];
+    else if (subject === 'physics') pool = physicsData[typeId] || [];
+    else if (subject === 'chemistry') pool = chemistryData[typeId] || [];
+    else if (subject === 'biology') pool = biologyData[typeId] || [];
+    else if (subject === 'history') pool = historyData[typeId] || [];
+    
+    if (pool.length > 0) {
+        const item = rArr(pool);
+        return {
+            q: item.q,
+            a: item.a,
+            h: item.h || "Con hãy suy nghĩ thật kỹ nhé!",
+            formatHint: (subject === 'vietnamese' || subject === 'history') ? "Gõ tiếng Việt có dấu đầy đủ." : (subject === 'english' ? "Gõ bằng tiếng Anh." : "Gõ câu trả lời chính xác.")
+        };
+    }
+    
+    return {
+        q: "Hãy suy nghĩ kỹ và trả lời câu hỏi ôn tập này nhé!",
+        a: ["đúng"],
+        h: "Hãy cố gắng nhé!",
+        formatHint: "Gõ câu trả lời của con."
+    };
+}
+
+  let isFetchingAi = false;
+  
+  function toggleAiSettings() {
+      const modal = document.getElementById('aiModal');
+      if (modal.classList.contains('hidden')) {
+          document.getElementById('opentdbEnabled').checked = localStorage.getItem('opentdb_enabled') !== 'false';
+          document.getElementById('geminiEnabled').checked = localStorage.getItem('gemini_enabled') === 'true';
+          document.getElementById('geminiKey').value = localStorage.getItem('gemini_api_key') || '';
+          
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+      } else {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+      }
+  }
+
+  function handleGeminiToggle() {
+      const isChecked = document.getElementById('geminiEnabled').checked;
+      const keyInput = document.getElementById('geminiKey');
+      if (isChecked && !keyInput.value) {
+          alert("Vui lòng nhập API Key của Gemini để có thể kích hoạt tính năng sinh câu hỏi bằng AI.");
+          document.getElementById('geminiEnabled').checked = false;
+          keyInput.focus();
+      }
+  }
+
+  function saveAiSettings() {
+      const opentdb = document.getElementById('opentdbEnabled').checked;
+      const gemini = document.getElementById('geminiEnabled').checked;
+      const key = document.getElementById('geminiKey').value.trim();
+      
+      if (gemini && !key) {
+          alert("Vui lòng nhập API Key của Gemini!");
+          return;
+      }
+      
+      localStorage.setItem('opentdb_enabled', opentdb ? 'true' : 'false');
+      localStorage.setItem('gemini_enabled', gemini ? 'true' : 'false');
+      localStorage.setItem('gemini_api_key', key);
+      
+      alert("🎉 Đã lưu cấu hình thành công!");
+      toggleAiSettings();
+      
+      if (isSessionStarted) {
+          newQuestion();
+      }
+  }
+
+  function decodeHtml(html) {
+      let txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
+  }
+
+  async function fetchOpenTdbQuestion() {
+      const gradeVal = parseInt(document.getElementById('grade').value) || 5;
+      let difficulty = "easy";
+      if (gradeVal >= 6 && gradeVal <= 9) difficulty = "medium";
+      else if (gradeVal >= 10) difficulty = "hard";
+      
+      const url = `https://opentdb.com/api.php?amount=1&type=multiple&difficulty=${difficulty}`;
+      
+      try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
+          
+          const response = await fetch(url, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) throw new Error("OpenTDB API error");
+          
+          const data = await response.json();
+          if (data && data.results && data.results.length > 0) {
+              const res = data.results[0];
+              const qText = decodeHtml(res.question);
+              const correctAns = decodeHtml(res.correct_answer);
+              
+              return {
+                  q: `<b>[OpenTDB English - ${res.category}]</b><br><br>${qText}`,
+                  a: [correctAns.toLowerCase()],
+                  h: `Đố vui tiếng Anh! Đáp án chính xác là: ${correctAns}`,
+                  formatHint: "Gõ câu trả lời chính xác bằng Tiếng Anh."
+              };
+          }
+      } catch (err) {
+          console.warn("OpenTDB fetch failed, falling back to local:", err);
+      }
+      return null;
+  }
+
+  async function fetchGeminiQuestion(subject, grade, typeId) {
+      const key = localStorage.getItem('gemini_api_key');
+      if (!key) return null;
+      
+      const subjectsMap = {
+          "math": "Toán Học",
+          "vietnamese": "Tiếng Việt / Ngữ văn",
+          "english": "Tiếng Anh",
+          "science": "Khoa Học tự nhiên & Đời sống",
+          "physics": "Vật Lý",
+          "chemistry": "Hóa Học",
+          "biology": "Sinh Học",
+          "history": "Lịch Sử"
+      };
+      const subName = subjectsMap[subject] || subject;
+      
+      let topicName = "";
+      if (dataConfig[subject] && dataConfig[subject][grade]) {
+          const matched = dataConfig[subject][grade].find(t => t.id === typeId);
+          if (matched) topicName = matched.n;
+      }
+      
+      const promptText = `Bạn là một giáo viên phổ thông tại Việt Nam. Hãy biên soạn chính xác 1 câu hỏi ôn luyện dành cho học sinh Lớp ${grade} môn ${subName}, thuộc chủ đề: "${topicName}".
+Yêu cầu:
+1. Câu hỏi bám sát trình độ lớp ${grade}, dễ hiểu, kích thích tư duy.
+2. Trả về đúng 1 đối tượng JSON duy nhất (không được bọc trong markdown và không được có văn bản nào khác ngoài JSON) có định dạng chính xác sau:
+{
+  "q": "Nội dung câu hỏi ngắn gọn bằng Tiếng Việt (hỗ trợ định dạng HTML cơ bản nếu cần nhấn mạnh từ)",
+  "a": ["đáp án đúng viết thường", "đáp án đúng khác chấp nhận được"],
+  "h": "Gợi ý hoặc lời giải ngắn gọn giúp bé hiểu bài"
+}`;
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+      
+      try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          
+          const response = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  contents: [{ parts: [{ text: promptText }] }]
+              }),
+              signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) throw new Error("Gemini API error");
+          
+          const data = await response.json();
+          if (data && data.candidates && data.candidates.length > 0) {
+              let text = data.candidates[0].content.parts[0].text;
+              text = text.replace(/```json/gi, "").replace(/```/gi, "").trim();
+              
+              const parsed = JSON.parse(text);
+              if (parsed.q && parsed.a) {
+                  return {
+                      q: `<b>[Gemini AI 🤖]</b><br><br>${parsed.q}`,
+                      a: parsed.a.map(String).map(s => s.toLowerCase().trim()),
+                      h: parsed.h || "Con hãy suy nghĩ kỹ nhé!",
+                      formatHint: (subject === 'vietnamese' || subject === 'history') ? "Gõ tiếng Việt có dấu đầy đủ." : "Gõ câu trả lời chính xác."
+                  };
+              }
+          }
+      } catch (err) {
+          console.warn("Gemini AI fetch failed, falling back to local:", err);
+      }
+      return null;
+  }
+
+  async function newQuestion() {
       const subject = document.getElementById('subject').value;
       let id = document.getElementById('type').value;
       const grade = document.getElementById('grade').value;
@@ -780,7 +2144,36 @@
       questionStartTime = Date.now();
       currentHint = "Con thử nháp lại cẩn thận xem sao nhé!"; // Default hint
 
-      if (subject === 'math') {
+      // Check remote AI and OpenTDB loaders
+      let remoteQuestion = null;
+      if (navigator.onLine) {
+          const opentdbActive = localStorage.getItem('opentdb_enabled') !== 'false';
+          const geminiActive = localStorage.getItem('gemini_enabled') === 'true';
+          const geminiKey = localStorage.getItem('gemini_api_key');
+          
+          if (subject === 'english' && opentdbActive) {
+              answerInput.disabled = true;
+              answerInput.placeholder = "Đang kết nối OpenTDB...";
+              document.getElementById('question').innerHTML = "<div class='flex items-center gap-2 justify-center text-slate-400 font-bold'><span class='animate-spin'>⏳</span> Đang tải đề Tiếng Anh từ OpenTDB...</div>";
+              remoteQuestion = await fetchOpenTdbQuestion();
+          } else if (geminiActive && geminiKey) {
+              answerInput.disabled = true;
+              answerInput.placeholder = "AI đang suy nghĩ...";
+              document.getElementById('question').innerHTML = "<div class='flex items-center gap-2 justify-center text-slate-400 font-bold'><span class='animate-spin'>⏳</span> Trợ lý AI đang soạn đề cho con...</div>";
+              remoteQuestion = await fetchGeminiQuestion(subject, grade, currentTypeId);
+          }
+      }
+      
+      answerInput.disabled = false;
+      answerInput.placeholder = "Gõ đáp án vào đây...";
+
+      if (remoteQuestion) {
+          q = remoteQuestion.q;
+          v = remoteQuestion.a;
+          currentHint = remoteQuestion.h;
+          document.getElementById('formatHint').innerText = remoteQuestion.formatHint;
+      } else {
+          if (subject === 'math') {
           switch(currentTypeId) {
           // --- KHỐI 1 ---
           case "1_1": { 
@@ -1531,43 +2924,12 @@
           }
           default: { q="Lỗi tải đề. Hãy chọn dạng bài khác!"; v=["error"]; }
           }
-      } else {
-          let dataPool = [];
-          if (subject === 'vietnamese') {
-              dataPool = vietnameseData[currentTypeId] || [];
-          } else if (subject === 'english') {
-              dataPool = englishData[currentTypeId] || [];
-          } else if (subject === 'science') {
-              dataPool = scienceData[currentTypeId] || [];
-          } else if (subject === 'physics') {
-              dataPool = physicsData[currentTypeId] || [];
-          } else if (subject === 'chemistry') {
-              dataPool = chemistryData[currentTypeId] || [];
-          } else if (subject === 'biology') {
-              dataPool = biologyData[currentTypeId] || [];
-          } else if (subject === 'history') {
-              dataPool = historyData[currentTypeId] || [];
-          }
-          
-          if (dataPool.length > 0) {
-              let item = dataPool[r(0, dataPool.length - 1)];
-              q = item.q;
-              v = item.a;
-              currentHint = item.h || "Con suy nghĩ kỹ nhé!";
-              if (subject === 'vietnamese') {
-                  document.getElementById('formatHint').innerText = "Gõ tiếng Việt có dấu đầy đủ.";
-              } else if (subject === 'english') {
-                  document.getElementById('formatHint').innerText = "Gõ bằng tiếng Anh.";
-              } else if (subject === 'physics' || subject === 'chemistry' || subject === 'biology') {
-                  document.getElementById('formatHint').innerText = "Gõ câu trả lời chính xác.";
-              } else if (subject === 'history') {
-                  document.getElementById('formatHint').innerText = "Gõ tiếng Việt có dấu đầy đủ.";
-              } else {
-                  document.getElementById('formatHint').innerText = "Gõ câu trả lời của con.";
-              }
           } else {
-              q = "Dạng bài này đang được cập nhật câu hỏi mới!";
-              v = ["dang cap nhat"];
+              let generatedObj = generateDynamicQuestion(subject, grade, currentTypeId);
+              q = generatedObj.q;
+              v = generatedObj.a;
+              currentHint = generatedObj.h;
+              document.getElementById('formatHint').innerText = generatedObj.formatHint;
           }
       }
 
@@ -1644,16 +3006,16 @@
 
   function drawScoreCanvas() {
       const canvas = document.createElement('canvas'); 
-      canvas.width = 600; canvas.height = 320;
+      canvas.width = 600; canvas.height = 360;
       const ctx = canvas.getContext('2d');
       
       // Draw background
-      let grd = ctx.createLinearGradient(0, 0, 600, 320);
+      let grd = ctx.createLinearGradient(0, 0, 600, 360);
       grd.addColorStop(0, "#eff6ff"); grd.addColorStop(1, "#dbeafe");
-      ctx.fillStyle = grd; ctx.fillRect(0,0,600,320);
+      ctx.fillStyle = grd; ctx.fillRect(0,0,600,360);
       
       // Draw border
-      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 10; ctx.strokeRect(5,5,590,310);
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 10; ctx.strokeRect(5,5,590,350);
       
       // Texts
       ctx.textAlign = "center";
@@ -1667,16 +3029,24 @@
       const dateStr = now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
       const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
       ctx.font = 'bold 14px Arial'; ctx.fillStyle = '#64748b'; 
-      ctx.fillText(`Thời gian: ${timeStr} - ${dateStr}`, 300, 95);
+      ctx.fillText(`Thời gian: ${timeStr} - ${dateStr}`, 300, 90);
+      
+      // Subject and Grade level
+      const subSelect = document.getElementById('subject');
+      const subjectText = subSelect ? subSelect.options[subSelect.selectedIndex].text : "";
+      const gradeSelect = document.getElementById('grade');
+      const gradeText = gradeSelect ? gradeSelect.options[gradeSelect.selectedIndex].text : "";
+      ctx.font = 'bold 16px Arial'; ctx.fillStyle = '#4f46e5'; 
+      ctx.fillText(`📚 Môn học: ${subjectText} — ${gradeText}`, 300, 130);
       
       // Details
-      ctx.font = 'bold 24px Arial'; ctx.fillStyle = '#334155'; 
-      ctx.fillText(`🎯 Tỉ lệ đúng: ${correctQuestions} / ${totalQuestions} bài`, 300, 155);
-      ctx.fillText(`⏱️ Thời gian ôn luyện: ${formatTime(totalSeconds)}`, 300, 205);
+      ctx.font = 'bold 22px Arial'; ctx.fillStyle = '#334155'; 
+      ctx.fillText(`🎯 Tỉ lệ đúng: ${correctQuestions} / ${totalQuestions} bài`, 300, 185);
+      ctx.fillText(`⏱️ Thời gian ôn luyện: ${formatTime(totalSeconds)}`, 300, 235);
       
       // Score
       ctx.font = '900 40px Arial'; ctx.fillStyle = '#10b981'; 
-      ctx.fillText(`Điểm số: ${score} Điểm`, 300, 275);
+      ctx.fillText(`Điểm số: ${score} Điểm`, 300, 305);
 
       return canvas;
   }
@@ -1715,9 +3085,85 @@
       questionStartTime = Date.now(); 
   }
 
+  async function fetchOnlineQuestions() {
+      const statusEl = document.getElementById('syncStatus');
+      if (!statusEl) return;
+      
+      if (!navigator.onLine) {
+          statusEl.className = "bg-white/10 text-white/50 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all";
+          statusEl.innerText = "🏠 Ngoại tuyến";
+          return;
+      }
+      
+      statusEl.className = "bg-yellow-400/30 text-yellow-200 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all animate-pulse";
+      statusEl.innerText = "🌐 Đang tải câu hỏi GitHub...";
+      
+      const githubUrl = "https://raw.githubusercontent.com/luonglk/trolyhoctap-data/main/extra_questions.json";
+      
+      try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 seconds timeout
+          
+          const response = await fetch(githubUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) throw new Error("Fetch failed");
+          
+          const data = await response.json();
+          let count = 0;
+          if (data) {
+              const subjects = ["vietnamese", "english", "science", "physics", "chemistry", "biology", "history"];
+              subjects.forEach(sub => {
+                  if (data[sub]) {
+                      const localData = (sub === 'vietnamese') ? vietnameseData :
+                                        (sub === 'english') ? englishData :
+                                        (sub === 'science') ? scienceData :
+                                        (sub === 'physics') ? physicsData :
+                                        (sub === 'chemistry') ? chemistryData :
+                                        (sub === 'biology') ? biologyData :
+                                        (sub === 'history') ? historyData : null;
+                      if (localData) {
+                          for (const key in data[sub]) {
+                              if (!localData[key]) {
+                                  localData[key] = [];
+                              }
+                              localData[key] = localData[key].concat(data[sub][key]);
+                              count += data[sub][key].length;
+                          }
+                      }
+                  }
+              });
+          }
+          
+          statusEl.className = "bg-success-500/30 text-success-200 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all";
+          statusEl.innerText = `✅ Đã tải ${count} câu hỏi GitHub`;
+      } catch (err) {
+          console.warn("GitHub fetch fallback:", err);
+          // Device is online, but fetch failed (e.g. 404 or raw.githubusercontent.com is blocked)
+          statusEl.className = "bg-sky-500/30 text-sky-200 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all";
+          statusEl.innerText = "🌐 Trực tuyến (Đã tối ưu đề)";
+      }
+  }
+
   // Init
-  window.onload = () => { updateSubjectsDropdown(); };
+  window.onload = () => { 
+      updateSubjectsDropdown(); 
+      if (navigator.onLine) {
+          fetchOnlineQuestions();
+      }
+  };
   document.getElementById('answer').addEventListener('keypress', e => { if(e.key==='Enter') check(); });
+
+  window.addEventListener('online', () => {
+      fetchOnlineQuestions();
+  });
+  window.addEventListener('offline', () => {
+      const statusEl = document.getElementById('syncStatus');
+      if (statusEl) {
+          statusEl.className = "bg-white/10 text-white/50 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all";
+          statusEl.innerText = "🏠 Chế độ ngoại tuyến";
+      }
+  });
 
 </script>
 </body>
