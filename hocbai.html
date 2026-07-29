@@ -57,57 +57,57 @@
   <div class="max-w-2xl md:max-w-6xl w-full md:h-[640px] bg-[#faf9f8] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] overflow-hidden relative border border-[#e0dfdd] pop-in flex flex-col">
     
     <!-- Reward Screen (Hidden by default) -->
-    <div id="rewardScreen" class="absolute inset-0 bg-slate-50/98 backdrop-blur-md z-50 flex flex-col justify-center items-center p-4 md:p-8 hidden overflow-y-auto">
-      <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative overflow-hidden pop-in">
+    <div id="rewardScreen" class="absolute inset-0 bg-slate-50/98 backdrop-blur-md z-50 flex flex-col items-center p-4 md:p-6 overflow-y-auto hidden">
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-4 md:p-5 max-w-md w-full shadow-2xl relative overflow-hidden pop-in my-auto shrink-0">
         <!-- Decoration ribbon/stars -->
-        <div class="absolute -top-12 -right-12 w-32 h-32 bg-brand-500/10 rounded-full"></div>
-        <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-success-500/10 rounded-full"></div>
+        <div class="absolute -top-12 -right-12 w-24 h-24 bg-brand-500/10 rounded-full"></div>
+        <div class="absolute -bottom-12 -left-12 w-24 h-24 bg-success-500/10 rounded-full"></div>
         
-        <div class="text-center mb-6">
-          <span class="text-5xl">🏆</span>
-          <h2 class="text-3xl font-black text-slate-800 mt-2">BÁO CÁO KẾT QUẢ</h2>
-          <p class="text-slate-400 font-bold text-sm uppercase tracking-widest mt-1">Kỳ thi ôn tập Xuân Lâm</p>
+        <div class="text-center mb-3">
+          <span class="text-3xl">🏆</span>
+          <h2 class="text-xl font-black text-slate-800 mt-1">BÁO CÁO KẾT QUẢ</h2>
+          <p class="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-0.5">Kỳ thi ôn tập Xuân Lâm</p>
         </div>
         
-        <div class="space-y-4 mb-8">
+        <div class="space-y-2 mb-4">
           <!-- Subject & Grade -->
-          <div class="flex justify-between items-center border-b border-slate-100 py-3 text-sm md:text-base">
+          <div class="flex justify-between items-center border-b border-slate-100 py-1.5 text-xs">
             <span class="text-slate-500 font-bold">Nội dung thi:</span>
             <span id="rewardSubjectText" class="text-slate-800 font-black text-right">Toán Học - Lớp 5</span>
           </div>
           <!-- Time elapsed -->
-          <div class="flex justify-between items-center border-b border-slate-100 py-3 text-sm md:text-base">
+          <div class="flex justify-between items-center border-b border-slate-100 py-1.5 text-xs">
             <span class="text-slate-500 font-bold">⏱️ Thời gian làm bài:</span>
             <span id="rewardTimeText" class="text-slate-800 font-black text-right">12:34</span>
           </div>
           <!-- Correct count -->
-          <div class="flex justify-between items-center border-b border-slate-100 py-3 text-sm md:text-base">
+          <div class="flex justify-between items-center border-b border-slate-100 py-1.5 text-xs">
             <span class="text-slate-500 font-bold">🎯 Số câu trả lời đúng:</span>
             <span id="rewardRatioText" class="text-slate-800 font-black text-right">45 / 50 câu</span>
           </div>
           <!-- Rating grade -->
-          <div class="flex justify-between items-center border-b border-slate-100 py-3 text-sm md:text-base">
+          <div class="flex justify-between items-center border-b border-slate-100 py-1.5 text-xs">
             <span class="text-slate-500 font-bold">🏅 Xếp loại:</span>
-            <span id="rewardRatingText" class="text-brand-600 font-black uppercase tracking-wider text-right">Xuất sắc 🥇</span>
+            <span id="rewardRatingText" class="text-brand-600 font-black uppercase tracking-wider text-right text-xs">Xuất sắc 🥇</span>
           </div>
           
           <!-- Final Score Circular Display -->
-          <div class="flex flex-col items-center justify-center pt-4">
-            <div class="relative flex items-center justify-center w-36 h-36 rounded-full border-8 border-slate-100 shadow-inner bg-slate-50">
+          <div class="flex flex-col items-center justify-center pt-2">
+            <div class="relative flex items-center justify-center w-24 h-24 rounded-full border-4 border-slate-100 shadow-inner bg-slate-50">
               <div class="text-center">
-                <span id="rewardScoreText" class="text-4xl font-black text-success-500 leading-none">90</span>
-                <div class="text-[10px] text-slate-400 font-bold uppercase mt-1">Điểm thi</div>
+                <span id="rewardScoreText" class="text-2xl font-black text-success-500 leading-none">90</span>
+                <div class="text-[8px] text-slate-400 font-bold uppercase mt-0.5">Điểm thi</div>
               </div>
             </div>
-            <p class="text-xs text-slate-400 font-bold mt-2">Điểm tối đa: 100 điểm (2đ / câu)</p>
+            <p class="text-[10px] text-slate-400 font-bold mt-1">Điểm tối đa: 100 điểm (2đ / câu)</p>
           </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-3 w-full">
-          <button onclick="downloadScoreImage()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-black py-4 px-6 rounded-2xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] flex justify-center items-center gap-2">
+        <div class="flex flex-col sm:flex-row gap-2 w-full mt-2">
+          <button onclick="downloadScoreImage()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-black py-2.5 px-4 rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] flex justify-center items-center gap-1.5 text-xs">
             📥 Tải Bảng Vàng
           </button>
-          <button onclick="closeReward()" class="flex-1 bg-white hover:bg-[#f3f2f1] text-[#323130] font-semibold py-3 px-6 rounded-md border border-[#d2d0ce] shadow-sm transition-all flex justify-center items-center">
+          <button onclick="closeReward()" class="flex-1 bg-white hover:bg-[#f3f2f1] text-[#323130] font-semibold py-2.5 px-4 rounded-md border border-[#d2d0ce] shadow-sm transition-all flex justify-center items-center text-xs">
             Chọn môn học 📚
           </button>
         </div>
@@ -117,12 +117,11 @@
     <!-- Header & Progress -->
     <div class="bg-[#f3f3f3] border-b border-[#e5e5e5] p-5 text-[#323130] relative">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div>
-          <h1 class="text-2xl font-black text-[#201f1e] flex items-center gap-2">Trợ Lý Học Tập</h1>
-          <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-            <span class="text-[#605e5c] text-xs font-bold uppercase tracking-wider">Bản Đặc Quyền Xuân Lâm V20.0</span>
-            <span id="syncStatus" class="bg-[#edebe9] text-[#605e5c] text-[10px] font-bold px-2.5 py-0.5 rounded">🏠 Ngoại tuyến</span>
-          </div>
+        <div class="flex flex-wrap items-center gap-2 md:gap-3">
+          <h1 class="text-base md:text-lg font-black text-[#201f1e]">Trợ Lý Học Tập</h1>
+          <span class="text-[#e0dfdd] hidden sm:inline">|</span>
+          <span class="text-[#605e5c] text-[10px] font-bold uppercase tracking-wider">Bản Đặc Quyền Xuân Lâm V20.0</span>
+          <span id="syncStatus" class="bg-[#edebe9] text-[#605e5c] text-[9px] font-bold px-2 py-0.5 rounded whitespace-nowrap">🏠 Ngoại tuyến</span>
         </div>
         <div class="flex gap-1.5 flex-wrap">
           <button onclick="toggleAiSettings()" class="bg-[#edebe9] hover:bg-[#e1dfdd] text-[#323130] text-[11px] font-bold px-3 py-1.5 rounded transition-all flex items-center gap-1 border border-[#d2d0ce] shadow-sm">⚙️ Cấu hình AI</button>
@@ -146,7 +145,7 @@
       <div class="md:col-span-4 flex flex-col h-full min-h-0">
         
         <!-- Tabs Container Card -->
-        <div class="bg-white border border-[#e5e5e5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex-1 flex flex-col min-h-0 overflow-hidden">
+        <div class="bg-white border border-[#e5e5e5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.03)] flex-1 md:flex-none md:h-[250px] flex flex-col min-h-0 overflow-hidden">
           <!-- Tabs Header -->
           <div class="flex border-b border-[#e5e5e5] bg-[#fcfcfc] shrink-0">
             <button id="tabSelectBtn" onclick="switchLeftTab('select')" class="flex-1 py-2.5 text-xs font-bold text-[#0078d4] border-b-2 border-[#0078d4] focus:outline-none transition-all bg-white">
@@ -160,7 +159,7 @@
           <!-- Tabs Content Panel -->
           <div class="flex-1 p-3.5 overflow-y-auto min-h-0 flex flex-col">
             <!-- Tab 1: Chọn môn học -->
-            <div id="tabSelectPanel" class="space-y-3 flex-1 flex flex-col justify-between">
+            <div id="tabSelectPanel" class="space-y-2 flex-1 flex flex-col">
               <div class="space-y-2">
                 <div>
                   <label class="block text-[10px] font-bold text-[#8a8886] uppercase mb-0.5 pl-0.5">Môn học</label>
@@ -196,8 +195,6 @@
                 </div>
               </div>
               
-              <!-- Start Sidebar Container -->
-              <div id="startSidebarContainer" class="w-full pt-2"></div>
             </div>
             
             <!-- Tab 2: Gợi ý (Hidden by default) -->
@@ -211,6 +208,9 @@
             </div>
           </div>
         </div>
+        
+        <!-- Start Sidebar Container -->
+        <div id="startSidebarContainer" class="w-full mt-3 shrink-0"></div>
         
         <!-- Score Board Card -->
         <div id="scoreBoardCard" class="bg-white border border-[#e5e5e5] rounded-lg p-3.5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] space-y-3 mt-3 shrink-0">
@@ -1385,7 +1385,7 @@ function doGet(e) {
       document.getElementById('formatHint').innerHTML = `
           <div class="w-full max-w-md mx-auto mt-2 text-left">
               <label class="block text-[10px] font-bold text-[#605e5c] uppercase tracking-widest mb-1 pl-1">Nhập họ tên người làm bài:</label>
-              <input type="text" id="studentName" value="${savedName}" placeholder="Nhập họ tên của con (ví dụ: Xuân Lâm)..." autocomplete="off" class="w-full bg-white border border-[#a19f9d] focus:border-[#0078d4] focus:ring-1 focus:ring-[#0078d4] rounded-md px-3 py-1.5 text-[#323130] font-semibold text-sm transition-all mb-2.5 focus:outline-none">
+              <input type="text" id="studentName" value="${savedName}" onkeypress="if(event.key === 'Enter') startSession()" placeholder="Nhập họ tên của con (ví dụ: Xuân Lâm)..." autocomplete="off" class="w-full bg-white border border-[#a19f9d] focus:border-[#0078d4] focus:ring-1 focus:ring-[#0078d4] rounded-md px-3 py-1.5 text-[#323130] font-semibold text-sm transition-all mb-2.5 focus:outline-none">
               
               <div class="bg-white border border-[#e5e5e5] rounded-md p-3 space-y-1.5 text-[#605e5c] text-[11px] font-semibold">
                   <div class="flex items-center gap-2">⏱️ <span>Thời gian làm bài thi sẽ bắt đầu chạy khi bấm nút.</span></div>
@@ -3677,7 +3677,14 @@ Yêu cầu:
       const canvas = drawScoreCanvas();
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.download = `BangVang_XuanLam_${score}diem.png`;
+      
+      const studentName = (currentStudentName || "XuanLam").trim().replace(/[^a-zA-Z0-9À-ỹ\s]/g, "").replace(/\s+/g, "_");
+      const subSelect = document.getElementById('subject');
+      const subjectText = subSelect ? subSelect.options[subSelect.selectedIndex].text.replace(/[^a-zA-Z0-9À-ỹ\s]/g, "").trim().replace(/\s+/g, "_") : "MonHoc";
+      const now = new Date();
+      const dateStr = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`;
+      
+      link.download = `${studentName}_${subjectText}_${score}diem_${dateStr}.png`;
       link.href = dataUrl;
       link.click();
   }
@@ -3746,12 +3753,12 @@ Yêu cầu:
               });
           }
           
-          statusEl.className = "bg-success-500/30 text-success-200 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all";
+          statusEl.className = "bg-[#107c41]/10 text-[#107c41] text-[9px] font-bold px-2 py-0.5 rounded border border-[#107c41]/20 whitespace-nowrap transition-all";
           statusEl.innerText = `✅ Đã tải ${count} câu hỏi GitHub`;
       } catch (err) {
           console.warn("GitHub fetch fallback:", err);
           // Device is online, but fetch failed (e.g. 404 or raw.githubusercontent.com is blocked)
-          statusEl.className = "bg-sky-500/30 text-sky-200 text-[10px] font-black px-2.5 py-0.5 rounded-full transition-all";
+          statusEl.className = "bg-[#107c41]/10 text-[#107c41] text-[9px] font-bold px-2 py-0.5 rounded border border-[#107c41]/20 whitespace-nowrap transition-all";
           statusEl.innerText = "🌐 Trực tuyến (Đã tối ưu đề)";
       }
   }
