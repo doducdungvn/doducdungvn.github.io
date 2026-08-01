@@ -199,6 +199,70 @@
     #rightSidebar, footer, header, #leftSidebar {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    
+    /* Mobile responsive drawer styling updates */
+    @media (max-width: 767px) {
+      #leftSidebar {
+        width: 85% !important;
+        max-width: 320px;
+        border-top-right-radius: 1.25rem;
+        border-bottom-right-radius: 1.25rem;
+        box-shadow: 10px 0 25px rgba(0, 0, 0, 0.6);
+      }
+      #rightSidebar {
+        width: 85% !important;
+        max-width: 320px;
+        border-top-left-radius: 1.25rem;
+        border-bottom-left-radius: 1.25rem;
+        box-shadow: -10px 0 25px rgba(0, 0, 0, 0.6);
+      }
+    }
+    
+    /* Smooth chapter transition animation */
+    .animate-fade-in {
+      animation: fadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Horizontal Pagination Layout Styles */
+    .reader-paginated #readerContent {
+      overflow-x: hidden !important;
+      overflow-y: hidden !important;
+      display: block !important;
+      position: relative;
+      padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+    }
+    
+    .reader-paginated #bookTextDisplay {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: calc(100vh - 240px) !important;
+      column-width: 100% !important;
+      column-gap: 2.5rem !important;
+      column-fill: auto !important;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    
+    .reader-paginated #bookTextDisplay h2 {
+      column-span: all;
+      margin-bottom: 1.5rem;
+    }
+    
+    .reader-paginated #bookTextDisplay .read-block {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 <body class="h-screen flex flex-col justify-between select-none">
@@ -222,9 +286,9 @@
       </div>
     </div>
     
-    <div id="currentBookTitleHeader" class="hidden lg:flex items-center gap-2 bg-neutral-900 border border-neutral-800 px-4 py-1.5 rounded-full text-xs font-semibold max-w-xs truncate text-neutral-300">
-      <i data-lucide="book-open" class="w-3.5 h-3.5 text-emerald-500 shrink-0"></i>
-      <span id="headerBookTitle">Chưa có sách</span>
+    <div id="currentBookTitleHeader" class="hidden sm:flex items-center gap-1.5 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-full text-[10px] font-bold max-w-[140px] sm:max-w-xs truncate text-neutral-300">
+      <i data-lucide="book-open" class="w-3 h-3 text-emerald-500 shrink-0"></i>
+      <span id="headerBookTitle" class="truncate">Chưa có sách</span>
     </div>
 
     <div class="flex items-center gap-2 md:gap-4">
@@ -261,6 +325,14 @@
     
     <!-- LEFT SIDEBAR: Library & Chapters (Responsive Drawer) -->
     <section id="leftSidebar" class="fixed inset-y-0 left-0 w-80 z-40 bg-[#121212] border-r border-neutral-800 transform -translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex md:z-0 flex flex-col justify-between shrink-0">
+      
+      <!-- Mobile sidebar header -->
+      <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800 shrink-0 bg-neutral-950/20">
+        <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Thư viện & Mục lục</span>
+        <button onclick="toggleMobileSidebar('left', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
       
       <!-- Upload area or cover image -->
       <div class="p-3 border-b border-neutral-800 shrink-0">
@@ -340,6 +412,13 @@
     <!-- CENTER PANEL: Elegant Book Reader -->
     <section id="readerPanel" class="flex-1 bg-[#1a1a1a] flex flex-col relative overflow-hidden theme-reader-dark transition-all duration-300">
       
+      <!-- Floating Page Nav Buttons -->
+      <button id="btnPrevPage" onclick="prevPage()" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-neutral-900/85 hover:bg-neutral-950 border border-neutral-800 flex items-center justify-center text-neutral-300 hover:text-white transition-all z-20 opacity-0 pointer-events-none shadow-xl shadow-black/40">
+        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+      </button>
+      <button id="btnNextPage" onclick="nextPage()" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-neutral-900/85 hover:bg-neutral-950 border border-neutral-800 flex items-center justify-center text-neutral-300 hover:text-white transition-all z-20 opacity-0 pointer-events-none shadow-xl shadow-black/40">
+        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+      </button>
       <!-- Text formatting controls at top of reader -->
       <div class="h-12 border-b border-black/10 flex items-center justify-between px-4 md:px-8 text-xs font-semibold shrink-0 bg-black/5">
         <div class="flex items-center gap-2">
@@ -351,6 +430,19 @@
             <span class="font-bold">A+</span>
           </button>
         </div>
+
+        <!-- Layout Mode Selector (Cuộn dọc vs Lật trang) -->
+        <div class="flex bg-neutral-900 rounded-lg p-0.5 border border-neutral-800" id="layoutSelector">
+          <button id="btnLayoutScroll" onclick="setReaderLayout('scroll')" class="px-2 py-1 rounded text-[10px] font-bold transition-all bg-neutral-800 text-white flex items-center gap-1">
+            <i data-lucide="chevrons-up-down" class="w-3 h-3 text-emerald-500"></i>
+            <span>Cuộn dọc</span>
+          </button>
+          <button id="btnLayoutPage" onclick="setReaderLayout('page')" class="px-2 py-1 rounded text-[10px] font-bold transition-all text-neutral-400 hover:text-white flex items-center gap-1">
+            <i data-lucide="book-open" class="w-3 h-3 text-emerald-500"></i>
+            <span>Lật trang</span>
+          </button>
+        </div>
+
         <div class="flex items-center gap-2 md:gap-3">
           <button onclick="toggleFontSerif(true)" id="btnFontSerif" class="px-2.5 py-1 rounded border border-neutral-700/30 hover:bg-black/10 transition-all font-serif">Serif</button>
           <button onclick="toggleFontSerif(false)" id="btnFontSans" class="px-2.5 py-1 rounded bg-neutral-800/80 text-white font-sans">Sans</button>
@@ -380,88 +472,98 @@
     </section>
 
     <!-- RIGHT SIDEBAR: Speech & Voice Settings (Responsive Drawer) -->
-    <section id="rightSidebar" class="fixed inset-y-0 right-0 w-80 z-40 bg-[#121212] border-l border-neutral-800 transform translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex md:z-0 flex flex-col justify-between shrink-0 p-5">
+    <section id="rightSidebar" class="fixed inset-y-0 right-0 w-80 z-40 bg-[#121212] border-l border-neutral-800 transform translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex md:z-0 flex flex-col justify-between shrink-0">
       
-      <div class="flex flex-col gap-5">
-        <div>
-          <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
-            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-500"></i> Cài đặt giọng đọc
-          </h3>
-          
-          <div class="flex flex-col gap-4 bg-neutral-900/60 p-4 rounded-xl border border-neutral-800">
-            <!-- Voice selection -->
-            <div class="flex flex-col gap-1.5">
-              <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Chọn giọng đọc</label>
-              <select id="voiceSelect" class="w-full bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 text-neutral-200">
-                <option value="">Đang tìm giọng nói...</option>
-              </select>
-              <p class="text-[9px] text-neutral-500 leading-tight">Ưu tiên giọng đọc của <strong>Google</strong> hoặc <strong>Natural</strong> trên Edge để có trải nghiệm đọc sách hay nhất.</p>
-            </div>
-            
-            <!-- Warning if Vietnamese voice is missing -->
-            <div id="viVoiceAlert" class="hidden p-3 bg-red-950/40 border border-red-900/60 rounded-xl text-[11px] text-red-200 leading-relaxed">
-              <div class="font-bold flex items-center gap-1 mb-1 text-red-400">
-                <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i> Không tìm thấy giọng Tiếng Việt!
-              </div>
-              Vui lòng xem hướng dẫn bên dưới để bật giọng nói tiếng Việt.
-            </div>
-
-            <!-- Speed range -->
-            <div class="flex flex-col gap-1.5">
-              <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
-                <span>Tốc độ đọc</span>
-                <span id="speedVal" class="text-emerald-500">1.0x</span>
-              </div>
-              <input type="range" id="rateRange" min="0.5" max="3" step="0.1" value="1.0" oninput="updateSpeechParam('speed', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-            </div>
-
-            <!-- Pitch range -->
-            <div class="flex flex-col gap-1.5">
-              <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
-                <span>Độ trầm bổng</span>
-                <span id="pitchVal" class="text-emerald-500">1.0</span>
-              </div>
-              <input type="range" id="pitchRange" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateSpeechParam('pitch', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-            </div>
-            
-            <!-- Volume range -->
-            <div class="flex flex-col gap-1.5">
-              <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
-                <span>Âm lượng</span>
-                <span id="volumeVal" class="text-emerald-500">100%</span>
-              </div>
-              <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="1.0" oninput="updateSpeechParam('volume', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-            </div>
-          </div>
-        </div>
-
-        <!-- Audio wave graphic visualizer -->
-        <div>
-          <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2">Tín hiệu giọng</h3>
-          <div class="h-24 bg-[#181818] rounded-xl border border-neutral-800 flex items-center justify-center relative overflow-hidden">
-            <div id="visualizerPlaceholder" class="text-xs text-neutral-600 font-medium">Chưa phát âm thanh</div>
-            <div id="visualizerBars" class="hidden items-end gap-1.5">
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-            </div>
-          </div>
-        </div>
+      <!-- Mobile sidebar header -->
+      <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800 shrink-0 bg-neutral-950/20">
+        <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Cấu hình đọc & Giọng nói</span>
+        <button onclick="toggleMobileSidebar('right', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
       </div>
 
-      <!-- Quick instructions & Screen off notification -->
-      <div class="bg-neutral-900/40 p-4 rounded-xl border border-neutral-800 shrink-0 text-xs leading-relaxed text-neutral-400">
-        <p class="font-bold text-neutral-300 mb-1 flex items-center gap-1"><i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-500"></i> Nghe khi tắt màn hình:</p>
-        <p class="text-[11px] text-neutral-400">
-          Khi nhấn <strong>Phát</strong>, hệ thống tự động phát tệp âm thanh tĩnh trong nền để giữ kết nối. Bạn có thể khóa màn hình mà không sợ bị tạm ngắt.
-        </p>
+      <div class="flex-1 overflow-y-auto p-5 flex flex-col gap-5 justify-between min-h-0">
+        <div class="flex flex-col gap-5">
+          <div>
+            <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+              <i data-lucide="volume-2" class="w-4 h-4 text-emerald-500"></i> Cài đặt giọng đọc
+            </h3>
+            
+            <div class="flex flex-col gap-4 bg-neutral-900/60 p-4 rounded-xl border border-neutral-800">
+              <!-- Voice selection -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Chọn giọng đọc</label>
+                <select id="voiceSelect" class="w-full bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 text-neutral-200">
+                  <option value="">Đang tìm giọng nói...</option>
+                </select>
+                <p class="text-[9px] text-neutral-500 leading-tight">Ưu tiên giọng đọc của <strong>Google</strong> hoặc <strong>Natural</strong> trên Edge để có trải nghiệm đọc sách hay nhất.</p>
+              </div>
+              
+              <!-- Warning if Vietnamese voice is missing -->
+              <div id="viVoiceAlert" class="hidden p-3 bg-red-950/40 border border-red-900/60 rounded-xl text-[11px] text-red-200 leading-relaxed">
+                <div class="font-bold flex items-center gap-1 mb-1 text-red-400">
+                  <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i> Không tìm thấy giọng Tiếng Việt!
+                </div>
+                Vui lòng xem hướng dẫn bên dưới để bật giọng nói tiếng Việt.
+              </div>
+
+              <!-- Speed range -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                  <span>Tốc độ đọc</span>
+                  <span id="speedVal" class="text-emerald-500">1.0x</span>
+                </div>
+                <input type="range" id="rateRange" min="0.5" max="3" step="0.1" value="1.0" oninput="updateSpeechParam('speed', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+              </div>
+
+              <!-- Pitch range -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                  <span>Độ trầm bổng</span>
+                  <span id="pitchVal" class="text-emerald-500">1.0</span>
+                </div>
+                <input type="range" id="pitchRange" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateSpeechParam('pitch', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+              </div>
+              
+              <!-- Volume range -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                  <span>Âm lượng</span>
+                  <span id="volumeVal" class="text-emerald-500">100%</span>
+                </div>
+                <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="1.0" oninput="updateSpeechParam('volume', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Audio wave graphic visualizer -->
+          <div>
+            <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2">Tín hiệu giọng</h3>
+            <div class="h-24 bg-[#181818] rounded-xl border border-neutral-800 flex items-center justify-center relative overflow-hidden">
+              <div id="visualizerPlaceholder" class="text-xs text-neutral-600 font-medium">Chưa phát âm thanh</div>
+              <div id="visualizerBars" class="hidden items-end gap-1.5">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick instructions & Screen off notification -->
+        <div class="bg-neutral-900/40 p-4 rounded-xl border border-neutral-800 shrink-0 text-xs leading-relaxed text-neutral-400">
+          <p class="font-bold text-neutral-300 mb-1 flex items-center gap-1"><i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-500"></i> Nghe khi tắt màn hình:</p>
+          <p class="text-[11px] text-neutral-400">
+            Khi nhấn <strong>Phát</strong>, hệ thống tự động phát tệp âm thanh tĩnh trong nền để giữ kết nối. Bạn có thể khóa màn hình mà không sợ bị tạm ngắt.
+          </p>
+        </div>
       </div>
 
     </section>
@@ -472,16 +574,16 @@
   <footer class="h-20 border-t border-neutral-800 bg-[#181818] px-4 md:px-6 flex items-center justify-between z-10 shrink-0 select-none">
     
     <!-- Left: Track info details -->
-    <div class="flex items-center gap-3 w-1/4">
-      <div class="hidden md:block">
-        <p id="playerBookTitle" class="text-xs font-bold text-white max-w-[180px] truncate">Chưa tải sách</p>
-        <p id="playerChapterTitle" class="text-[10px] text-neutral-400 mt-1 max-w-[180px] truncate">Chưa chọn chương</p>
+    <div class="flex items-center gap-2.5 w-1/3 md:w-1/4 min-w-0">
+      <div class="truncate">
+        <p id="playerBookTitle" class="text-[11px] font-bold text-white truncate max-w-[150px] md:max-w-[200px]">Chưa tải sách</p>
+        <p id="playerChapterTitle" class="text-[9px] text-neutral-400 mt-0.5 truncate max-w-[150px] md:max-w-[200px]">Chưa chọn chương</p>
       </div>
     </div>
 
     <!-- Center: Playback control buttons -->
-    <div class="flex flex-col items-center gap-2 w-full md:w-2/4">
-      <div class="flex items-center gap-6">
+    <div class="flex flex-col items-center gap-1.5 flex-1 md:w-2/4 min-w-0">
+      <div class="flex items-center gap-4 sm:gap-6">
         <button onclick="prevParagraph()" class="text-neutral-400 hover:text-white transition-colors p-1" title="Đoạn trước">
           <i data-lucide="skip-back" class="w-5 h-5"></i>
         </button>
@@ -561,6 +663,9 @@
     let isFocusMode = false;
     let activeBlockWords = [];
     let currentActiveBookId = null;
+    let currentReaderLayout = localStorage.getItem('epub_reader_layout') || 'scroll'; // scroll or page
+    let currentPageIndex = 0;
+    let totalPages = 1;
     
     // Responsive sidebar toggle
     function toggleMobileSidebar(side, forceClose = false) {
@@ -1228,9 +1333,18 @@
       document.getElementById('playerChapterTitle').innerText = currentChapter.title;
       document.getElementById('footerChapterTitle').innerText = currentChapter.title;
       
+      // Reset reader scroll position to top
+      const readerContent = document.getElementById('readerContent');
+      if (readerContent) readerContent.scrollTop = 0;
+
       const display = document.getElementById('bookTextDisplay');
       document.getElementById('emptyStateReader').classList.add('hidden');
       display.classList.remove('hidden');
+      
+      // Trigger smooth slide up and fade-in animation
+      display.classList.remove('animate-fade-in');
+      void display.offsetWidth; // trigger reflow
+      display.classList.add('animate-fade-in');
       
       currentTextBlocks = currentChapter.blocks;
       
@@ -1253,6 +1367,24 @@
       // Update system Media Session
       updateMediaSessionMetadata();
       
+      if (currentReaderLayout === 'page') {
+        setTimeout(() => {
+          updatePagination();
+          if (currentPageIndex === 9999) {
+            goToPage(totalPages - 1);
+          } else {
+            const blockEl = document.getElementById(`block-${startAtBlockIdx}`);
+            if (blockEl) {
+              const pageWidth = display.clientWidth + 40;
+              const targetPage = Math.floor(blockEl.offsetLeft / pageWidth);
+              goToPage(targetPage);
+            } else {
+              goToPage(0);
+            }
+          }
+        }, 150);
+      }
+
       if (isPlaying) {
         speakParagraph(startAtBlockIdx);
       } else {
@@ -1273,8 +1405,17 @@
       if (blockEl) {
         blockEl.classList.add('active-read-block');
         
-        if (autoScroll) {
-          blockEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (currentReaderLayout === 'page') {
+          const display = document.getElementById('bookTextDisplay');
+          const pageWidth = display.clientWidth + 40;
+          const targetPage = Math.floor(blockEl.offsetLeft / pageWidth);
+          if (targetPage !== currentPageIndex) {
+            goToPage(targetPage);
+          }
+        } else {
+          if (autoScroll) {
+            blockEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       }
       
@@ -2262,6 +2403,132 @@
       }
     }
 
+    function setReaderLayout(layout) {
+      currentReaderLayout = layout;
+      localStorage.setItem('epub_reader_layout', layout);
+
+      const panel = document.getElementById('readerPanel');
+      const btnScroll = document.getElementById('btnLayoutScroll');
+      const btnPage = document.getElementById('btnLayoutPage');
+      const btnPrev = document.getElementById('btnPrevPage');
+      const btnNext = document.getElementById('btnNextPage');
+
+      if (!panel || !btnScroll || !btnPage || !btnPrev || !btnNext) return;
+
+      if (layout === 'page') {
+        panel.classList.add('reader-paginated');
+        btnPage.classList.add('bg-neutral-800', 'text-white');
+        btnPage.classList.remove('text-neutral-400');
+        btnScroll.classList.remove('bg-neutral-800', 'text-white');
+        btnScroll.classList.add('text-neutral-400');
+
+        btnPrev.classList.remove('opacity-0', 'pointer-events-none');
+        btnNext.classList.remove('opacity-0', 'pointer-events-none');
+        
+        setTimeout(updatePagination, 100);
+      } else {
+        panel.classList.remove('reader-paginated');
+        btnScroll.classList.add('bg-neutral-800', 'text-white');
+        btnScroll.classList.remove('text-neutral-400');
+        btnPage.classList.remove('bg-neutral-800', 'text-white');
+        btnPage.classList.add('text-neutral-400');
+
+        btnPrev.classList.add('opacity-0', 'pointer-events-none');
+        btnNext.classList.add('opacity-0', 'pointer-events-none');
+
+        // Reset transform
+        const display = document.getElementById('bookTextDisplay');
+        if (display) display.style.transform = '';
+        
+        if (currentBlockIdx !== -1) {
+          setReadingPointer(currentBlockIdx, true);
+        }
+      }
+    }
+
+    function updatePagination() {
+      if (currentReaderLayout !== 'page') return;
+
+      const display = document.getElementById('bookTextDisplay');
+      if (!display) return;
+
+      const containerWidth = display.clientWidth;
+      const columnGap = 40; // 2.5rem
+      const pageWidth = containerWidth + columnGap;
+
+      totalPages = Math.round((display.scrollWidth + columnGap) / pageWidth) || 1;
+      
+      if (currentPageIndex >= totalPages) {
+        currentPageIndex = totalPages - 1;
+      }
+      if (currentPageIndex < 0) {
+        currentPageIndex = 0;
+      }
+
+      goToPage(currentPageIndex);
+    }
+
+    function goToPage(pageIdx) {
+      if (currentReaderLayout !== 'page') return;
+      
+      currentPageIndex = pageIdx;
+      const display = document.getElementById('bookTextDisplay');
+      if (!display) return;
+
+      const containerWidth = display.clientWidth;
+      const columnGap = 40;
+      const pageWidth = containerWidth + columnGap;
+
+      display.style.transform = `translateX(-${currentPageIndex * pageWidth}px)`;
+
+      const btnPrev = document.getElementById('btnPrevPage');
+      const btnNext = document.getElementById('btnNextPage');
+      if (!btnPrev || !btnNext) return;
+      
+      // Update opacity visually but keep them clickable for chapter navigation
+      if (currentPageIndex === 0 && currentChapterIdx === 0) {
+        btnPrev.classList.add('opacity-20');
+      } else {
+        btnPrev.classList.remove('opacity-20');
+      }
+
+      if (currentPageIndex >= totalPages - 1 && currentChapterIdx >= chaptersData.length - 1) {
+        btnNext.classList.add('opacity-20');
+      } else {
+        btnNext.classList.remove('opacity-20');
+      }
+
+      document.getElementById('footerReadProgress').innerText = `Trang: ${currentPageIndex + 1}/${totalPages}`;
+    }
+
+    function nextPage() {
+      updatePagination();
+      if (currentPageIndex < totalPages - 1) {
+        goToPage(currentPageIndex + 1);
+      } else {
+        if (currentChapterIdx + 1 < chaptersData.length) {
+          currentPageIndex = 0;
+          loadChapter(currentChapterIdx + 1, 0);
+        } else {
+          showNotification("Bạn đã đọc đến trang cuối cùng của sách.");
+        }
+      }
+    }
+
+    function prevPage() {
+      updatePagination();
+      if (currentPageIndex > 0) {
+        goToPage(currentPageIndex - 1);
+      } else {
+        if (currentChapterIdx > 0) {
+          currentPageIndex = 9999; // trigger jump to last page
+          loadChapter(currentChapterIdx - 1, 0);
+        } else {
+          showNotification("Bạn đang ở trang đầu tiên của sách.");
+        }
+      }
+    }
+
     function escapeHtml(str) {
       if (!str) return '';
       return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -2282,6 +2549,12 @@
     window.addEventListener('load', () => {
       // Restore reading mode
       setReadingMode(readingMode, false);
+      
+      // Restore layout mode
+      setReaderLayout(currentReaderLayout);
+
+      // Handle window resizing to adjust pagination spacing
+      window.addEventListener('resize', updatePagination);
       
       // Initialize IndexedDB and load last active book or library list
       openDB().then(async () => {
@@ -2324,7 +2597,9 @@
           }
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
-          if (readingMode === 'voice') {
+          if (currentReaderLayout === 'page') {
+            nextPage();
+          } else if (readingMode === 'voice') {
             nextParagraph();
           } else {
             // Scroll down a bit
@@ -2333,7 +2608,9 @@
           }
         } else if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          if (readingMode === 'voice') {
+          if (currentReaderLayout === 'page') {
+            prevPage();
+          } else if (readingMode === 'voice') {
             prevParagraph();
           } else {
             // Scroll up a bit
