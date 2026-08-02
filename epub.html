@@ -234,21 +234,23 @@
     }
     
     /* Horizontal Pagination Layout Styles */
+    /* Horizontal Pagination Layout Styles */
     .reader-paginated #readerContent {
       overflow-x: hidden !important;
       overflow-y: hidden !important;
       display: block !important;
       position: relative;
-      padding-top: 1rem !important;
-      padding-bottom: 1rem !important;
+      height: calc(100vh - 224px) !important;
+      padding: 1rem 0 !important;
     }
     
     .reader-paginated #bookTextDisplay {
       display: block !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      height: calc(100vh - 240px) !important;
-      column-width: 100% !important;
+      width: 92% !important;
+      max-width: 92% !important;
+      margin: 0 auto !important;
+      height: 100% !important;
+      column-width: auto;
       column-gap: 2.5rem !important;
       column-fill: auto !important;
       transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -2408,15 +2410,19 @@
       localStorage.setItem('epub_reader_layout', layout);
 
       const panel = document.getElementById('readerPanel');
+      const content = document.getElementById('readerContent');
       const btnScroll = document.getElementById('btnLayoutScroll');
       const btnPage = document.getElementById('btnLayoutPage');
       const btnPrev = document.getElementById('btnPrevPage');
       const btnNext = document.getElementById('btnNextPage');
 
-      if (!panel || !btnScroll || !btnPage || !btnPrev || !btnNext) return;
+      if (!panel || !content || !btnScroll || !btnPage || !btnPrev || !btnNext) return;
 
       if (layout === 'page') {
         panel.classList.add('reader-paginated');
+        content.classList.remove('overflow-y-auto');
+        content.classList.add('overflow-hidden');
+        
         btnPage.classList.add('bg-neutral-800', 'text-white');
         btnPage.classList.remove('text-neutral-400');
         btnScroll.classList.remove('bg-neutral-800', 'text-white');
@@ -2425,9 +2431,12 @@
         btnPrev.classList.remove('opacity-0', 'pointer-events-none');
         btnNext.classList.remove('opacity-0', 'pointer-events-none');
         
-        setTimeout(updatePagination, 100);
+        setTimeout(() => updatePagination(), 100);
       } else {
         panel.classList.remove('reader-paginated');
+        content.classList.remove('overflow-hidden');
+        content.classList.add('overflow-y-auto');
+        
         btnScroll.classList.add('bg-neutral-800', 'text-white');
         btnScroll.classList.remove('text-neutral-400');
         btnPage.classList.remove('bg-neutral-800', 'text-white');
@@ -2436,9 +2445,12 @@
         btnPrev.classList.add('opacity-0', 'pointer-events-none');
         btnNext.classList.add('opacity-0', 'pointer-events-none');
 
-        // Reset transform
+        // Reset transform & column-width
         const display = document.getElementById('bookTextDisplay');
-        if (display) display.style.transform = '';
+        if (display) {
+          display.style.transform = '';
+          display.style.columnWidth = '';
+        }
         
         if (currentBlockIdx !== -1) {
           setReadingPointer(currentBlockIdx, true);
@@ -2446,18 +2458,40 @@
       }
     }
 
-    function updatePagination() {
+    function updatePagination(targetBlockIdx = null) {
       if (currentReaderLayout !== 'page') return;
 
       const display = document.getElementById('bookTextDisplay');
       if (!display) return;
 
       const containerWidth = display.clientWidth;
+      if (containerWidth <= 0) {
+        // If layout is not settled (hidden/0px width), retry shortly
+        setTimeout(() => updatePagination(targetBlockIdx), 100);
+        return;
+      }
+
+      // Force columnWidth to display's exact clientWidth (fixes Chrome percentage limitation)
+      display.style.columnWidth = `${containerWidth}px`;
+
       const columnGap = 40; // 2.5rem
       const pageWidth = containerWidth + columnGap;
 
       totalPages = Math.round((display.scrollWidth + columnGap) / pageWidth) || 1;
       
+      if (targetBlockIdx !== null) {
+        if (targetBlockIdx === 9999) {
+          currentPageIndex = totalPages - 1;
+        } else {
+          const blockEl = document.getElementById(`block-${targetBlockIdx}`);
+          if (blockEl) {
+            currentPageIndex = Math.floor(blockEl.offsetLeft / pageWidth);
+          } else {
+            currentPageIndex = 0;
+          }
+        }
+      }
+
       if (currentPageIndex >= totalPages) {
         currentPageIndex = totalPages - 1;
       }
