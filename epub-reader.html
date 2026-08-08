@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPUB VoiceReader™ - Trình Đọc Sách Nói Đa Định Dạng 🎧</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- JSZip (for EPUB/MOBI compression) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  
+  <style>
+    :root {
+      --spotify-green: #1DB954;
+      --spotify-green-hover: #1ed760;
+      --burgundy: #800020;
+      --burgundy-light: #9a1a35;
+      --bg-dark: #121212;
+      --panel-dark: #181818;
+      --panel-light: #282828;
+      --text-muted: #b3b3b3;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #181818;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3e3e3e;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Reading Themes */
+    .theme-reader-dark {
+      background-color: #1a1a1a !important;
+      color: #e0e0e0 !important;
+    }
+    .theme-reader-light {
+      background-color: #fbf9f4 !important;
+      color: #2b2b2b !important;
+    }
+    .theme-reader-sepia {
+      background-color: #f4ecd8 !important;
+      color: #433422 !important;
+    }
+
+    /* Active Block Highlight */
+    .active-read-block {
+      border-left: 4px solid var(--spotify-green);
+      background-color: rgba(29, 185, 84, 0.08);
+      padding-left: 12px;
+      border-radius: 0 8px 8px 0;
+      transition: all 0.3s ease;
+    }
+    .theme-reader-sepia .active-read-block {
+      border-left: 4px solid var(--burgundy);
+      background-color: rgba(128, 0, 32, 0.06);
+    }
+    .theme-reader-light .active-read-block {
+      border-left: 4px solid var(--spotify-green);
+      background-color: rgba(29, 185, 84, 0.05);
+    }
+
+    /* Paragraph hover read button */
+    .read-block {
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .read-block:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    .theme-reader-light .read-block:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    .theme-reader-sepia .read-block:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Equalizer Animation */
+    .eq-bar {
+      width: 3px;
+      height: 3px;
+      background-color: var(--spotify-green);
+      animation: bounce 0.8s ease-in-out infinite alternate;
+      border-radius: 1px;
+    }
+    .eq-bar:nth-child(2) { animation-delay: 0.15s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.3s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.45s; }
+    .eq-bar:nth-child(5) { animation-delay: 0.05s; }
+
+    @keyframes bounce {
+      0% { height: 4px; }
+      100% { height: 24px; }
+    }
+
+    /* Glassmorphism overlays */
+    .glass-effect {
+      background: rgba(24, 24, 24, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* Reading Mode Styles */
+    .mode-text #rightSidebar {
+      display: none !important;
+    }
+    .mode-text footer {
+      display: none !important;
+    }
+    .mode-text #readerPanel {
+      margin-right: 0 !important;
+    }
+    .mode-text .read-block {
+      cursor: text;
+      border-left: none !important;
+      background-color: transparent !important;
+      padding-left: 0 !important;
+    }
+    .mode-text .read-block:hover {
+      background-color: transparent !important;
+    }
+    .mode-text #bookTextDisplay {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+    
+    /* Word Highlight styling */
+    .word-span {
+      display: inline-block;
+      transition: all 0.08s ease;
+    }
+    .active-word-highlight {
+      background-color: rgba(16, 185, 129, 0.25) !important; /* bg-emerald-500/25 */
+      color: #34d399 !important; /* text-emerald-400 */
+      font-weight: 700;
+      padding: 0 4px;
+      border-radius: 4px;
+      transform: scale(1.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    
+    /* Focus Mode Styles */
+    .mode-focus header {
+      display: none !important;
+    }
+    .mode-focus #leftSidebar {
+      display: none !important;
+    }
+    .mode-focus #rightSidebar {
+      display: none !important;
+    }
+    .mode-focus footer {
+      display: none !important;
+    }
+    .mode-focus #readerPanel {
+      margin: 0 !important;
+      border: none !important;
+    }
+    .mode-focus #readerPanel > div:first-of-type {
+      display: none !important; /* hide formatting toolbar */
+    }
+    .mode-focus #readerPanel > div:last-of-type {
+      display: none !important; /* hide bottom mini status bar */
+    }
+    .mode-focus #readerContent {
+      padding-top: 4rem !important;
+      padding-bottom: 4rem !important;
+    }
+    .mode-focus #bookTextDisplay {
+      max-width: 36rem !important; /* comfortable e-reader reading width */
+    }
+    
+    /* Transition for sliding panels */
+    #rightSidebar, footer, header, #leftSidebar {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Mobile responsive drawer styling updates */
+    @media (max-width: 767px) {
+      #leftSidebar {
+        width: 85% !important;
+        max-width: 320px;
+        border-top-right-radius: 1.25rem;
+        border-bottom-right-radius: 1.25rem;
+        box-shadow: 10px 0 25px rgba(0, 0, 0, 0.6);
+      }
+      #rightSidebar {
+        width: 85% !important;
+        max-width: 320px;
+        border-top-left-radius: 1.25rem;
+        border-bottom-left-radius: 1.25rem;
+        box-shadow: -10px 0 25px rgba(0, 0, 0, 0.6);
+      }
+    }
+    
+    /* Smooth chapter transition animation */
+    .animate-fade-in {
+      animation: fadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+  </style>
+</head>
+<body class="h-screen flex flex-col justify-between select-none">
+
+  <!-- Top Navigation Header -->
+  <header class="h-16 border-b border-neutral-800 bg-[#0c0c0c] px-4 md:px-6 flex items-center justify-between z-10 shrink-0">
+    <div class="flex items-center gap-3">
+      <!-- Mobile left menu button -->
+      <button onclick="toggleMobileSidebar('left')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+      
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-950/20">
+          <i data-lucide="headphones" class="w-5 h-5 text-white"></i>
+        </div>
+        <div class="hidden sm:block">
+          <h1 class="text-base font-bold tracking-tight">EPUB VoiceReader<span class="text-emerald-500 text-xs">™</span></h1>
+          <p class="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">Sách Nói Đa Định Dạng</p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="currentBookTitleHeader" class="hidden sm:flex items-center gap-1.5 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-full text-[10px] font-bold max-w-[140px] sm:max-w-xs truncate text-neutral-300">
+      <i data-lucide="book-open" class="w-3 h-3 text-emerald-500 shrink-0"></i>
+      <span id="headerBookTitle" class="truncate">Chưa có sách</span>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-4">
+      <!-- Mode Selection Segment Control -->
+      <div class="flex bg-neutral-900 rounded-lg p-0.5 border border-neutral-800" id="modeSelector">
+        <button id="btnModeText" onclick="setReadingMode('text')" class="px-2.5 py-1 rounded text-xs font-bold transition-all hover:text-white text-neutral-400 flex items-center gap-1">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Đọc thường</span>
+        </button>
+        <button id="btnModeVoice" onclick="setReadingMode('voice')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-emerald-600 text-white shadow flex items-center gap-1">
+          <i data-lucide="headphones" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Đọc to</span>
+        </button>
+      </div>
+
+      <div class="flex bg-neutral-900 rounded-lg p-0.5 border border-neutral-800">
+        <button onclick="setReaderTheme('light')" class="px-2 md:px-2.5 py-1 rounded text-xs font-bold transition-all hover:text-white text-neutral-400">Sáng</button>
+        <button onclick="setReaderTheme('sepia')" class="px-2 md:px-2.5 py-1 rounded text-xs font-bold transition-all hover:text-white text-neutral-400">Sepia</button>
+        <button onclick="setReaderTheme('dark')" class="px-2 md:px-2.5 py-1 rounded text-xs font-bold transition-all bg-neutral-800 text-white shadow">Tối</button>
+      </div>
+      
+      <!-- Mobile right settings button -->
+      <button onclick="toggleMobileSidebar('right')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Backdrop Overlay -->
+  <div id="sidebarBackdrop" onclick="toggleMobileSidebar('backdrop')" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity duration-300"></div>
+
+  <!-- Main Grid Workspace -->
+  <main class="flex-1 flex overflow-hidden relative">
+    
+    <!-- LEFT SIDEBAR: Library & Chapters (Responsive Drawer) -->
+    <section id="leftSidebar" class="fixed inset-y-0 left-0 w-80 z-40 bg-[#121212] border-r border-neutral-800 transform -translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex md:z-0 flex flex-col justify-between shrink-0">
+      
+      <!-- Mobile sidebar header -->
+      <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800 shrink-0 bg-neutral-950/20">
+        <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Thư viện & Mục lục</span>
+        <button onclick="toggleMobileSidebar('left', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+      
+      <!-- Upload area or cover image -->
+      <div class="p-3 border-b border-neutral-800 shrink-0">
+        <div id="uploadDropzone" class="border border-dashed border-neutral-800 rounded-xl p-3 text-center bg-neutral-900/20 relative group hover:border-emerald-500 transition-all cursor-pointer">
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-left flex items-center gap-1.5">
+              <i data-lucide="upload-cloud" class="w-4 h-4 text-emerald-500"></i>
+              <span class="text-[11px] font-bold text-neutral-300">Nhập sách</span>
+            </div>
+            <div class="flex gap-1.5 z-10">
+              <button onclick="event.stopPropagation(); triggerFileInput('file')" class="px-2 py-1 bg-neutral-800 hover:bg-neutral-700 text-[9px] font-bold text-neutral-300 rounded-md flex items-center gap-1 transition-all">
+                <i data-lucide="file-plus" class="w-3 h-3 text-emerald-500"></i> Tệp
+              </button>
+              <button onclick="event.stopPropagation(); triggerFileInput('folder')" class="px-2 py-1 bg-neutral-850 hover:bg-neutral-800 text-[9px] font-bold text-neutral-300 rounded-md flex items-center gap-1 border border-neutral-800 transition-all">
+                <i data-lucide="folder-open" class="w-3 h-3 text-amber-500"></i> Thư mục
+              </button>
+            </div>
+            <!-- Hidden inputs -->
+            <input type="file" id="epubInput" accept=".epub,.mobi,.pdf,.txt,.html,.htm" multiple class="hidden" onchange="handleMultipleFilesSelect(this)">
+            <input type="file" id="folderInput" webkitdirectory directory class="hidden" onchange="handleFolderSelect(this)">
+          </div>
+        </div>
+
+        <!-- Book metadata showcase -->
+        <div id="bookMetaContainer" class="hidden flex gap-4 items-center">
+          <div class="w-16 h-24 bg-neutral-900 rounded-lg overflow-hidden border border-neutral-800 shrink-0 flex items-center justify-center relative shadow-md">
+            <img id="bookCover" class="w-full h-full object-cover hidden" alt="Bìa sách">
+            <i id="bookCoverPlaceholder" data-lucide="book" class="w-8 h-8 text-neutral-700"></i>
+          </div>
+          <div class="overflow-hidden">
+            <h2 id="bookTitle" class="text-sm font-extrabold text-white truncate">Tên Sách</h2>
+            <p id="bookAuthor" class="text-xs text-neutral-400 truncate mt-1">Tác giả</p>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <button onclick="showLibraryView()" class="flex items-center gap-1 text-[9px] font-bold text-emerald-400 hover:text-emerald-300 uppercase tracking-wider transition-colors">
+                <i data-lucide="library" class="w-3 h-3"></i> Thư viện
+              </button>
+              <button onclick="triggerNewUpload()" class="flex items-center gap-1 text-[9px] font-bold text-neutral-400 hover:text-emerald-500 uppercase tracking-wider transition-colors ml-2">
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Thêm tệp
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local Library Container -->
+      <div id="localLibraryContainer" class="flex-1 flex flex-col min-h-0 border-t border-neutral-800">
+        <div class="px-4 py-2.5 flex items-center justify-between text-xs font-bold text-neutral-400 uppercase tracking-wider shrink-0 bg-neutral-900/20">
+          <span class="flex items-center gap-1.5">Thư viện của tôi <span id="localBookCount" class="text-[9px] bg-neutral-800 px-1.5 py-0.5 rounded text-neutral-500 lowercase">0 cuốn</span></span>
+          <button onclick="handleClearAllBooks()" class="text-[9px] font-bold text-neutral-600 hover:text-red-400 uppercase tracking-wider transition-colors flex items-center gap-1">
+            <i data-lucide="trash-2" class="w-3 h-3"></i> Xóa hết
+          </button>
+        </div>
+        <div id="localBookList" class="flex-1 overflow-y-auto px-2 py-2 flex flex-col gap-1 text-sm text-neutral-400">
+          <!-- Dynamically populated from IndexedDB -->
+          <div class="text-center py-12 text-xs text-neutral-600">
+            <i data-lucide="library" class="w-8 h-8 text-neutral-800 mx-auto mb-2"></i>
+            Thư viện trống.<br>Hãy tải tệp tin sách lên.
+          </div>
+        </div>
+      </div>
+
+      <!-- Reading View Container (Chapters list, hidden by default) -->
+      <div id="readingViewContainer" class="flex-1 flex flex-col min-h-0 border-t border-neutral-800 hidden">
+        <div class="px-4 py-2.5 flex items-center justify-between text-xs font-bold text-neutral-400 uppercase tracking-wider shrink-0 bg-neutral-900/20">
+          <span>Mục lục</span>
+          <span id="chapterCount" class="text-[10px] bg-neutral-800 px-1.5 py-0.5 rounded text-neutral-500">0 chương</span>
+        </div>
+        <div id="chaptersList" class="flex-1 overflow-y-auto px-2 py-2 flex flex-col gap-1 text-sm text-neutral-400">
+          <div class="text-center py-12 text-xs text-neutral-600">
+            Chưa có nội dung chương sách.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CENTER PANEL: Elegant Book Reader -->
+    <section id="readerPanel" class="flex-1 bg-[#1a1a1a] flex flex-col relative overflow-hidden theme-reader-dark transition-all duration-300">
+      <!-- Text formatting controls at top of reader -->
+      <div class="h-12 border-b border-black/10 flex items-center justify-between px-4 md:px-8 text-xs font-semibold shrink-0 bg-black/5">
+        <div class="flex items-center gap-2">
+          <button onclick="adjustFontSize(-2)" class="w-7 h-7 rounded border border-neutral-700/30 flex items-center justify-center hover:bg-black/10 transition-colors" title="Thu nhỏ chữ">
+            <span class="font-bold">A-</span>
+          </button>
+          <span id="fontSizeDisplay" class="px-1 font-mono text-neutral-500">100%</span>
+          <button onclick="adjustFontSize(2)" class="w-7 h-7 rounded border border-neutral-700/30 flex items-center justify-center hover:bg-black/10 transition-colors" title="Phóng to chữ">
+            <span class="font-bold">A+</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 md:gap-3">
+          <button onclick="toggleFontSerif(true)" id="btnFontSerif" class="px-2.5 py-1 rounded border border-neutral-700/30 hover:bg-black/10 transition-all font-serif">Serif</button>
+          <button onclick="toggleFontSerif(false)" id="btnFontSans" class="px-2.5 py-1 rounded bg-neutral-800/80 text-white font-sans">Sans</button>
+        </div>
+      </div>
+
+      <!-- Book content viewer -->
+      <div id="readerContent" class="flex-1 overflow-y-auto px-4 py-6 md:px-16 lg:px-24 scroll-smooth">
+        <div class="max-w-2xl mx-auto flex flex-col items-center justify-center h-full text-center" id="emptyStateReader">
+          <div class="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6">
+            <i data-lucide="book-open" class="w-10 h-10 text-emerald-500"></i>
+          </div>
+          <h2 class="text-xl font-bold mb-2">Trình đọc sách nói đa năng</h2>
+          <p class="text-sm text-neutral-500 max-w-sm leading-relaxed">Tải lên tệp EPUB, MOBI, PDF, TXT hoặc HTML. Công cụ tự động phân đoạn văn bản và đọc tiếng Việt mượt mà.</p>
+        </div>
+        <div id="bookTextDisplay" class="max-w-2xl mx-auto hidden font-sans leading-relaxed text-lg flex flex-col gap-6">
+          <!-- Text blocks dynamically generated here -->
+        </div>
+      </div>
+
+      <!-- Bottom mini status -->
+      <div class="h-8 border-t border-black/10 px-4 md:px-8 flex items-center justify-between text-[10px] font-bold tracking-wider uppercase text-neutral-500 shrink-0 bg-black/5">
+        <span id="footerChapterTitle" class="truncate max-w-[200px]">Chương hiện tại</span>
+        <span id="footerReadProgress">Trang: --/--</span>
+      </div>
+
+    </section>
+
+    <!-- RIGHT SIDEBAR: Speech & Voice Settings (Responsive Drawer) -->
+    <section id="rightSidebar" class="fixed inset-y-0 right-0 w-80 z-40 bg-[#121212] border-l border-neutral-800 transform translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex md:z-0 flex flex-col justify-between shrink-0">
+      
+      <!-- Mobile sidebar header -->
+      <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800 shrink-0 bg-neutral-950/20">
+        <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Cấu hình đọc & Giọng nói</span>
+        <button onclick="toggleMobileSidebar('right', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-5 flex flex-col gap-5 justify-between min-h-0">
+        <div class="flex flex-col gap-5">
+          <div>
+            <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+              <i data-lucide="volume-2" class="w-4 h-4 text-emerald-500"></i> Cài đặt giọng đọc
+            </h3>
+            
+            <div class="flex flex-col gap-4 bg-neutral-900/60 p-4 rounded-xl border border-neutral-800">
+              <!-- Voice selection -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Chọn giọng đọc</label>
+                <select id="voiceSelect" class="w-full bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 text-neutral-200">
+                  <option value="">Đang tìm giọng nói...</option>
+                </select>
+                <p class="text-[9px] text-neutral-500 leading-tight">Ưu tiên giọng đọc của <strong>Google</strong> hoặc <strong>Natural</strong> trên Edge để có trải nghiệm đọc sách hay nhất.</p>
+              </div>
+              
+              <!-- Warning if Vietnamese voice is missing -->
+              <div id="viVoiceAlert" class="hidden p-3 bg-red-950/40 border border-red-900/60 rounded-xl text-[11px] text-red-200 leading-relaxed">
+                <div class="font-bold flex items-center gap-1 mb-1 text-red-400">
+                  <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i> Không tìm thấy giọng Tiếng Việt!
+                </div>
+                Vui lòng xem hướng dẫn bên dưới để bật giọng nói tiếng Việt.
+              </div>
+
+              <!-- Speed range -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                  <span>Tốc độ đọc</span>
+                  <span id="speedVal" class="text-emerald-500">1.0x</span>
+                </div>
+                <input type="range" id="rateRange" min="0.5" max="3" step="0.1" value="1.0" oninput="updateSpeechParam('speed', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+              </div>
+
+              <!-- Pitch range -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                  <span>Độ trầm bổng</span>
+                  <span id="pitchVal" class="text-emerald-500">1.0</span>
+                </div>
+                <input type="range" id="pitchRange" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateSpeechParam('pitch', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+              </div>
+              
+              <!-- Volume range -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                  <span>Âm lượng</span>
+                  <span id="volumeVal" class="text-emerald-500">100%</span>
+                </div>
+                <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="1.0" oninput="updateSpeechParam('volume', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- FPT.AI Professional TTS Section -->
+          <div>
+            <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+              <i data-lucide="mic-2" class="w-4 h-4 text-amber-500"></i> FPT.AI Giọng Chuyên Nghiệp
+            </h3>
+            <div class="flex flex-col gap-3 bg-neutral-900/60 p-4 rounded-xl border border-neutral-800">
+              <!-- Toggle -->
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-neutral-300">Bật FPT.AI TTS</span>
+                <button id="fptaiToggleBtn" onclick="toggleFptAi()" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-neutral-800 text-neutral-400 border-neutral-700 hover:border-neutral-600">Tắt</button>
+              </div>
+              <!-- Settings (shown when enabled) -->
+              <div id="fptaiSettingsPanel" class="hidden flex-col gap-3">
+                <!-- API Key -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">API Key</label>
+                  <div class="flex gap-1.5">
+                    <input type="password" id="fptaiApiKeyInput" placeholder="Nhập API Key FPT.AI..." class="flex-1 bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200">
+                    <button onclick="saveFptAiKey()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold rounded-lg transition-colors shrink-0">Lưu</button>
+                  </div>
+                  <a href="https://fpt.ai/tts" target="_blank" rel="noopener" class="text-[10px] text-amber-500 hover:text-amber-400 transition-colors">Đăng ký API Key miễn phí →</a>
+                </div>
+                <!-- Voice -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Giọng đọc</label>
+                  <select id="fptaiVoiceSelect" onchange="localStorage.setItem('fptai_voice', this.value)" class="w-full bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-neutral-200">
+                    <option value="leminh">⭐ Lê Minh — Nam · Nam bộ</option>
+                    <option value="banmai">Ban Mai — Nữ · Nam bộ</option>
+                    <option value="myan">Mỹ An — Nữ · Nam bộ</option>
+                    <option value="lannhi">Lan Nhi — Nữ · Nam bộ</option>
+                    <option value="giahuy">Gia Huy — Nam · Bắc bộ</option>
+                    <option value="minhquang">Minh Quang — Nam · Bắc bộ</option>
+                    <option value="thuminh">Thu Minh — Nữ · Bắc bộ</option>
+                    <option value="ngoclam">Ngọc Lam — Nữ · Bắc bộ</option>
+                    <option value="linhsan">Linh San — Nữ · Bắc bộ</option>
+                  </select>
+                  <p class="text-[9px] text-neutral-500 leading-tight">Giọng <strong>Lê Minh</strong> (Nam bộ) gần nhất với phong cách kể chuyện truyền thuyết.</p>
+                </div>
+                <!-- Speed -->
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
+                    <span>Tốc độ FPT.AI</span>
+                    <span id="fptaiSpeedVal" class="text-amber-500">0</span>
+                  </div>
+                  <input type="range" id="fptaiSpeedRange" min="-3" max="3" step="1" value="0" oninput="document.getElementById('fptaiSpeedVal').innerText = this.value; localStorage.setItem('fptai_speed', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                  <p class="text-[9px] text-neutral-500">-3 (chậm) → 0 (chuẩn) → +3 (nhanh)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audio wave graphic visualizer -->
+          <div>
+            <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2">Tín hiệu giọng</h3>
+            <div class="h-24 bg-[#181818] rounded-xl border border-neutral-800 flex items-center justify-center relative overflow-hidden">
+              <div id="visualizerPlaceholder" class="text-xs text-neutral-600 font-medium">Chưa phát âm thanh</div>
+              <div id="visualizerBars" class="hidden items-end gap-1.5">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick instructions & Screen off notification -->
+        <div class="bg-neutral-900/40 p-4 rounded-xl border border-neutral-800 shrink-0 text-xs leading-relaxed text-neutral-400">
+          <p class="font-bold text-neutral-300 mb-1 flex items-center gap-1"><i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-500"></i> Nghe khi tắt màn hình:</p>
+          <p class="text-[11px] text-neutral-400">
+            Khi nhấn <strong>Phát</strong>, hệ thống tự động phát tệp âm thanh tĩnh trong nền để giữ kết nối. Bạn có thể khóa màn hình mà không sợ bị tạm ngắt.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- BOTTOM PLAYER CONTROL BAR -->
+  <footer class="h-20 border-t border-neutral-800 bg-[#181818] px-4 md:px-6 flex items-center justify-between z-10 shrink-0 select-none">
+    
+    <!-- Left: Track info details -->
+    <div class="flex items-center gap-2.5 w-1/3 md:w-1/4 min-w-0">
+      <div class="truncate">
+        <p id="playerBookTitle" class="text-[11px] font-bold text-white truncate max-w-[150px] md:max-w-[200px]">Chưa tải sách</p>
+        <p id="playerChapterTitle" class="text-[9px] text-neutral-400 mt-0.5 truncate max-w-[150px] md:max-w-[200px]">Chưa chọn chương</p>
+      </div>
+    </div>
+
+    <!-- Center: Playback control buttons -->
+    <div class="flex flex-col items-center gap-1.5 flex-1 md:w-2/4 min-w-0">
+      <div class="flex items-center gap-4 sm:gap-6">
+        <button onclick="prevParagraph()" class="text-neutral-400 hover:text-white transition-colors p-1" title="Đoạn trước">
+          <i data-lucide="skip-back" class="w-5 h-5"></i>
+        </button>
+        <button onclick="togglePlayback()" id="btnPlay" class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow shadow-white/10" title="Phát / Tạm dừng">
+          <i id="playIcon" data-lucide="play" class="w-5 h-5 fill-current"></i>
+        </button>
+        <button onclick="stopPlayback()" class="text-neutral-400 hover:text-white transition-colors p-1" title="Dừng phát">
+          <i data-lucide="square" class="w-5 h-5"></i>
+        </button>
+        <button onclick="nextParagraph()" class="text-neutral-400 hover:text-white transition-colors p-1" title="Đoạn tiếp theo">
+          <i data-lucide="skip-forward" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <!-- Progress Bar Slider -->
+      <div class="w-full flex items-center gap-3">
+        <span id="playerProgressStart" class="text-[10px] font-semibold text-neutral-500 font-mono">0</span>
+        <div class="flex-1 bg-neutral-800 h-1.5 rounded-full relative group cursor-pointer" onclick="handleProgressBarClick(event)">
+          <div id="playerProgressBar" class="bg-emerald-500 h-full rounded-full w-0 transition-all duration-300 relative">
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow"></div>
+          </div>
+        </div>
+        <span id="playerProgressEnd" class="text-[10px] font-semibold text-neutral-500 font-mono">0</span>
+      </div>
+    </div>
+
+    <!-- Right: Extra features -->
+    <div class="hidden md:flex items-center justify-end gap-3 w-1/4">
+      <button onclick="toggleMute()" class="text-neutral-400 hover:text-white transition-colors">
+        <i id="muteIcon" data-lucide="volume-2" class="w-5 h-5"></i>
+      </button>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1.0" oninput="updateSpeechParam('volume', this.value)" class="w-20 h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+    </div>
+
+  </footer>
+
+  <!-- Hidden background silence keep-alive audio -->
+  <audio id="keepAliveAudio" loop>
+    <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA" type="audio/wav">
+  </audio>
+
+  <!-- Global Notification Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Exit Focus Mode Floating Button -->
+  <button id="exitFocusBtn" onclick="toggleFocusMode(false)" class="fixed top-4 right-4 z-50 hidden px-3.5 py-2 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-850 text-[10px] font-bold uppercase tracking-wider transition-all backdrop-blur flex items-center gap-1.5 shadow-lg select-none">
+    <i data-lucide="eye-off" class="w-4 h-4 text-emerald-500"></i> Thoát tập trung (ESC)
+  </button>
+
+  <script>
+    // PDF.js worker setup
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    // --- Global State ---
+    let zip = null;
+    let epubMetadata = {};
+    let epubSpine = [];
+    let epubManifest = {};
+    let chaptersData = [];
+    let opfDirectory = '';
+
+    let currentChapterIdx = -1;
+    let currentBlockIdx = -1;
+    let currentTextBlocks = [];
+
+    // TTS playback state
+    let isPlaying = false;
+    let isMuted = false;
+    let savedVolume = 1.0;
+    let currentUtterance = null;
+    let readingFontSerif = false;
+    let readingFontSize = 100;
+
+    let readingMode = localStorage.getItem('reading_mode') || 'voice'; // 'text' or 'voice'
+    let isFocusMode = false;
+    let activeBlockWords = [];
+    let currentActiveBookId = null;
+
+    // FPT.AI TTS engine state
+    let useFptAi = localStorage.getItem('use_fptai') === 'true';
+    let fptAiApiKey = localStorage.getItem('fptai_api_key') || '';
+    let fptAiCurrentAudio = null;
+
+    // Responsive sidebar toggle
+    function toggleMobileSidebar(side, forceClose = false) {
+      const left = document.getElementById('leftSidebar');
+      const right = document.getElementById('rightSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      
+      if (side === 'left') {
+        const isOpen = !left.classList.contains('-translate-x-full');
+        if (isOpen || forceClose) {
+          left.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        } else {
+          left.classList.remove('-translate-x-full');
+          right.classList.add('translate-x-full'); // close other
+          backdrop.classList.remove('hidden');
+        }
+      } else if (side === 'right') {
+        const isOpen = !right.classList.contains('translate-x-full');
+        if (isOpen || forceClose) {
+          right.classList.add('translate-x-full');
+          backdrop.classList.add('hidden');
+        } else {
+          right.classList.remove('translate-x-full');
+          left.classList.add('-translate-x-full'); // close other
+          backdrop.classList.remove('hidden');
+        }
+      } else if (side === 'backdrop') {
+        left.classList.add('-translate-x-full');
+        right.classList.add('translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    // Initialise Speech Synthesis voices list
+    function populateVoiceList() {
+      if (typeof speechSynthesis === 'undefined') return;
+      const voices = speechSynthesis.getVoices();
+      const select = document.getElementById('voiceSelect');
+      select.innerHTML = '';
+      
+      if (voices.length === 0) {
+        select.innerHTML = '<option value="">Đang tải danh sách giọng nói...</option>';
+        return;
+      }
+      
+      // Filter Vietnamese voices first, then Google, then others
+      const viVoices = voices.filter(v => v.lang.includes('vi') || v.lang.includes('VI'));
+      const googleVoices = voices.filter(v => v.name.includes('Google') && v.lang.includes('vi'));
+      
+      const alertEl = document.getElementById('viVoiceAlert');
+      if (alertEl) {
+        if (viVoices.length === 0) {
+          alertEl.classList.remove('hidden');
+        } else {
+          alertEl.classList.add('hidden');
+        }
+      }
+      
+      // Sort: Google Vietnamese first, then other Vietnamese, then English, then others
+      let preferred = [];
+      if (googleVoices.length > 0) {
+        preferred.push(...googleVoices);
+      }
+      viVoices.forEach(v => {
+        if (!preferred.some(p => p.name === v.name)) preferred.push(v);
+      });
+      
+      const otherVoices = voices.filter(v => !preferred.some(p => p.name === v.name));
+      preferred.push(...otherVoices);
+      
+      preferred.forEach(voice => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = voice.name;
+        
+        // Auto select Google Vietnamese if found, or just Vietnamese
+        if (voice.name.includes('Google') && (voice.lang.includes('vi') || voice.lang.includes('VI'))) {
+          option.selected = true;
+        } else if (preferred.length > 0 && !preferred.some(p => p.name.includes('Google') && p.lang.includes('vi')) && (voice.lang.includes('vi') || voice.lang.includes('VI'))) {
+          option.selected = true;
+        }
+        select.appendChild(option);
+      });
+    }
+
+    // Populate voices asynchronously
+    populateVoiceList();
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // === Drag & Drop / File Upload ===
+    function triggerNewUpload() {
+      document.getElementById('epubInput').click();
+    }
+
+    async function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const fileName = file.name.toLowerCase();
+      
+      // Clear old state
+      stopPlayback();
+      
+      document.getElementById('emptyStateReader').innerHTML = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-12 h-12 rounded-full border-4 border-t-emerald-500 border-neutral-700 animate-spin"></div>
+          <p class="text-sm font-bold text-neutral-400">Đang giải nén và phân tích tệp sách...</p>
+        </div>
+      `;
+      
+      try {
+        if (fileName.endsWith('.epub')) {
+          await handleEpubFile(file);
+        } else if (fileName.endsWith('.mobi')) {
+          await handleMobiFile(file);
+        } else if (fileName.endsWith('.pdf')) {
+          await handlePdfFile(file);
+        } else if (fileName.endsWith('.txt')) {
+          await handleTxtFile(file);
+        } else if (fileName.endsWith('.html') || fileName.endsWith('.htm')) {
+          await handleHtmlFile(file);
+        } else {
+          alert("Định dạng file không hỗ trợ. Vui lòng chọn file .epub, .mobi, .pdf, .txt hoặc .html");
+          resetToEmptyState();
+        }
+      } catch (err) {
+        console.error("Parse error:", err);
+        alert("Lỗi khi đọc file sách: " + err.message);
+        resetToEmptyState();
+      }
+    }
+
+    // EPUB handler
+    async function handleEpubFile(file) {
+      zip = await JSZip.loadAsync(file);
+      
+      // Find META-INF/container.xml
+      const containerFile = zip.file("META-INF/container.xml");
+      if (!containerFile) {
+        alert("Tệp tin không đúng định dạng EPUB chuẩn (Thiếu container.xml)");
+        resetToEmptyState();
+        return;
+      }
+      
+      const containerText = await containerFile.async("text");
+      const parser = new DOMParser();
+      const containerXml = parser.parseFromString(containerText, "text/xml");
+      const rootfile = containerXml.querySelector("rootfile");
+      if (!rootfile) {
+        alert("Không tìm thấy đường dẫn rootfile trong container.xml");
+        resetToEmptyState();
+        return;
+      }
+      
+      const opfPath = rootfile.getAttribute("full-path");
+      opfDirectory = opfPath.substring(0, opfPath.lastIndexOf('/') + 1); // e.g. "OEBPS/" or ""
+      
+      // Load OPF File
+      const opfFile = zip.file(opfPath);
+      if (!opfFile) {
+        alert("Không tìm thấy tệp tin định cấu hình OPF sách");
+        resetToEmptyState();
+        return;
+      }
+      
+      const opfText = await opfFile.async("text");
+      const opfXml = parser.parseFromString(opfText, "text/xml");
+      
+      // Parse Book Metadata
+      const titleEl = opfXml.querySelector("title");
+      const creatorEl = opfXml.querySelector("creator");
+      
+      epubMetadata.title = titleEl ? titleEl.textContent : file.name.replace(/\.epub$/i, "");
+      epubMetadata.author = creatorEl ? creatorEl.textContent : "Chưa rõ tác giả";
+      
+      // Parse Manifest items
+      epubManifest = {};
+      opfXml.querySelectorAll("manifest > item").forEach(item => {
+        const id = item.getAttribute("id");
+        const href = item.getAttribute("href");
+        const type = item.getAttribute("media-type");
+        epubManifest[id] = { href: opfDirectory + href, type };
+      });
+      
+      // Parse Spine items
+      epubSpine = [];
+      opfXml.querySelectorAll("spine > itemref").forEach(itemref => {
+        const idref = itemref.getAttribute("idref");
+        if (epubManifest[idref]) {
+          epubSpine.push(epubManifest[idref].href);
+        }
+      });
+      
+      // Extract Cover Image if possible
+      await extractCoverImage(opfXml);
+      
+      // Render chapters list
+      await loadAllChaptersList();
+      
+      // Render common UI
+      renderBookUI();
+    }
+
+    // MOBI PalmDoc Decompressor and Parser
+    function decompressPalmDoc(data) {
+      let out = [];
+      let i = 0;
+      while (i < data.length) {
+        let c = data[i++];
+        if (c === 0x00) {
+          out.push(0x00);
+        } else if (c >= 1 && c <= 8) {
+          for (let j = 0; j < c; j++) {
+            if (i < data.length) out.push(data[i++]);
+          }
+        } else if (c >= 0x09 && c <= 0x7f) {
+          out.push(c);
+        } else if (c >= 0x80 && c <= 0xbf) {
+          if (i < data.length) {
+            let c2 = data[i++];
+            let distance = ((c & 0x3f) << 5) | (c2 >> 3);
+            let length = (c2 & 0x07) + 3;
+            let start = out.length - distance;
+            for (let j = 0; j < length; j++) {
+              if (start + j >= 0 && start + j < out.length) {
+                out.push(out[start + j]);
+              }
+            }
+          }
+        } else if (c >= 0xc0 && c <= 0xff) {
+          out.push(0x20); // space
+          out.push(c ^ 0x80); // character
+        }
+      }
+      return new Uint8Array(out);
+    }
+
+    async function handleMobiFile(file) {
+      const buffer = await file.arrayBuffer();
+      const view = new DataView(buffer);
+      
+      // Read records count (offset 76)
+      const numRecords = view.getUint16(76);
+      
+      // Read record offsets
+      let recordOffsets = [];
+      for (let i = 0; i < numRecords; i++) {
+        const offset = view.getUint32(78 + i * 8);
+        recordOffsets.push(offset);
+      }
+      
+      // Record 0 contains the MOBI header
+      const rec0Offset = recordOffsets[0];
+      const compression = view.getUint16(rec0Offset);
+      const textRecordCount = view.getUint16(rec0Offset + 8);
+      
+      // Read text encoding from MOBI header (offset 28 in MOBI header)
+      let encodingVal = 65001; // default UTF-8
+      try {
+        let ident = "";
+        for (let j = 0; j < 4; j++) {
+          ident += String.fromCharCode(view.getUint8(rec0Offset + 16 + j));
+        }
+        if (ident === "MOBI") {
+          encodingVal = view.getUint32(rec0Offset + 16 + 28);
+        }
+      } catch (e) {
+        console.warn("Could not read MOBI encoding:", e);
+      }
+      
+      let label = "utf-8";
+      if (encodingVal === 1252) {
+        label = "windows-1252";
+      }
+      let textDecoder = new TextDecoder(label);
+      let fullHtmlText = "";
+      
+      for (let i = 1; i <= textRecordCount; i++) {
+        if (i >= recordOffsets.length) break;
+        const start = recordOffsets[i];
+        const end = (i + 1 < recordOffsets.length) ? recordOffsets[i + 1] : buffer.byteLength;
+        const recordData = new Uint8Array(buffer, start, end - start);
+        
+        let decompressed;
+        if (compression === 2) {
+          decompressed = decompressPalmDoc(recordData);
+        } else {
+          decompressed = recordData;
+        }
+        
+        try {
+          fullHtmlText += textDecoder.decode(decompressed);
+        } catch (e) {
+          console.warn("MOBI record decode error:", e);
+        }
+      }
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(fullHtmlText, "text/html");
+      
+      epubMetadata.title = file.name.replace(/\.mobi$/i, "");
+      epubMetadata.author = "Sách Kindle MOBI";
+      
+      doc.querySelectorAll('script, style, svg, img, head').forEach(el => el.remove());
+      const readableElements = doc.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li');
+      let blocks = [];
+      readableElements.forEach(el => {
+        const textVal = el.textContent.trim();
+        if (textVal.length > 2) {
+          blocks.push(textVal);
+        }
+      });
+      
+      // Segment blocks into chapters
+      chaptersData = [];
+      let currentChapterBlocks = [];
+      let chapterIndex = 0;
+      let currentChapterTitle = "Chương 1";
+      
+      blocks.forEach(block => {
+        if (/^(chương|chapter|bài|phần)\s+\d+/i.test(block) && currentChapterBlocks.length > 10) {
+          chaptersData.push({
+            index: chapterIndex++,
+            title: currentChapterTitle,
+            path: `mobi_ch_${chapterIndex}`,
+            blocks: currentChapterBlocks
+          });
+          currentChapterTitle = block;
+          currentChapterBlocks = [];
+        } else {
+          currentChapterBlocks.push(block);
+        }
+      });
+      
+      if (currentChapterBlocks.length > 0 || chaptersData.length === 0) {
+        chaptersData.push({
+          index: chapterIndex++,
+          title: currentChapterTitle,
+          path: `mobi_ch_${chapterIndex}`,
+          blocks: currentChapterBlocks
+        });
+      }
+      
+      renderBookUI();
+    }
+
+    // PDF extraction using PDF.js
+    async function handlePdfFile(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      epubMetadata.title = file.name.replace(/\.pdf$/i, "");
+      epubMetadata.author = "Tài liệu PDF";
+      
+      // Extract PDF cover from page 1 asynchronously
+      pdf.getPage(1).then(page => {
+        const viewport = page.getViewport({ scale: 0.4 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        page.render({ canvasContext: context, viewport: viewport }).promise.then(() => {
+          canvas.toBlob(blob => {
+            if (blob) {
+              const coverUrl = URL.createObjectURL(blob);
+              document.getElementById('bookCover').src = coverUrl;
+              document.getElementById('bookCover').classList.remove('hidden');
+              document.getElementById('bookCoverPlaceholder').classList.add('hidden');
+              if (currentActiveBookId) {
+                saveBookCoverToDB(currentActiveBookId, blob);
+              }
+            }
+          }, 'image/png');
+        });
+      }).catch(err => {
+        console.warn("PDF cover extraction failed:", err);
+        document.getElementById('bookCover').classList.add('hidden');
+        document.getElementById('bookCoverPlaceholder').classList.remove('hidden');
+      });
+      
+      chaptersData = [];
+      
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(' ');
+        
+        let paragraphs = pageText.split(/\s{2,}/).filter(p => p.trim().length > 3);
+        if (paragraphs.length === 0 && pageText.trim().length > 0) {
+          paragraphs = [pageText.trim()];
+        }
+        
+        chaptersData.push({
+          index: pageNum - 1,
+          title: `Trang ${pageNum}`,
+          path: `page_${pageNum}`,
+          blocks: paragraphs
+        });
+      }
+      
+      renderBookUI();
+    }
+
+    // TXT extraction
+    async function handleTxtFile(file) {
+      const text = await file.text();
+      epubMetadata.title = file.name.replace(/\.txt$/i, "");
+      epubMetadata.author = "Tệp Văn Bản";
+      
+      document.getElementById('bookCover').classList.add('hidden');
+      document.getElementById('bookCoverPlaceholder').classList.remove('hidden');
+      
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      
+      chaptersData = [];
+      let currentChapterBlocks = [];
+      let currentChapterTitle = "Nội dung chính";
+      let chapterIndex = 0;
+      
+      const chapterRegex = /^(chương\s+\d+|chapter\s+\d+|bài\s+\d+|phần\s+\d+|mục\s+\d+)/i;
+      
+      lines.forEach(line => {
+        if (chapterRegex.test(line) && currentChapterBlocks.length > 0) {
+          chaptersData.push({
+            index: chapterIndex++,
+            title: currentChapterTitle,
+            path: `txt_ch_${chapterIndex}`,
+            blocks: currentChapterBlocks
+          });
+          currentChapterTitle = line;
+          currentChapterBlocks = [];
+        } else if (chapterRegex.test(line)) {
+          currentChapterTitle = line;
+        } else {
+          currentChapterBlocks.push(line);
+        }
+      });
+      
+      if (currentChapterBlocks.length > 0 || chaptersData.length === 0) {
+        chaptersData.push({
+          index: chapterIndex++,
+          title: currentChapterTitle,
+          path: `txt_ch_${chapterIndex}`,
+          blocks: currentChapterBlocks
+        });
+      }
+      
+      renderBookUI();
+    }
+
+    // HTML file extraction
+    async function handleHtmlFile(file) {
+      const htmlText = await file.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, "text/html");
+      
+      epubMetadata.title = file.name.replace(/\.html?$/i, "");
+      epubMetadata.author = "Tài liệu Web";
+      
+      document.getElementById('bookCover').classList.add('hidden');
+      document.getElementById('bookCoverPlaceholder').classList.remove('hidden');
+      
+      let title = "Nội dung chính";
+      const titleTag = doc.querySelector('title') || doc.querySelector('h1, h2');
+      if (titleTag && titleTag.textContent.trim()) {
+        title = titleTag.textContent.trim();
+      }
+      
+      doc.querySelectorAll('script, style, svg, img, head').forEach(el => el.remove());
+      const readableElements = doc.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li');
+      let blocks = [];
+      readableElements.forEach(el => {
+        const textVal = el.textContent.trim();
+        if (textVal.length > 2) {
+          blocks.push(textVal);
+        }
+      });
+      
+      chaptersData = [{
+        index: 0,
+        title: title,
+        path: 'html_content',
+        blocks: blocks
+      }];
+      
+      renderBookUI();
+    }
+
+    // Unified book UI renderer
+    function renderBookUI() {
+      // Update UI elements
+      document.getElementById('bookTitle').innerText = epubMetadata.title;
+      document.getElementById('bookAuthor').innerText = epubMetadata.author;
+      document.getElementById('headerBookTitle').innerText = epubMetadata.title;
+      document.getElementById('playerBookTitle').innerText = epubMetadata.title;
+      
+      // Update metadata in IndexedDB in background
+      if (currentActiveBookId) {
+        updateBookMetadataInDB(currentActiveBookId, epubMetadata.title, epubMetadata.author)
+          .then(() => refreshLocalLibraryList());
+      }
+      
+      showReadingView();
+      
+      // Render chapter list to sidebar
+      const chaptersList = document.getElementById('chaptersList');
+      document.getElementById('chapterCount').innerText = `${chaptersData.length} chương`;
+      
+      if (chaptersData.length === 0) {
+        chaptersList.innerHTML = '<div class="text-center py-6 text-xs text-neutral-500">Không tìm thấy nội dung văn bản.</div>';
+        return;
+      }
+      
+      chaptersList.innerHTML = chaptersData.map(ch => `
+        <button id="sidebar-ch-${ch.index}" onclick="loadChapter(${ch.index}); toggleMobileSidebar('left', true);" class="w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-between group">
+          <div class="truncate pr-2 flex items-center gap-2">
+            <i data-lucide="play-circle" class="w-3.5 h-3.5 text-neutral-500 shrink-0 group-hover:text-emerald-500 transition-colors"></i>
+            <span class="truncate font-semibold text-xs text-neutral-300 group-hover:text-white">${ch.title}</span>
+          </div>
+          <span class="text-[9px] font-mono text-neutral-600 shrink-0">${ch.blocks.length} đoạn</span>
+        </button>
+      `).join('');
+      
+      lucide.createIcons();
+      
+      // Auto load first chapter or restore progress
+      const savedProgress = loadSavedProgress(epubMetadata.title);
+      if (savedProgress && savedProgress.chapterIndex < chaptersData.length) {
+        loadChapter(savedProgress.chapterIndex, savedProgress.blockIndex);
+      } else {
+        loadChapter(0);
+      }
+    }
+
+    async function extractCoverImage(opfXml) {
+      document.getElementById('bookCover').classList.add('hidden');
+      document.getElementById('bookCoverPlaceholder').classList.remove('hidden');
+      
+      let coverId = '';
+      const metaCover = opfXml.querySelector('meta[name="cover"]');
+      if (metaCover) {
+        coverId = metaCover.getAttribute('content');
+      } else {
+        const coverItem = opfXml.querySelector('item[properties~="cover-image"]') || opfXml.querySelector('item[id*="cover"]');
+        if (coverItem) coverId = coverItem.getAttribute('id');
+      }
+      
+      if (coverId && epubManifest[coverId]) {
+        try {
+          const imgPath = epubManifest[coverId].href;
+          const zipFile = zip.file(imgPath);
+          if (zipFile) {
+            const blob = await zipFile.async('blob');
+            const coverUrl = URL.createObjectURL(blob);
+            document.getElementById('bookCover').src = coverUrl;
+            document.getElementById('bookCover').classList.remove('hidden');
+            document.getElementById('bookCoverPlaceholder').classList.add('hidden');
+            
+            if (currentActiveBookId) {
+              saveBookCoverToDB(currentActiveBookId, blob);
+            }
+            
+            // Set cover artwork to MediaSession
+            updateMediaSessionCover(coverUrl);
+          }
+        } catch (e) {
+          console.warn("Cover extract error:", e);
+        }
+      }
+    }
+
+    function updateMediaSessionCover(url) {
+      if ('mediaSession' in navigator && navigator.mediaSession.metadata) {
+        navigator.mediaSession.metadata.artwork = [
+          { src: url, sizes: '256x256', type: 'image/png' }
+        ];
+      }
+    }
+
+    async function loadAllChaptersList() {
+      chaptersData = [];
+      const parser = new DOMParser();
+      
+      for (let i = 0; i < epubSpine.length; i++) {
+        const path = epubSpine[i];
+        const zipFile = zip.file(path);
+        if (!zipFile) continue;
+        
+        try {
+          const htmlText = await zipFile.async("text");
+          const doc = parser.parseFromString(htmlText, "text/html");
+          
+          let title = `Chương ${i + 1}`;
+          const hTag = doc.querySelector('h1, h2, h3, h4');
+          if (hTag && hTag.textContent.trim()) {
+            title = hTag.textContent.trim().replace(/\s+/g, ' ');
+          } else {
+            const titleTag = doc.querySelector('title');
+            if (titleTag && titleTag.textContent.trim()) {
+              title = titleTag.textContent.trim();
+            }
+          }
+          
+          doc.querySelectorAll('script, style, svg, img, image, head').forEach(el => el.remove());
+          const readableElements = doc.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li');
+          let blocks = [];
+          readableElements.forEach(el => {
+            const textVal = el.textContent.trim();
+            if (textVal.length > 2) {
+              blocks.push(textVal);
+            }
+          });
+          
+          chaptersData.push({
+            index: i,
+            title: title,
+            path: path,
+            blocks: blocks
+          });
+          
+        } catch (err) {
+          console.warn(`Error parsing chapter spine at ${path}:`, err);
+        }
+      }
+    }
+
+    function resetToEmptyState() {
+      showLibraryView();
+      document.getElementById('currentBookTitleHeader').classList.add('hidden');
+      document.getElementById('bookTextDisplay').classList.add('hidden');
+      document.getElementById('emptyStateReader').classList.remove('hidden');
+      document.getElementById('playerBookTitle').innerText = "Chưa tải sách";
+      document.getElementById('playerChapterTitle').innerText = "Chưa chọn chương";
+      lucide.createIcons();
+    }
+
+    // === Book Content Rendering & Navigation ===
+    function loadChapter(idx, startAtBlockIdx = 0) {
+      if (idx < 0 || idx >= chaptersData.length) return;
+      
+      if (currentChapterIdx !== -1) {
+        const prevBtn = document.getElementById(`sidebar-ch-${currentChapterIdx}`);
+        if (prevBtn) prevBtn.classList.remove('bg-neutral-800', 'border-l-2', 'border-emerald-500');
+      }
+      
+      currentChapterIdx = idx;
+      const currentChapter = chaptersData[idx];
+      
+      const nextBtn = document.getElementById(`sidebar-ch-${idx}`);
+      if (nextBtn) {
+        nextBtn.classList.add('bg-neutral-800', 'border-l-2', 'border-emerald-500');
+        nextBtn.scrollIntoView({ block: 'nearest' });
+      }
+      
+      document.getElementById('playerChapterTitle').innerText = currentChapter.title;
+      document.getElementById('footerChapterTitle').innerText = currentChapter.title;
+      
+      // Reset reader scroll position to top
+      const readerContent = document.getElementById('readerContent');
+      if (readerContent) readerContent.scrollTop = 0;
+
+      const display = document.getElementById('bookTextDisplay');
+      document.getElementById('emptyStateReader').classList.add('hidden');
+      display.classList.remove('hidden');
+      
+      // Trigger smooth slide up and fade-in animation
+      display.classList.remove('animate-fade-in');
+      void display.offsetWidth; // trigger reflow
+      display.classList.add('animate-fade-in');
+      
+      currentTextBlocks = currentChapter.blocks;
+      
+      if (currentTextBlocks.length === 0) {
+        display.innerHTML = '<div class="text-center py-12 text-neutral-500 italic">Chương này trống hoặc không có nội dung chữ dạng thường.</div>';
+        return;
+      }
+      
+      display.innerHTML = `
+        <h2 class="text-2xl md:text-3xl font-extrabold border-b border-neutral-700/10 pb-4 mb-6">${currentChapter.title}</h2>
+        ${currentTextBlocks.map((text, bIdx) => `
+          <div id="block-${bIdx}" onclick="selectAndSpeakParagraph(${bIdx})" class="read-block p-2.5 rounded-lg text-justify leading-relaxed transition-all">
+            ${text}
+          </div>
+        `).join('')}
+      `;
+      
+      updateChapterProgressBar(startAtBlockIdx);
+      updateMediaSessionMetadata();
+
+      if (isPlaying) {
+        speakParagraph(startAtBlockIdx);
+      } else {
+        setReadingPointer(startAtBlockIdx, false);
+      }
+    }
+
+    function setReadingPointer(blockIdx, autoScroll = true) {
+      if (blockIdx < 0 || blockIdx >= currentTextBlocks.length) return;
+      
+      if (currentBlockIdx !== -1) {
+        const prevBlock = document.getElementById(`block-${currentBlockIdx}`);
+        if (prevBlock) prevBlock.classList.remove('active-read-block');
+      }
+      
+      currentBlockIdx = blockIdx;
+      const blockEl = document.getElementById(`block-${blockIdx}`);
+      if (blockEl) {
+        blockEl.classList.add('active-read-block');
+        
+        if (autoScroll) {
+          blockEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      
+      updateChapterProgressBar(blockIdx);
+      saveProgress(epubMetadata.title, currentChapterIdx, blockIdx);
+    }
+
+    function updateChapterProgressBar(blockIdx) {
+      const total = currentTextBlocks.length;
+      if (total === 0) return;
+      
+      const pct = ((blockIdx + 1) / total) * 100;
+      document.getElementById('playerProgressBar').style.width = `${pct}%`;
+      
+      document.getElementById('playerProgressStart').innerText = `${blockIdx + 1}`;
+      document.getElementById('playerProgressEnd').innerText = `${total}`;
+      document.getElementById('footerReadProgress').innerText = `Đoạn: ${blockIdx + 1}/${total}`;
+    }
+
+    function handleProgressBarClick(e) {
+      if (currentTextBlocks.length === 0) return;
+      
+      const bar = e.currentTarget;
+      const rect = bar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const width = rect.width;
+      
+      const ratio = Math.max(0, Math.min(1, clickX / width));
+      const targetBlockIdx = Math.floor(ratio * currentTextBlocks.length);
+      
+      selectAndSpeakParagraph(targetBlockIdx);
+    }
+
+    // === Text To Speech (TTS) ===
+    function togglePlayback() {
+      if (currentChapterIdx === -1) {
+        alert("Vui lòng tải sách và chọn một chương để bắt đầu đọc.");
+        return;
+      }
+      
+      if (readingMode === 'text') {
+        setReadingMode('voice');
+      }
+      
+      if (isPlaying) {
+        pausePlayback();
+      } else {
+        startPlayback();
+      }
+    }
+
+    function startPlayback() {
+      isPlaying = true;
+      document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+      lucide.createIcons();
+      
+      document.getElementById('visualizerBars').classList.remove('hidden');
+      document.getElementById('visualizerBars').classList.add('flex');
+      document.getElementById('visualizerPlaceholder').classList.add('hidden');
+      
+      // Play background silence loop to prevent mobile suspend
+      const keepAlive = document.getElementById('keepAliveAudio');
+      if (keepAlive) {
+        keepAlive.play().catch(e => console.warn("Background audio fail:", e));
+      }
+      
+      if (currentBlockIdx === -1) {
+        speakParagraph(0);
+      } else {
+        speakParagraph(currentBlockIdx);
+      }
+    }
+
+    function pausePlayback() {
+      isPlaying = false;
+      document.getElementById('playIcon').setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+      
+      document.getElementById('visualizerBars').classList.add('hidden');
+      document.getElementById('visualizerBars').classList.remove('flex');
+      document.getElementById('visualizerPlaceholder').classList.remove('hidden');
+      
+      // Pause keep alive audio
+      const keepAlive = document.getElementById('keepAliveAudio');
+      if (keepAlive) keepAlive.pause();
+
+      // Cancel browser TTS
+      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+
+      // Stop FPT.AI audio if active
+      if (fptAiCurrentAudio) {
+        fptAiCurrentAudio.pause();
+        fptAiCurrentAudio.src = '';
+        fptAiCurrentAudio = null;
+      }
+
+      // Restore clean text block without word spans
+      if (currentBlockIdx !== -1) {
+        const activeBlockEl = document.getElementById(`block-${currentBlockIdx}`);
+        if (activeBlockEl && currentTextBlocks[currentBlockIdx]) {
+          activeBlockEl.innerText = currentTextBlocks[currentBlockIdx];
+        }
+      }
+    }
+
+    function stopPlayback() {
+      pausePlayback();
+      setReadingPointer(0, true);
+    }
+
+    function selectAndSpeakParagraph(blockIdx) {
+      setReadingPointer(blockIdx, true);
+      
+      if (readingMode === 'text') {
+        return;
+      }
+      
+      isPlaying = true;
+      document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+      lucide.createIcons();
+      
+      document.getElementById('visualizerBars').classList.remove('hidden');
+      document.getElementById('visualizerBars').classList.add('flex');
+      document.getElementById('visualizerPlaceholder').classList.add('hidden');
+      
+      // Trigger keep-alive silence loop
+      const keepAlive = document.getElementById('keepAliveAudio');
+      if (keepAlive) {
+        keepAlive.play().catch(e => console.warn("Background audio fail:", e));
+      }
+      
+      speakParagraph(blockIdx);
+    }
+
+    // Wrap paragraph text into word spans for word-level TTS highlighting
+    function prepareWordSpans(blockIdx) {
+      if (blockIdx < 0 || blockIdx >= currentTextBlocks.length) return;
+      
+      const text = currentTextBlocks[blockIdx];
+      activeBlockWords = [];
+      
+      const regex = /\S+/g;
+      let match;
+      let wordIdx = 0;
+      let html = "";
+      let lastIndex = 0;
+      
+      while ((match = regex.exec(text)) !== null) {
+        const start = match.index;
+        const end = regex.lastIndex;
+        const word = match[0];
+        
+        // Append text before word
+        html += escapeHtml(text.substring(lastIndex, start));
+        // Wrap word in span
+        html += `<span id="word-${blockIdx}-${wordIdx}" class="word-span">${escapeHtml(word)}</span>`;
+        
+        activeBlockWords.push({
+          index: wordIdx,
+          word: word,
+          start: start,
+          end: end,
+          domId: `word-${blockIdx}-${wordIdx}`
+        });
+        
+        wordIdx++;
+        lastIndex = end;
+      }
+      html += escapeHtml(text.substring(lastIndex));
+      
+      const blockEl = document.getElementById(`block-${blockIdx}`);
+      if (blockEl) {
+        blockEl.innerHTML = html;
+      }
+    }
+
+    function speakParagraph(blockIdx) {
+      if (typeof speechSynthesis === 'undefined' && !useFptAi) {
+        alert('Trình duyệt của bạn không hỗ trợ công nghệ đọc văn bản (TTS).');
+        return;
+      }
+
+      // Clean up previous block word highlight & restore normal text
+      if (currentBlockIdx !== -1 && currentBlockIdx !== blockIdx) {
+        const prevBlockEl = document.getElementById(`block-${currentBlockIdx}`);
+        if (prevBlockEl && currentTextBlocks[currentBlockIdx]) {
+          prevBlockEl.innerText = currentTextBlocks[currentBlockIdx];
+          prevBlockEl.classList.remove('active-read-block');
+        }
+      }
+
+      // Cancel any ongoing browser TTS
+      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+
+      if (blockIdx < 0 || blockIdx >= currentTextBlocks.length) {
+        if (currentChapterIdx + 1 < chaptersData.length) {
+          loadChapter(currentChapterIdx + 1, 0);
+        } else {
+          stopPlayback();
+          alert('Chúc mừng! Bạn đã nghe hết quyển sách này rồi. 🎉');
+        }
+        return;
+      }
+
+      setReadingPointer(blockIdx, true);
+      const textToSpeak = currentTextBlocks[blockIdx];
+
+      // === Route to FPT.AI engine if enabled ===
+      if (useFptAi) {
+        speakWithFptAi(textToSpeak, () => {
+          if (isPlaying) speakParagraph(currentBlockIdx + 1);
+        });
+        return;
+      }
+
+      // === Browser Web Speech API ===
+      prepareWordSpans(blockIdx);
+
+      currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+      // Bind voice selection
+      const voiceSelect = document.getElementById('voiceSelect');
+      const selectedVoiceName = voiceSelect.value;
+      if (selectedVoiceName) {
+        const voices = speechSynthesis.getVoices();
+        const match = voices.find(v => v.name === selectedVoiceName);
+        if (match) currentUtterance.voice = match;
+      }
+
+      // Bind settings parameters
+      currentUtterance.rate = parseFloat(document.getElementById('rateRange').value) || 1.0;
+      currentUtterance.pitch = parseFloat(document.getElementById('pitchRange').value) || 1.0;
+      currentUtterance.volume = isMuted ? 0 : (parseFloat(document.getElementById('volumeRange').value) || 1.0);
+
+      // Word boundary highlight
+      currentUtterance.onboundary = function(e) {
+        if (e.name === 'word') {
+          const charIndex = e.charIndex;
+          const activeWord = activeBlockWords.find(w => charIndex >= w.start && charIndex < w.end);
+          if (activeWord) {
+            const prevActive = document.querySelector('.active-word-highlight');
+            if (prevActive) prevActive.classList.remove('active-word-highlight');
+            const currentWordEl = document.getElementById(activeWord.domId);
+            if (currentWordEl) currentWordEl.classList.add('active-word-highlight');
+          }
+        }
+      };
+
+      currentUtterance.onend = function() {
+        const blockEl = document.getElementById(`block-${blockIdx}`);
+        if (blockEl) blockEl.innerText = textToSpeak;
+        if (isPlaying) speakParagraph(currentBlockIdx + 1);
+      };
+
+      currentUtterance.onerror = function(e) {
+        console.warn('Speech end/cancel status:', e);
+      };
+
+      speechSynthesis.speak(currentUtterance);
+    }
+
+    function nextParagraph() {
+      if (currentChapterIdx === -1) return;
+      if (currentBlockIdx + 1 < currentTextBlocks.length) {
+        selectAndSpeakParagraph(currentBlockIdx + 1);
+      } else {
+        if (currentChapterIdx + 1 < chaptersData.length) {
+          loadChapter(currentChapterIdx + 1, 0);
+        }
+      }
+    }
+
+    function prevParagraph() {
+      if (currentChapterIdx === -1) return;
+      if (currentBlockIdx - 1 >= 0) {
+        selectAndSpeakParagraph(currentBlockIdx - 1);
+      } else {
+        if (currentChapterIdx - 1 >= 0) {
+          const prevCh = chaptersData[currentChapterIdx - 1];
+          loadChapter(currentChapterIdx - 1, Math.max(0, prevCh.blocks.length - 1));
+        }
+      }
+    }
+
+    // System lock screen MediaSession controller
+    function updateMediaSessionMetadata() {
+      if ('mediaSession' in navigator && currentChapterIdx !== -1) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: chaptersData[currentChapterIdx].title,
+          artist: epubMetadata.title,
+          album: epubMetadata.author,
+          artwork: [
+            { src: document.getElementById('bookCover').src || '', sizes: '256x256', type: 'image/png' }
+          ]
+        });
+        
+        navigator.mediaSession.setActionHandler('play', () => { startPlayback(); });
+        navigator.mediaSession.setActionHandler('pause', () => { pausePlayback(); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => { prevParagraph(); });
+        navigator.mediaSession.setActionHandler('nexttrack', () => { nextParagraph(); });
+      }
+    }
+
+    // === FPT.AI TTS Engine ===
+
+    function toggleFptAi() {
+      useFptAi = !useFptAi;
+      localStorage.setItem('use_fptai', String(useFptAi));
+
+      const btn = document.getElementById('fptaiToggleBtn');
+      const panel = document.getElementById('fptaiSettingsPanel');
+
+      if (useFptAi) {
+        if (btn) {
+          btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-amber-600 text-white border-amber-500';
+          btn.innerText = 'Đang bật';
+        }
+        if (panel) { panel.classList.remove('hidden'); panel.classList.add('flex'); }
+        // Stop any ongoing browser TTS
+        if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+        showNotification('Đã bật FPT.AI — Giọng Việt chuyên nghiệp');
+      } else {
+        if (btn) {
+          btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-neutral-800 text-neutral-400 border-neutral-700 hover:border-neutral-600';
+          btn.innerText = 'Tắt';
+        }
+        if (panel) { panel.classList.add('hidden'); panel.classList.remove('flex'); }
+        if (fptAiCurrentAudio) {
+          fptAiCurrentAudio.pause();
+          fptAiCurrentAudio.src = '';
+          fptAiCurrentAudio = null;
+        }
+        showNotification('Đã tắt FPT.AI — Dùng giọng hệ thống', 'info');
+      }
+    }
+
+    function saveFptAiKey() {
+      const key = document.getElementById('fptaiApiKeyInput').value.trim();
+      if (!key) { showNotification('Vui lòng nhập API Key FPT.AI', 'error'); return; }
+      fptAiApiKey = key;
+      localStorage.setItem('fptai_api_key', key);
+      showNotification('Đã lưu API Key FPT.AI thành công!');
+    }
+
+    async function speakWithFptAi(text, onEnd) {
+      if (!fptAiApiKey) {
+        showNotification('Chưa có API Key FPT.AI. Vui lòng nhập trong cài đặt bên phải.', 'error');
+        if (onEnd) onEnd();
+        return;
+      }
+
+      // FPT.AI limit: ~2000 chars per request
+      const safeText = text.length > 1800 ? text.substring(0, 1800) : text;
+      const voice = document.getElementById('fptaiVoiceSelect')?.value || 'leminh';
+      const speed = document.getElementById('fptaiSpeedRange')?.value || '0';
+
+      try {
+        const response = await fetch('https://api.fpt.ai/hmi/tts/v5', {
+          method: 'POST',
+          headers: {
+            'api-key': fptAiApiKey,
+            'voice': voice,
+            'speed': speed,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: safeText
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        if (data.error !== 0 || !data.async) {
+          throw new Error(data.message || 'API trả về lỗi không xác định');
+        }
+
+        playFptAiWithRetry(data.async, onEnd);
+
+      } catch (e) {
+        console.error('FPT.AI request error:', e);
+        showNotification('Lỗi FPT.AI: ' + e.message, 'error');
+        if (onEnd) onEnd();
+      }
+    }
+
+    // Play FPT.AI audio with retry logic (file may not be ready immediately)
+    function playFptAiWithRetry(url, onEnd, maxRetries = 12, delayMs = 800) {
+      let attempt = 0;
+
+      const tryPlay = () => {
+        if (!isPlaying || attempt >= maxRetries) {
+          if (attempt >= maxRetries) showNotification('FPT.AI không phản hồi đúng hạn, thử lại.', 'error');
+          if (onEnd) onEnd();
+          return;
+        }
+        attempt++;
+
+        if (fptAiCurrentAudio) {
+          fptAiCurrentAudio.pause();
+          fptAiCurrentAudio.src = '';
+        }
+
+        fptAiCurrentAudio = new Audio();
+        fptAiCurrentAudio.volume = isMuted ? 0 : (parseFloat(document.getElementById('volumeRange').value) || 1.0);
+
+        fptAiCurrentAudio.oncanplay = () => {
+          if (!isPlaying) return;
+          fptAiCurrentAudio.play().catch(e => {
+            console.warn('FPT.AI play() error:', e);
+            if (onEnd) onEnd();
+          });
+        };
+
+        fptAiCurrentAudio.onended = () => {
+          fptAiCurrentAudio = null;
+          if (onEnd) onEnd();
+        };
+
+        fptAiCurrentAudio.onerror = () => {
+          // File not ready yet on server, retry after delay
+          setTimeout(tryPlay, delayMs);
+        };
+
+        fptAiCurrentAudio.src = url;
+        fptAiCurrentAudio.load();
+      };
+
+      // Initial delay: give FPT.AI server time to generate the audio file
+      setTimeout(tryPlay, 1000);
+    }
+
+    // === TTS Voice Setting Controls ===
+    function updateSpeechParam(param, val) {
+      if (param === 'speed') {
+        document.getElementById('speedVal').innerText = parseFloat(val).toFixed(1) + 'x';
+        document.getElementById('rateRange').value = val;
+      } else if (param === 'pitch') {
+        document.getElementById('pitchVal').innerText = parseFloat(val).toFixed(1);
+        document.getElementById('pitchRange').value = val;
+      } else if (param === 'volume') {
+        document.getElementById('volumeVal').innerText = Math.round(val * 100) + '%';
+        document.getElementById('volumeRange').value = val;
+        document.getElementById('volumeSlider').value = val;
+        
+        if (parseFloat(val) === 0) {
+          isMuted = true;
+          document.getElementById('muteIcon').setAttribute('data-lucide', 'volume-x');
+        } else {
+          isMuted = false;
+          document.getElementById('muteIcon').setAttribute('data-lucide', 'volume-2');
+        }
+        lucide.createIcons();
+      }
+      
+      if (isPlaying && currentBlockIdx !== -1) {
+        speakParagraph(currentBlockIdx);
+      }
+    }
+
+    function toggleMute() {
+      const volumeRange = document.getElementById('volumeRange');
+      if (isMuted) {
+        isMuted = false;
+        updateSpeechParam('volume', savedVolume);
+      } else {
+        isMuted = true;
+        savedVolume = parseFloat(volumeRange.value) || 1.0;
+        updateSpeechParam('volume', 0);
+      }
+    }
+
+    // === Font Formatting & Page Styling ===
+    function adjustFontSize(delta) {
+      readingFontSize = Math.max(70, Math.min(200, readingFontSize + delta));
+      document.getElementById('fontSizeDisplay').innerText = readingFontSize + '%';
+      
+      const textDisplay = document.getElementById('bookTextDisplay');
+      textDisplay.style.fontSize = (readingFontSize / 100) * 1.125 + 'rem';
+    }
+
+    function toggleFontSerif(isSerif) {
+      readingFontSerif = isSerif;
+      const textDisplay = document.getElementById('bookTextDisplay');
+      
+      const btnSerif = document.getElementById('btnFontSerif');
+      const btnSans = document.getElementById('btnFontSans');
+      
+      if (isSerif) {
+        textDisplay.classList.remove('font-sans');
+        textDisplay.classList.add('font-serif');
+        btnSerif.classList.add('bg-neutral-800/80', 'text-white');
+        btnSans.classList.remove('bg-neutral-800/80', 'text-white');
+      } else {
+        textDisplay.classList.remove('font-serif');
+        textDisplay.classList.add('font-sans');
+        btnSans.classList.add('bg-neutral-800/80', 'text-white');
+        btnSerif.classList.remove('bg-neutral-800/80', 'text-white');
+      }
+    }
+
+    function setReaderTheme(theme) {
+      const panel = document.getElementById('readerPanel');
+      panel.classList.remove('theme-reader-dark', 'theme-reader-light', 'theme-reader-sepia');
+      
+      if (theme === 'dark') {
+        panel.classList.add('theme-reader-dark');
+      } else if (theme === 'light') {
+        panel.classList.add('theme-reader-light');
+      } else if (theme === 'sepia') {
+        panel.classList.add('theme-reader-sepia');
+      }
+    }
+
+    // === LocalStorage Reading Progress Persistence ===
+    function saveProgress(bookTitle, chapterIndex, blockIndex) {
+      if (!bookTitle) return;
+      const progress = { chapterIndex, blockIndex };
+      localStorage.setItem(`epub_progress_${bookTitle}`, JSON.stringify(progress));
+    }
+
+    function loadSavedProgress(bookTitle) {
+      if (!bookTitle) return null;
+      const data = localStorage.getItem(`epub_progress_${bookTitle}`);
+      return data ? JSON.parse(data) : null;
+    }
+
+    // === UI Notifications & Reading Mode Controls ===
+
+    // Show Notification Toast
+    function showNotification(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border text-xs font-bold animate-in slide-in-from-top-4 duration-300 pointer-events-auto cursor-pointer max-w-sm backdrop-blur-md `;
+      
+      if (type === 'success') {
+        toast.className += 'bg-emerald-950/90 border-emerald-500/30 text-emerald-200';
+      } else if (type === 'error') {
+        toast.className += 'bg-red-950/90 border-red-500/30 text-red-200';
+      } else {
+        toast.className += 'bg-neutral-900/90 border-neutral-800 text-neutral-200';
+      }
+      
+      const icon = document.createElement('i');
+      icon.setAttribute('data-lucide', type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info');
+      icon.className = 'w-4 h-4 shrink-0';
+      toast.appendChild(icon);
+      
+      const textSpan = document.createElement('span');
+      textSpan.innerText = message;
+      toast.appendChild(textSpan);
+      
+      toast.onclick = () => toast.remove();
+      
+      container.appendChild(toast);
+      lucide.createIcons();
+      
+      setTimeout(() => {
+        toast.classList.add('animate-out', 'fade-out', 'slide-out-to-top-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Reading Mode Controller
+    function setReadingMode(mode, save = true) {
+      readingMode = mode;
+      if (save) localStorage.setItem('reading_mode', mode);
+
+      const btnText = document.getElementById('btnModeText');
+      const btnVoice = document.getElementById('btnModeVoice');
+      
+      if (mode === 'text') {
+        document.body.classList.add('mode-text');
+        
+        // Style Buttons
+        btnText.classList.add('bg-neutral-800', 'text-white', 'shadow');
+        btnText.classList.remove('text-neutral-400');
+        btnVoice.classList.add('text-neutral-400');
+        btnVoice.classList.remove('bg-emerald-600', 'text-white', 'shadow');
+        
+        // Stop any playing TTS audio
+        pausePlayback();
+        
+        // Clear highlighted block styling
+        if (currentBlockIdx !== -1) {
+          const prevBlock = document.getElementById(`block-${currentBlockIdx}`);
+          if (prevBlock) prevBlock.classList.remove('active-read-block');
+        }
+      } else {
+        document.body.classList.remove('mode-text');
+        
+        // Style Buttons
+        btnVoice.classList.add('bg-emerald-600', 'text-white', 'shadow');
+        btnVoice.classList.remove('text-neutral-400');
+        btnText.classList.add('text-neutral-400');
+        btnText.classList.remove('bg-neutral-800', 'text-white', 'shadow');
+        
+        // Restore highlights
+        if (currentBlockIdx !== -1) {
+          setReadingPointer(currentBlockIdx, false);
+        }
+      }
+      lucide.createIcons();
+    }
+
+    // === IndexedDB Local Library Storage ===
+    const DB_NAME = 'LocalLibraryDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'books';
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+          }
+        };
+      });
+    }
+
+    async function saveBookToDB(name, title, author, blob, type) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const book = {
+          name: name,
+          title: title || name,
+          author: author || "Chưa rõ tác giả",
+          data: blob,
+          type: type,
+          addedAt: Date.now()
+        };
+        const request = store.add(book);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function getAllBooksFromDB() {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function getBookFromDB(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function deleteBookFromDB(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function updateBookMetadataInDB(id, title, author) {
+      if (!id) return;
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const getReq = store.get(id);
+        getReq.onsuccess = () => {
+          const book = getReq.result;
+          if (book) {
+            book.title = title || book.title;
+            book.author = author || book.author;
+            const putReq = store.put(book);
+            putReq.onsuccess = () => resolve();
+            putReq.onerror = () => reject(putReq.error);
+          } else {
+            resolve();
+          }
+        };
+        getReq.onerror = () => reject(getReq.error);
+      });
+    }
+
+    // === Multiple File & Folder Upload Handlers ===
+    function triggerFileInput(type) {
+      if (type === 'file') {
+        document.getElementById('epubInput').click();
+      } else if (type === 'folder') {
+        document.getElementById('folderInput').click();
+      }
+    }
+
+    async function handleMultipleFilesSelect(input) {
+      const files = Array.from(input.files);
+      if (files.length === 0) return;
+      
+      showNotification(`Đang nhập ${files.length} tệp tin...`);
+      let addedCount = 0;
+      let firstBookId = null;
+
+      for (const file of files) {
+        const bookId = await addFileToLibrary(file);
+        if (bookId) {
+          addedCount++;
+          if (firstBookId === null) {
+            firstBookId = bookId;
+          }
+        }
+      }
+
+      input.value = ''; // Reset input
+      await refreshLocalLibraryList();
+      
+      if (addedCount > 0) {
+        showNotification(`Đã thêm thành công ${addedCount} sách vào Thư viện!`);
+        if (!currentActiveBookId && firstBookId) {
+          loadBookFromLibrary(firstBookId);
+        }
+      } else {
+        showNotification("Không tìm thấy tệp tin sách hợp lệ nào.", "warning");
+      }
+    }
+
+    async function handleFolderSelect(input) {
+      const files = Array.from(input.files);
+      if (files.length === 0) return;
+
+      const validExtensions = ['.epub', '.mobi', '.pdf', '.txt', '.html', '.htm'];
+      const bookFiles = files.filter(file => {
+        const nameLower = file.name.toLowerCase();
+        return validExtensions.some(ext => nameLower.endsWith(ext));
+      });
+
+      if (bookFiles.length === 0) {
+        showNotification("Thư mục đã chọn không chứa tệp sách hợp lệ.", "warning");
+        input.value = '';
+        return;
+      }
+
+      showNotification(`Đang nhập ${bookFiles.length} cuốn sách từ thư mục...`);
+      let addedCount = 0;
+      let firstBookId = null;
+
+      for (const file of bookFiles) {
+        const bookId = await addFileToLibrary(file);
+        if (bookId) {
+          addedCount++;
+          if (firstBookId === null) {
+            firstBookId = bookId;
+          }
+        }
+      }
+
+      input.value = '';
+      await refreshLocalLibraryList();
+
+      if (addedCount > 0) {
+        showNotification(`Đã nhập thành công ${addedCount} cuốn sách vào Thư viện!`);
+        if (!currentActiveBookId && firstBookId) {
+          loadBookFromLibrary(firstBookId);
+        }
+      }
+    }
+
+    async function addFileToLibrary(file) {
+      const nameLower = file.name.toLowerCase();
+      const validExtensions = ['.epub', '.mobi', '.pdf', '.txt', '.html', '.htm'];
+      if (!validExtensions.some(ext => nameLower.endsWith(ext))) return false;
+
+      let title = file.name.replace(/\.[a-z0-9]+$/i, "");
+      let author = "Chưa rõ tác giả";
+      let coverBlob = null;
+
+      try {
+        if (nameLower.endsWith('.epub')) {
+          // Quick parse EPUB metadata & cover on upload
+          try {
+            const tempZip = await JSZip.loadAsync(file);
+            const containerFile = tempZip.file("META-INF/container.xml");
+            if (containerFile) {
+              const containerText = await containerFile.async("text");
+              const parser = new DOMParser();
+              const containerXml = parser.parseFromString(containerText, "text/xml");
+              const rootfile = containerXml.querySelector("rootfile");
+              if (rootfile) {
+                const opfPath = rootfile.getAttribute("full-path");
+                const opfFile = tempZip.file(opfPath);
+                if (opfFile) {
+                  const opfText = await opfFile.async("text");
+                  const opfXml = parser.parseFromString(opfText, "text/xml");
+                  
+                  const titleEl = opfXml.querySelector("title");
+                  const creatorEl = opfXml.querySelector("creator");
+                  if (titleEl && titleEl.textContent.trim()) title = titleEl.textContent.trim();
+                  if (creatorEl && creatorEl.textContent.trim()) author = creatorEl.textContent.trim();
+                  
+                  // Extract cover ID
+                  let coverId = '';
+                  const metaCover = opfXml.querySelector('meta[name="cover"]');
+                  if (metaCover) {
+                    coverId = metaCover.getAttribute('content');
+                  } else {
+                    const coverItem = opfXml.querySelector('item[properties~="cover-image"]') || opfXml.querySelector('item[id*="cover"]');
+                    if (coverItem) coverId = coverItem.getAttribute('id');
+                  }
+                  
+                  if (coverId) {
+                    const opfDir = opfPath.substring(0, opfPath.lastIndexOf('/') + 1);
+                    const manifestItem = opfXml.querySelector(`item[id="${coverId}"]`);
+                    if (manifestItem) {
+                      const imgPath = opfDir + manifestItem.getAttribute("href");
+                      const zipFile = tempZip.file(imgPath);
+                      if (zipFile) {
+                        coverBlob = await zipFile.async('blob');
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            console.warn("Quick parse EPUB failed for cover:", err);
+          }
+        } else if (nameLower.endsWith('.pdf')) {
+          // Quick parse PDF cover on upload
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            title = file.name.replace(/\.pdf$/i, "");
+            author = "Tài liệu PDF";
+            
+            if (pdf.numPages > 0) {
+              const page = await pdf.getPage(1);
+              const viewport = page.getViewport({ scale: 0.2 }); // small scale for list thumbnail
+              const canvas = document.createElement('canvas');
+              const context = canvas.getContext('2d');
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
+              await page.render({ canvasContext: context, viewport: viewport }).promise;
+              
+              coverBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            }
+          } catch (err) {
+            console.warn("Quick parse PDF failed for cover:", err);
+          }
+        }
+        
+        // Save to DB with actual title, author, and cover Blob
+        const id = await saveBookToDB(file.name, title, author, file, file.type);
+        if (coverBlob) {
+          // Temporarily save cover to the newly generated book ID
+          const db = await openDB();
+          await new Promise((resolve, reject) => {
+            const transaction = db.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const getReq = store.get(id);
+            getReq.onsuccess = () => {
+              const book = getReq.result;
+              if (book) {
+                book.cover = coverBlob;
+                const putReq = store.put(book);
+                putReq.onsuccess = () => resolve();
+                putReq.onerror = () => reject(putReq.error);
+              } else {
+                resolve();
+              }
+            };
+            getReq.onerror = () => reject(getReq.error);
+          });
+        }
+        return id;
+      } catch (e) {
+        console.error("Lỗi khi lưu sách vào DB:", e);
+        return false;
+      }
+    }
+
+    // === Library View Switching & Bookshelf Listing ===
+    function showLibraryView() {
+      document.getElementById('uploadDropzone').classList.remove('hidden');
+      document.getElementById('localLibraryContainer').classList.remove('hidden');
+      
+      document.getElementById('bookMetaContainer').classList.add('hidden');
+      document.getElementById('readingViewContainer').classList.add('hidden');
+      
+      refreshLocalLibraryList();
+    }
+
+    function showReadingView() {
+      document.getElementById('uploadDropzone').classList.add('hidden');
+      document.getElementById('localLibraryContainer').classList.add('hidden');
+      
+      document.getElementById('bookMetaContainer').classList.remove('hidden');
+      document.getElementById('readingViewContainer').classList.remove('hidden');
+    }
+
+    async function refreshLocalLibraryList() {
+      const listEl = document.getElementById('localBookList');
+      const countEl = document.getElementById('localBookCount');
+      if (!listEl || !countEl) return;
+      
+      try {
+        const books = await getAllBooksFromDB();
+        countEl.innerText = `${books.length} cuốn`;
+        
+        if (books.length === 0) {
+          listEl.innerHTML = `
+            <div class="text-center py-12 text-xs text-neutral-600">
+              <i data-lucide="library" class="w-8 h-8 text-neutral-800 mx-auto mb-2"></i>
+              Thư viện trống.<br>Hãy tải tệp tin sách lên.
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+        
+        books.sort((a, b) => b.addedAt - a.addedAt);
+        
+        listEl.innerHTML = books.map(book => {
+          const isActive = book.id === currentActiveBookId;
+          const activeClass = isActive ? 'border-emerald-800 bg-neutral-900/60' : 'border-transparent hover:border-neutral-850 hover:bg-neutral-900/30';
+          const sizeStr = book.data.size ? `${(book.data.size / 1024 / 1024).toFixed(1)} MB` : '0 MB';
+          
+          let iconName = 'book';
+          if (book.name.endsWith('.pdf')) iconName = 'file-text';
+          else if (book.name.endsWith('.txt')) iconName = 'file';
+          else if (book.name.endsWith('.html') || book.name.endsWith('.htm')) iconName = 'chrome';
+          else if (book.name.endsWith('.mobi')) iconName = 'tablet';
+          
+          let coverHtml = '';
+          if (book.cover) {
+            const coverUrl = URL.createObjectURL(book.cover);
+            coverHtml = `<img src="${coverUrl}" class="w-full h-full object-cover rounded" />`;
+          } else {
+            coverHtml = `<i data-lucide="${iconName}" class="w-4 h-4 ${isActive ? 'text-emerald-500' : 'text-neutral-500 group-hover:text-neutral-300'}"></i>`;
+          }
+          
+          return `
+            <div class="group/item relative flex items-center justify-between p-2.5 rounded-xl border ${activeClass} transition-all">
+              <button onclick="loadBookFromLibrary(${book.id})" class="flex-1 text-left truncate flex gap-3 items-center min-w-0">
+                <div class="w-9 h-12 bg-neutral-950/40 rounded flex items-center justify-center border border-neutral-850/60 shrink-0 overflow-hidden">
+                  ${coverHtml}
+                </div>
+                <div class="truncate min-w-0">
+                  <h4 class="text-xs font-bold text-neutral-200 group-hover:text-white truncate ${isActive ? 'text-emerald-400' : ''}">${escapeHtml(book.title)}</h4>
+                  <p class="text-[10px] text-neutral-400/80 truncate mt-0.5">${escapeHtml(book.author)}</p>
+                  <span class="text-[8px] font-mono text-neutral-500 bg-neutral-950 px-1 py-0.2 rounded mt-1 inline-block uppercase">${book.name.split('.').pop()} | ${sizeStr}</span>
+                </div>
+              </button>
+              
+              <button onclick="event.stopPropagation(); handleDeleteBook(${book.id}, '${escapeHtml(book.title)}')" class="p-1.5 rounded-lg bg-neutral-950 hover:bg-red-950 text-neutral-500 hover:text-red-400 transition-colors opacity-0 group-hover/item:opacity-100 shrink-0 ml-2" title="Xóa khỏi thư viện">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          `;
+        }).join('');
+        
+        lucide.createIcons();
+      } catch (e) {
+        console.error("Refresh library list error:", e);
+      }
+    }
+
+    async function handleDeleteBook(id, title) {
+      if (confirm(`Bạn có chắc chắn muốn xóa cuốn sách "${title}" khỏi thư viện cục bộ không?`)) {
+        try {
+          await deleteBookFromDB(id);
+          showNotification("Đã xóa sách khỏi thư viện!");
+          
+          if (currentActiveBookId === id) {
+            currentActiveBookId = null;
+            localStorage.removeItem('epub_last_opened_id');
+            resetToEmptyState();
+          }
+          
+          refreshLocalLibraryList();
+        } catch (e) {
+          showNotification("Lỗi khi xóa sách: " + e.message, "error");
+        }
+      }
+    }
+
+    async function loadBookFromLibrary(id) {
+      try {
+        const book = await getBookFromDB(id);
+        if (!book) {
+          showNotification("Không tìm thấy sách trong DB.", "error");
+          return;
+        }
+
+        stopPlayback();
+        currentActiveBookId = id;
+        localStorage.setItem('epub_last_opened_id', id);
+        
+        // Show cover immediately if available
+        if (book.cover) {
+          const coverUrl = URL.createObjectURL(book.cover);
+          document.getElementById('bookCover').src = coverUrl;
+          document.getElementById('bookCover').classList.remove('hidden');
+          document.getElementById('bookCoverPlaceholder').classList.add('hidden');
+        } else {
+          document.getElementById('bookCover').classList.add('hidden');
+          document.getElementById('bookCoverPlaceholder').classList.remove('hidden');
+        }
+        
+        document.getElementById('emptyStateReader').innerHTML = `
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-12 h-12 rounded-full border-4 border-t-emerald-500 border-neutral-700 animate-spin"></div>
+            <p class="text-sm font-bold text-neutral-400">Đang đọc sách từ cơ sở dữ liệu local...</p>
+          </div>
+        `;
+
+        const file = new File([book.data], book.name, { type: book.type });
+        const nameLower = book.name.toLowerCase();
+
+        if (nameLower.endsWith('.epub')) {
+          await handleEpubFile(file);
+        } else if (nameLower.endsWith('.mobi')) {
+          await handleMobiFile(file);
+        } else if (nameLower.endsWith('.pdf')) {
+          await handlePdfFile(file);
+        } else if (nameLower.endsWith('.txt')) {
+          await handleTxtFile(file);
+        } else if (nameLower.endsWith('.html') || nameLower.endsWith('.htm')) {
+          await handleHtmlFile(file);
+        }
+
+        showReadingView();
+        refreshLocalLibraryList();
+      } catch (e) {
+        console.error("Load book error:", e);
+        showNotification("Không thể mở cuốn sách này: " + e.message, "error");
+        resetToEmptyState();
+      }
+    }
+
+    async function saveBookCoverToDB(id, coverBlob) {
+      if (!id) return;
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const getReq = store.get(id);
+        getReq.onsuccess = () => {
+          const book = getReq.result;
+          if (book && !book.cover) {
+            book.cover = coverBlob;
+            const putReq = store.put(book);
+            putReq.onsuccess = () => {
+              resolve();
+              refreshLocalLibraryList();
+            };
+            putReq.onerror = () => reject(putReq.error);
+          } else {
+            resolve();
+          }
+        };
+        getReq.onerror = () => reject(getReq.error);
+      });
+    }
+
+    async function clearAllBooksFromDB() {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function handleClearAllBooks() {
+      if (confirm("Bạn có chắc chắn muốn xóa TOÀN BỘ sách trong thư viện cục bộ không? Hành động này không thể hoàn tác.")) {
+        try {
+          await clearAllBooksFromDB();
+          showNotification("Đã xóa sạch thư viện cục bộ!");
+          currentActiveBookId = null;
+          localStorage.removeItem('epub_last_opened_id');
+          resetToEmptyState();
+          refreshLocalLibraryList();
+        } catch (e) {
+          showNotification("Lỗi khi xóa thư viện: " + e.message, "error");
+        }
+      }
+    }
+
+    // === Utility Helpers ===
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // === Focus Mode ===
+    function toggleFocusMode(active) {
+      isFocusMode = active;
+      if (active) {
+        document.body.classList.add('mode-focus');
+        showNotification("Đã bật Chế độ Tập trung (Nhấn ESC để thoát)");
+      } else {
+        document.body.classList.remove('mode-focus');
+      }
+    }
+
+    // Auto initialization on load
+    window.addEventListener('load', () => {
+      // Restore reading mode
+      setReadingMode(readingMode, false);
+
+      // Restore FPT.AI settings from localStorage
+      if (useFptAi) {
+        const btn = document.getElementById('fptaiToggleBtn');
+        const panel = document.getElementById('fptaiSettingsPanel');
+        if (btn) { btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-amber-600 text-white border-amber-500'; btn.innerText = 'Đang bật'; }
+        if (panel) { panel.classList.remove('hidden'); panel.classList.add('flex'); }
+      }
+      if (fptAiApiKey) {
+        const keyInput = document.getElementById('fptaiApiKeyInput');
+        if (keyInput) keyInput.value = fptAiApiKey;
+      }
+      const savedFptVoice = localStorage.getItem('fptai_voice');
+      if (savedFptVoice) { const s = document.getElementById('fptaiVoiceSelect'); if (s) s.value = savedFptVoice; }
+      const savedFptSpeed = localStorage.getItem('fptai_speed');
+      if (savedFptSpeed) {
+        const r = document.getElementById('fptaiSpeedRange');
+        const v = document.getElementById('fptaiSpeedVal');
+        if (r) r.value = savedFptSpeed;
+        if (v) v.innerText = savedFptSpeed;
+      }
+
+      // Initialize IndexedDB and load last active book or library list
+      openDB().then(async () => {
+        await refreshLocalLibraryList();
+        
+        const lastOpenedId = localStorage.getItem('epub_last_opened_id');
+        if (lastOpenedId) {
+          const idNum = parseInt(lastOpenedId, 10);
+          if (!isNaN(idNum)) {
+            const book = await getBookFromDB(idNum);
+            if (book) {
+              loadBookFromLibrary(idNum);
+              return;
+            }
+          }
+        }
+        showLibraryView();
+      }).catch(err => {
+        console.error("Failed to open local database:", err);
+        showLibraryView();
+      });
+
+      // Keyboard Shortcuts
+      window.addEventListener('keydown', (e) => {
+        // Ignore if focus is in an input/select field
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'TEXTAREA') {
+          return;
+        }
+
+        const key = e.key.toLowerCase();
+        if (key === ' ') {
+          // Space bar
+          e.preventDefault();
+          if (readingMode === 'voice') {
+            togglePlayback();
+          } else {
+            // Scroll down in normal text mode
+            const content = document.getElementById('readerContent');
+            content.scrollBy({ top: window.innerHeight * 0.7, behavior: 'smooth' });
+          }
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          if (readingMode === 'voice') {
+            nextParagraph();
+          } else {
+            // Scroll down a bit
+            const content = document.getElementById('readerContent');
+            content.scrollBy({ top: 150, behavior: 'smooth' });
+          }
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          if (readingMode === 'voice') {
+            prevParagraph();
+          } else {
+            // Scroll up a bit
+            const content = document.getElementById('readerContent');
+            content.scrollBy({ top: -150, behavior: 'smooth' });
+          }
+        } else if (key === 'f') {
+          e.preventDefault();
+          toggleFocusMode(!isFocusMode);
+        } else if (e.key === 'Escape') {
+          if (isFocusMode) {
+            e.preventDefault();
+            toggleFocusMode(false);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
