@@ -178,7 +178,7 @@
         @media (max-width: 768px) {
             body { padding: 0 !important; padding-bottom: 80px !important; background-color: #f8f9fc; }
             #homePage { margin: 15px 8px !important; padding: 25px 15px !important; width: auto !important; max-width: none !important; border-radius: 16px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-            #mainPage { margin: 0 !important; width: 100% !important; max-width: 100% !important; padding: 10px 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+            #mainPage { margin: 0 !important; width: 100% !important; max-width: 100% !important; padding: 5px 0 2px 0 !important; border-radius: 0 !important; box-shadow: none !important; }
             .controls-panel { margin: 0 0px 20px 0px; padding: 15px 10px; border-radius: 10px; }
             .tab-btn { padding: 8px 4px !important; font-size: 13px !important; }
             h2 { font-size: 22px; margin-top: 20px; }
@@ -190,7 +190,7 @@
             .input-group-row input#soSoInput, .input-group-row input#sellQuantityInput { width: 80px !important; min-width: 80px; }
             .input-group-row .buttons-container button { padding: 0 2px; font-size: 12px; }
             .simple-animated-logo { font-size: 32px; margin-top: 15px; }
-            .main-copyright { margin-bottom: 20px; }
+            .main-copyright { margin-top: 4px !important; margin-bottom: 4px !important; }
             .management-grid { grid-template-columns: 1fr; }
             .home-menu-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
             .home-menu-btn { padding: 10px 5px; font-size: 12px; }
@@ -981,6 +981,8 @@
       }
     }
   
+.yh-tool-btn { color: #000 !important; }
+
 
 /* --- EX CSS --- */
 
@@ -1248,6 +1250,73 @@ body.epub-active #epubSection {
     display: flex !important;
     flex-direction: column !important;
 }
+
+/* --- UTILITIES LIST STYLE OVERRIDES --- */
+.utilities-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    max-width: 750px !important;
+    margin: 20px auto 0 auto !important;
+}
+.utility-card {
+    background: var(--container-bg) !important;
+    border: 1px solid #d2d2d2 !important;
+    border-radius: 12px !important;
+    padding: 15px 20px !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 18px !important;
+}
+.utility-card:hover {
+    transform: translateX(6px) !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08) !important;
+    border-color: var(--primary-color) !important;
+}
+.utility-icon {
+    font-size: 28px !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    background-color: #f0f3f6 !important;
+    transition: all 0.25s ease !important;
+    flex-shrink: 0 !important;
+}
+.utility-card:hover .utility-icon {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    transform: scale(1.05) !important;
+}
+.utility-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+.utility-title {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    margin-bottom: 0 !important;
+    color: var(--text-color) !important;
+}
+.utility-desc {
+    font-size: 12px !important;
+    color: var(--text-light) !important;
+    line-height: 1.4 !important;
+}
+
+/* --- CVS SECTION STYLES --- */
+#cvsSection .error { background-color: #fdecea; color: #d93025; border: 1px solid #fad2cf; display: block !important; }
+#cvsSection .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block !important; }
+#cvsSection .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; display: block !important; }
     </style>
     <!-- Dependencies for Epub Reader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -1370,89 +1439,50 @@ body.epub-active #epubSection {
                         <div id="panelUtilities" style="display:none; margin-top: 15px;">
                 <h3 style="text-align: center; margin-top: 10px; color: var(--primary-color); font-size: 22px;">&#128736; H&#7878; TH&#7888;NG TI&#7879;N &#205;CH</h3>
                 
-                <style>
-                .utilities-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                    gap: 15px;
-                    margin-top: 20px;
-                }
-                .utility-card {
-                    background: var(--container-bg);
-                    border: 1px solid #d2d2d2;
-                    border-radius: 12px;
-                    padding: 20px;
-                    text-align: center;
-                    cursor: pointer;
-                    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .utility-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-                    border-color: var(--primary-color);
-                }
-                .utility-icon {
-                    font-size: 36px;
-                    margin-bottom: 12px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 70px;
-                    height: 70px;
-                    border-radius: 50%;
-                    background-color: #f0f3f6;
-                    transition: all 0.3s ease;
-                }
-                .utility-card:hover .utility-icon {
-                    background-color: var(--primary-color);
-                    color: #ffffff;
-                    transform: scale(1.1);
-                }
-                .utility-title {
-                    font-size: 16px;
-                    font-weight: 700;
-                    margin-bottom: 6px;
-                    color: var(--text-color);
-                }
-                .utility-desc {
-                    font-size: 12px;
-                    color: var(--text-light);
-                    line-height: 1.4;
-                }
-                </style>
-                
                 <div class="utilities-grid">
                     <!-- Card 1: Ket qua XSMB -->
                     <div class="utility-card" id="cardXSMB">
                         <div class="utility-icon" style="color: #f1c40f;">&#127942;</div>
-                        <div class="utility-title">K&#7871;t qu&#7843; XSMB</div>
-                        <div class="utility-desc">Xem k&#7871;t qu&#7843; x&#7893; s&#7889; ki&#7871;n thi&#7871;t Mi&#7873;n B&#7855;c tr&#7921;c ti&#7871;p v&#224; tra c&#7913;u l&#7883;ch s&#7917; nhanh ch&#243;ng.</div>
+                        <div class="utility-info">
+                            <div class="utility-title">K&#7871;t qu&#7843; XSMB</div>
+                            <div class="utility-desc">Xem k&#7871;t qu&#7843; x&#7893; s&#7889; ki&#7871;t thi&#7871;t Mi&#7873;n B&#7855;c tr&#7921;c ti&#7871;p v&#224; tra c&#7913;u l&#7883;ch s&#7917; nhanh ch&#243;ng.</div>
+                        </div>
                     </div>
                     
                     <!-- Card 2: Phong Chat -->
                     <div class="utility-card" id="cardChatroom">
                         <div class="utility-icon" style="color: #3498db;">&#128172;</div>
-                        <div class="utility-title">Ph&#242;ng Chat</div>
-                        <div class="utility-desc">Ph&#242;ng chat tr&#7921;c tuy&#7871;n th&#7901;i gian th&#7921;c, h&#7895; tr&#7907; m&#7853;t kh&#7849;u E2EE v&#224; ch&#7913;c n&#259;ng BUZZ!</div>
+                        <div class="utility-info">
+                            <div class="utility-title">Ph&#242;ng Chat</div>
+                            <div class="utility-desc">Ph&#242;ng chat tr&#7921;c tuy&#7871;n th&#7901;i gian th&#7921;c, h&#7895; tr&#7907; m&#7853;t kh&#7849;u E2EE v&#224; ch&#7913;c n&#259;ng BUZZ!</div>
+                        </div>
                     </div>
                     
                     <!-- Card 3: Tinh Tong EX -->
                     <div class="utility-card" id="cardEX">
                         <div class="utility-icon" style="color: #2ecc71;">&#128202;</div>
-                        <div class="utility-title">T&#237;nh T&#7895;ng EX</div>
-                        <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
+                        <div class="utility-info">
+                            <div class="utility-title">Tính tổng EX</div>
+                            <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
+                        </div>
                     </div>
                     
                     <!-- Card 4: Epub Reader -->
                     <div class="utility-card" id="cardEpub">
                         <div class="utility-icon" style="color: #e67e22;">&#128214;</div>
-                        <div class="utility-title">Epub Reader</div>
-                        <div class="utility-desc">Tr&#236;nh &#273;&#7885;c s&#225;ch n&#243;i &#273;a &#273;&#7883;nh d&#7841;ng (EPUB/PDF), t&#205;ch h&#7903;p gi&#7885;ng &#273;&#7885;c TTS ch&#7845;t l&#432;&#7907;ng cao.</div>
+                        <div class="utility-info">
+                            <div class="utility-title">Epub Reader</div>
+                            <div class="utility-desc">Tr&#236;nh &#273;&#7885;c s&#225;ch n&#243;i &#273;a &#273;&#7883;nh d&#7841;ng (EPUB/PDF), t&#205;ch h&#7903;p gi&#7885;ng &#273;&#7885;c TTS ch&#7845;t l&#432;&#7907;ng cao.</div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Tool trinh xuat PDF (CVS) -->
+                    <div class="utility-card" id="cardCvs">
+                        <div class="utility-icon" style="color: #1a73e8;">&#128202;</div>
+                        <div class="utility-info">
+                            <div class="utility-title">Tr&#237;ch xu&#7845;t PDF (CSV)</div>
+                            <div class="utility-desc">C&#244;ng c&#7909; tr&#237;ch xu&#7845;t d&#7919; li&#7877;u b&#7843;ng t&#7913; f&#236;le PDF sang CSV s&#7917; d&#7909;ng AI Gemini.</div>
+                        </div>
                     </div>
                 </div>
             </div><div id="homeActionContainer" class="home-actions" style="margin-top: 20px;">
@@ -1741,29 +1771,46 @@ body.epub-active #epubSection {
                 <!-- Card 1: Ket qua XSMB -->
                 <div class="utility-card" id="cardXSMB_main">
                     <div class="utility-icon" style="color: #f1c40f;">&#127942;</div>
-                    <div class="utility-title">K&#7871;t qu&#7843; XSMB</div>
-                    <div class="utility-desc">Xem k&#7871;t qu&#7843; x&#7893; s&#7889; ki&#7871;t thi&#7871;t Mi&#7873;n B&#7855;c tr&#7921;c ti&#7871;p v&#224; tra c&#7913;u l&#7883;ch s&#7917; nhanh ch&#243;ng.</div>
+                    <div class="utility-info">
+                        <div class="utility-title">K&#7871;t qu&#7843; XSMB</div>
+                        <div class="utility-desc">Xem k&#7871;t qu&#7843; x&#7893; s&#7889; ki&#7871;t thi&#7871;t Mi&#7873;n B&#7855;c tr&#7921;c ti&#7871;p v&#224; tra c&#7913;u l&#7883;ch s&#7917; nhanh ch&#243;ng.</div>
+                    </div>
                 </div>
                 
                 <!-- Card 2: Phong Chat -->
                 <div class="utility-card" id="cardChatroom_main">
                     <div class="utility-icon" style="color: #3498db;">&#128172;</div>
-                    <div class="utility-title">Ph&#242;ng Chat</div>
-                    <div class="utility-desc">Ph&#242;ng chat tr&#7921;c tuy&#7871;n th&#7901;i gian th&#7921;c, h&#7895; tr&#7907; m&#7853;t kh&#7849;u E2EE v&#224; ch&#7913;c n&#259;ng BUZZ!</div>
+                    <div class="utility-info">
+                        <div class="utility-title">Ph&#242;ng Chat</div>
+                        <div class="utility-desc">Ph&#242;ng chat tr&#7921;c tuy&#7871;n th&#7901;i gian th&#7921;c, h&#7895; tr&#7907; m&#7853;t kh&#7849;u E2EE v&#224; ch&#7913;c n&#259;ng BUZZ!</div>
+                    </div>
                 </div>
                 
                 <!-- Card 3: Tinh Tong EX -->
                 <div class="utility-card" id="cardEX_main">
                     <div class="utility-icon" style="color: #2ecc71;">&#128202;</div>
-                    <div class="utility-title">T&#237;nh T&#7895;ng EX</div>
-                    <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
+                    <div class="utility-info">
+                        <div class="utility-title">TĂ­nh Tá»•ng EX</div>
+                        <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
+                    </div>
                 </div>
                 
                 <!-- Card 4: Epub Reader -->
                 <div class="utility-card" id="cardEpub_main">
                     <div class="utility-icon" style="color: #e67e22;">&#128214;</div>
-                    <div class="utility-title">Epub Reader</div>
-                    <div class="utility-desc">Tr&#236;nh &#273;&#7885;c s&#225;ch n&#243;i &#273;a &#273;&#7883;nh d&#7841;ng (EPUB/PDF), t&#205;ch h&#7903;p gi&#7885;ng &#273;&#7885;c TTS ch&#7845;t l&#432;&#7907;ng cao.</div>
+                    <div class="utility-info">
+                        <div class="utility-title">Epub Reader</div>
+                        <div class="utility-desc">Tr&#236;nh &#273;&#7885;c s&#225;ch n&#243;i &#273;a &#273;&#7883;nh d&#7841;ng (EPUB/PDF), t&#205;ch h&#7903;p gi&#7885;ng &#273;&#7885;c TTS ch&#7845;t l&#432;&#7907;ng cao.</div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Tool trinh xuat PDF (CVS) -->
+                <div class="utility-card" id="cardCvs_main">
+                    <div class="utility-icon" style="color: #1a73e8;">&#128202;</div>
+                    <div class="utility-info">
+                        <div class="utility-title">Tr&#237;ch xu&#7845;t PDF (CSV)</div>
+                        <div class="utility-desc">C&#244;ng c&#7909; tr&#237;ch xu&#7845;t d&#7919; li&#7877;u b&#7843;ng t&#7913; f&#236;le PDF sang CSV s&#7917; d&#7909;ng AI Gemini.</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2483,6 +2530,36 @@ body.epub-active #epubSection {
 
   
 
+        </div>
+        <div id="cvsSection" class="main-section" style="display: none;">
+            <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
+            </div>
+            <div style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #ddd; max-width: 800px; margin: 0 auto; box-sizing: border-box;">
+                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">đŸ“ Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
+                
+                <div class="input-group-cvs" style="margin-top: 20px;">
+                    <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #444; font-size: 14px;">1. Gemini API Key:</label>
+                    <input type="text" id="apiKeyCvs" value="AIzaSyB7ixPK-MazzHYTvYGwZtsjmWZ3uSHV3eo" placeholder="Nh&#7853;p API Key..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px;">
+                </div>
+                
+                <div class="input-group-cvs" style="margin-top: 20px;">
+                    <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #444; font-size: 14px;">2. Ch&#7885;n file b&#225;o c&#225;o PDF:</label>
+                    <input type="file" id="pdfFileCvs" accept="application/pdf" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px;">
+                </div>
+                
+                <button id="runBtnCvs" onclick="processPDF()" style="width: 100%; padding: 15px; margin-top: 25px; background-color: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: block;">B&#7855;t &#273;&#7847;u chuy&#7875;n &#273;&#7893;i</button>
+                
+                <div id="statusCvs" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none; line-height: 1.5; font-size: 14px;"></div>
+                
+                <!-- Thanh ti&#7871;n tr&#236;nh -->
+                <div class="progress-wrapper-cvs" id="progressWrapperCvs" style="width: 100%; background-color: #e0e0e0; border-radius: 8px; margin-top: 15px; display: none; overflow: hidden; height: 22px;">
+                    <div class="progress-bar-cvs" id="progressBarCvs" style="width: 0%; height: 100%; background-color: #34a853; text-align: center; line-height: 22px; color: white; font-size: 13px; font-weight: bold; transition: width 0.4s ease;">0%</div>
+                </div>
+
+                <div id="outputCvs" style="white-space: pre-wrap; background: #202124; color: #fff; padding: 20px; border-radius: 8px; margin-top: 20px; display: none; font-family: 'Consolas', monospace; font-size: 13px; max-height: 400px; overflow: auto; border: 1px solid #333;"></div>
+                <button id="copyBtnCvs" onclick="copyToClipboardCvs()" style="width: 100%; padding: 15px; margin-top: 15px; background-color: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: none;">đŸ“‹ Copy D&#7919; Li&#7879;u</button>
+            </div>
         </div>
 
 
@@ -4228,7 +4305,7 @@ body.epub-active #epubSection {
     };
 
         function showSection(id) {
-        const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection'];
+        const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection','cvsSection'];
         sections.forEach(s => {
             const el = document.getElementById(s) || DOM[s];
             if (el) el.style.display = (s === id) ? 'block' : 'none';
@@ -4322,6 +4399,15 @@ body.epub-active #epubSection {
             showSection('epubSection');
         };
     }
+    const cardCvs = document.getElementById('cardCvs');
+    if (cardCvs) {
+        cardCvs.onclick = () => {
+            lastActivePage = 'home';
+            DOM.homePage.style.display = 'none';
+            DOM.mainPage.style.display = 'block';
+            showSection('cvsSection');
+        };
+    }
 
     // Card bindings for mainPage utilitiesSection (lastActivePage = 'main')
     const cardXSMB_main = document.getElementById('cardXSMB_main');
@@ -4351,6 +4437,13 @@ body.epub-active #epubSection {
         cardEpub_main.onclick = () => {
             lastActivePage = 'main';
             showSection('epubSection');
+        };
+    }
+    const cardCvs_main = document.getElementById('cardCvs_main');
+    if (cardCvs_main) {
+        cardCvs_main.onclick = () => {
+            lastActivePage = 'main';
+            showSection('cvsSection');
         };
     }
 
@@ -6566,6 +6659,9 @@ body.epub-active #epubSection {
       // Reset reader scroll position to top
       const readerContent = document.getElementById('readerContent');
       if (readerContent) readerContent.scrollTop = 0;
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
 
       const display = document.getElementById('bookTextDisplay');
       document.getElementById('emptyStateReader').classList.add('hidden');
@@ -6593,11 +6689,11 @@ body.epub-active #epubSection {
         
         <!-- Navigation Buttons at the bottom of the reading pane -->
         <div class="flex justify-between items-center mt-10 pt-6 border-t border-neutral-700/10 gap-4" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.2); display: flex; justify-content: space-between; align-items: center;">
-          <button onclick="if(currentChapterIdx > 0) loadChapter(currentChapterIdx - 1)" class="px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-sm flex items-center gap-1.5 cursor-pointer" ${idx === 0 ? 'disabled style="opacity: 0.3; pointer-events: none;"' : ''} style="cursor: pointer; padding: 10px 15px; border-radius: 8px; font-weight: bold; background: #262626; color: #fff; border: none;">
+          <button onclick="goToPrevChapter()" class="px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-sm flex items-center gap-1.5 cursor-pointer" ${idx === 0 ? 'disabled style="opacity: 0.3; pointer-events: none;"' : ''} style="cursor: pointer; padding: 10px 15px; border-radius: 8px; font-weight: bold; background: #262626; color: #fff; border: none;">
             &#11013; Chương trước
           </button>
           <span class="text-sm font-semibold" style="color: gray;">Chương ${idx + 1} / ${chaptersData.length}</span>
-          <button onclick="if(currentChapterIdx < chaptersData.length - 1) loadChapter(currentChapterIdx + 1)" class="px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-sm flex items-center gap-1.5 cursor-pointer" ${idx === chaptersData.length - 1 ? 'disabled style="opacity: 0.3; pointer-events: none;"' : ''} style="cursor: pointer; padding: 10px 15px; border-radius: 8px; font-weight: bold; background: #262626; color: #fff; border: none;">
+          <button onclick="goToNextChapter()" class="px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-sm flex items-center gap-1.5 cursor-pointer" ${idx === chaptersData.length - 1 ? 'disabled style="opacity: 0.3; pointer-events: none;"' : ''} style="cursor: pointer; padding: 10px 15px; border-radius: 8px; font-weight: bold; background: #262626; color: #fff; border: none;">
             Chương sau &#129094;
           </button>
         </div>
@@ -6909,6 +7005,18 @@ body.epub-active #epubSection {
           const prevCh = chaptersData[currentChapterIdx - 1];
           loadChapter(currentChapterIdx - 1, Math.max(0, prevCh.blocks.length - 1));
         }
+      }
+    }
+
+    function goToPrevChapter() {
+      if (currentChapterIdx > 0) {
+        loadChapter(currentChapterIdx - 1);
+      }
+    }
+
+    function goToNextChapter() {
+      if (currentChapterIdx < chaptersData.length - 1) {
+        loadChapter(currentChapterIdx + 1);
       }
     }
 
@@ -7874,6 +7982,199 @@ body.epub-active #epubSection {
     window.handleMultipleFilesSelect = handleMultipleFilesSelect;
     window.handleFolderSelect = handleFolderSelect;
     window.updateSpeechParam = updateSpeechParam;
+    window.goToPrevChapter = goToPrevChapter;
+    window.goToNextChapter = goToNextChapter;
+})();
+
+(function() {
+    
+    let progressInterval;
+
+    function updateProgress(percent) {
+        const bar = document.getElementById('progressBarCvs');
+        bar.style.width = percent + '%';
+        bar.innerText = percent + '%';
+    }
+
+    async function processPDF() {
+        const apiKey = document.getElementById('apiKeyCvs').value.trim();
+        const fileInput = document.getElementById('pdfFileCvs');
+        const status = document.getElementById('statusCvs');
+        const output = document.getElementById('outputCvs');
+        const runBtn = document.getElementById('runBtnCvs');
+        const copyBtn = document.getElementById('copyBtnCvs');
+        const progressWrapper = document.getElementById('progressWrapperCvs');
+
+        if (!apiKey || !fileInput.files[0]) {
+            showStatus("Vui lòng kiểm tra API Key và chọn file PDF!", "error");
+            return;
+        }
+
+        // Reset UI bắt đầu chạy
+        runBtn.disabled = true;
+        output.style.display = "none";
+        copyBtn.style.display = "none";
+        progressWrapper.style.display = "block";
+        clearInterval(progressInterval);
+        updateProgress(0);
+        
+        try {
+            updateProgress(10);
+            showStatus("🔍 Đang kiểm tra danh sách Model...", "info");
+            
+            const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+            const listRes = await fetch(listUrl);
+            const listData = await listRes.json();
+
+            updateProgress(30);
+
+            if (listData.error) throw new Error("Lỗi API Key: " + listData.error.message);
+
+            const availableModels = listData.models.filter(m => 
+                m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
+            );
+
+            if (availableModels.length === 0) throw new Error("API Key không có quyền truy cập model tạo văn bản.");
+
+            let selectedModelName = "";
+            // Tự động tìm model tốt nhất hiện có
+            const proModel = availableModels.find(m => m.name.includes("gemini-1.5-pro"));
+            const flashModel = availableModels.find(m => m.name.includes("gemini-1.5-flash"));
+            const newerFlashModel = availableModels.find(m => m.name.includes("gemini-2.5-flash")); // Hỗ trợ nếu Google nâng cấp
+
+            if (newerFlashModel) { selectedModelName = newerFlashModel.name; }
+            else if (proModel) { selectedModelName = proModel.name; } 
+            else if (flashModel) { selectedModelName = flashModel.name; } 
+            else { selectedModelName = availableModels[0].name; }
+
+            showStatus(`✅ Đang trích xuất bằng ${selectedModelName}...`, "info");
+            updateProgress(40);
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function() {
+                try {
+                    const base64Data = reader.result.split(',')[1];
+                    updateProgress(50);
+                    
+                    // Bắt đầu mô phỏng AI đang "suy nghĩ" chạy từ 50% đến 90%
+                    let currentPercent = 50;
+                    progressInterval = setInterval(() => {
+                        if (currentPercent < 90) {
+                            currentPercent += Math.floor(Math.random() * 5) + 1; // Tăng ngẫu nhiên 1-5%
+                            if (currentPercent > 90) currentPercent = 90;
+                            updateProgress(currentPercent);
+                        }
+                    }, 600);
+
+                    const prompt = `Trích xuất bảng báo cáo doanh thu từ file PDF thành định dạng CSV.
+                    BẮT BUỘC tuân thủ các quy tắc định dạng sau:
+                    1. BAO QUANH MỌI GIÁ TRỊ BẰNG DẤU NGOẶC KÉP "".
+                    2. Dòng 1: Khoảng thời gian, ví dụ: "Từ ngày 26/04/2026 đến ngày 02/05/2026". Không thêm các cột khác ở dòng này.
+                    3. Dòng 2: "Mã ĐL","Ngày","LH","Doanh thu","Hoa hồng","Trả thưởng","Phải nộp"
+                    4. Dữ liệu: Phải gióng đúng theo 7 cột trên.
+                    5. NẾU CỘT TRẢ THƯỞNG TRỐNG HOẶC KHÔNG CÓ SỐ LIỆU, PHẢI ĐIỀN LÀ "0".
+                    6. Dấu thập phân: Dùng dấu phẩy (,), ví dụ: "11,6" hoặc "-466,6".
+                    7. Chỉ in ra kết quả CSV, không thêm mã đánh dấu (markdown) hay bất kỳ chữ nào khác.`;
+
+                    const generateUrl = `https://generativelanguage.googleapis.com/v1beta/${selectedModelName}:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(generateUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inline_data: { mime_type: "application/pdf", data: base64Data } }
+                                ]
+                            }]
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    // Dừng hiệu ứng loading
+                    clearInterval(progressInterval);
+
+                    if (data.error) throw new Error(data.error.message);
+
+                    if (data.candidates && data.candidates[0].content) {
+                        // Gọi API thành công -> Hoàn thành 100%
+                        updateProgress(100);
+                        
+                        let csvResult = data.candidates[0].content.parts[0].text;
+                        csvResult = csvResult.replace(/```csv|```/g, "").trim();
+                        
+                        let lines = csvResult.split('\n');
+                        for (let i = 2; i < lines.length; i++) {
+                            let cols = lines[i].split('","');
+                            if (cols.length >= 7) {
+                                if (cols[5] === "") cols[5] = "0";
+                            }
+                            lines[i] = cols.join('","');
+                        }
+                        csvResult = lines.join('\n');
+
+                        output.innerText = csvResult;
+                        output.style.display = "block";
+                        copyBtn.style.display = "block";
+                        window.lastCSVCvs = csvResult;
+                        
+                        showStatus(`🎉 Đã trích xuất thành công! Bạn có thể copy dữ liệu.`, "success");
+                    } else {
+                        throw new Error("Không tìm thấy dữ liệu.");
+                    }
+
+                } catch (err) {
+                    clearInterval(progressInterval);
+                    progressWrapper.style.display = "none";
+                    showStatus("Lỗi: " + err.message, "error");
+                } finally {
+                    runBtn.disabled = false;
+                }
+            };
+            
+            reader.readAsDataURL(file);
+
+        } catch (error) {
+            clearInterval(progressInterval);
+            progressWrapper.style.display = "none";
+            showStatus(error.message, "error");
+            runBtn.disabled = false;
+        }
+    }
+
+    function showStatus(msg, type) {
+        const s = document.getElementById('statusCvs');
+        s.innerText = msg;
+        s.className = type;
+        s.style.display = "block";
+    }
+
+    function copyToClipboardCvs() {
+        if (!window.lastCSVCvs) return;
+        
+        navigator.clipboard.writeText(window.lastCSVCvs).then(() => {
+            const copyBtn = document.getElementById('copyBtnCvs');
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "✅ Đã Copy!";
+            copyBtn.style.backgroundColor = "#4CAF50"; 
+            
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.style.backgroundColor = "#ff9800"; 
+            }, 2000);
+        }).catch(err => {
+            alert('Lỗi copy: ', err);
+        });
+    }
+
+    
+    // Export to window for inline onclick execution
+    window.processPDF = processPDF;
+    window.copyToClipboardCvs = copyToClipboardCvs;
 })();
 
     async function runLogoAnimation() {
