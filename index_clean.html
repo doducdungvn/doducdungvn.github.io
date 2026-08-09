@@ -980,8 +980,44 @@
         padding: 3px 6px;
       }
     }
-  
-.yh-tool-btn { color: #000 !important; }
+  .yh-tool-btn { color: #000 !important; }
+.yh-window-wrapper button, 
+.yh-window-wrapper .yh-tool-btn {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    height: auto !important;
+    line-height: 1.2 !important;
+    color: #000 !important;
+}
+.yh-window-wrapper input[type="text"] {
+    padding: 4px 6px !important;
+    font-size: 12px !important;
+    height: 26px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+}
+.yh-sidebar .yh-box-title {
+    font-size: 11px !important;
+    margin: -6px -6px 6px -6px !important;
+    padding: 4px 6px !important;
+}
+.yh-sidebar .yh-box-title span {
+    font-size: 11px !important;
+    font-weight: bold !important;
+}
+.yh-sidebar .yh-box {
+    padding: 6px !important;
+    margin-bottom: 4px !important;
+}
+.yh-sidebar .yh-tool-btn.mobile-menu-btn {
+    background-color: #3498db !important;
+    color: white !important;
+    border: none !important;
+    padding: 2px 5px !important;
+    font-size: 10px !important;
+}
+.yh-resizer { width: 6px; background: #d2d2d2; cursor: col-resize; position: relative; flex-shrink: 0; transition: background 0.2s; }
+.yh-resizer:hover, .yh-resizer.dragging { background: #800080 !important; }
 
 
 /* --- EX CSS --- */
@@ -994,8 +1030,8 @@
     .grid-table-th {
       background-color: #f8fafc;
       color: #475569;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 14px !important;
+      font-weight: 800 !important;
       text-transform: uppercase;
     }
 
@@ -1017,6 +1053,22 @@
     .dark .grid-input-active {
       outline: 2.5px solid #22c55e !important;
       background-color: #1e293b !important;
+    }
+
+    /* Large font size for inputs and totals */
+    .value-input {
+      font-size: 26px !important;
+      font-weight: 800 !important;
+      padding: 8px 12px !important;
+      height: 48px !important;
+    }
+    #currentTotal {
+      font-size: 24px !important;
+      padding: 4px 14px !important;
+    }
+    .row-number {
+      font-size: 16px !important;
+      font-weight: bold !important;
     }
 
     @keyframes fadeIn {
@@ -1317,11 +1369,102 @@ body.epub-active #epubSection {
 #cvsSection .error { background-color: #fdecea; color: #d93025; border: 1px solid #fad2cf; display: block !important; }
 #cvsSection .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block !important; }
 #cvsSection .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; display: block !important; }
+
+/* --- THEME SWITCHER HIDING RULE --- */
+#themeSwitcher {
+    display: none !important;
+}
+
+/* --- CUSTOM BACK BUTTON & SPACE SAVING STYLES --- */
+.back-btn {
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+    border-radius: 4px !important;
+}
+.main-section .nav-header {
+    padding-bottom: 6px !important;
+    margin-bottom: 10px !important;
+}
+
+/* --- EPUB READER STYLE RESET OVERRIDES --- */
+#epubSection button,
+#epubSection label,
+#epubSection input {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font: inherit;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Restore Tailwind style utilities for buttons and labels */
+#epubSection .bg-neutral-800 { background-color: #262626 !important; }
+#epubSection .bg-neutral-850 { background-color: #202020 !important; }
+#epubSection .bg-neutral-900 { background-color: #171717 !important; }
+#epubSection .bg-emerald-600 { background-color: #059669 !important; }
+#epubSection .bg-emerald-500 { background-color: #10b981 !important; }
+#epubSection .text-neutral-300 { color: #d4d4d4 !important; }
+#epubSection .text-neutral-400 { color: #a3a3a3 !important; }
+#epubSection .text-white { color: #ffffff !important; }
+#epubSection .rounded-lg { border-radius: 0.5rem !important; }
+#epubSection .rounded-md { border-radius: 0.375rem !important; }
+#epubSection .rounded-full { border-radius: 9999px !important; }
+#epubSection .border { border: 1px solid #262626 !important; }
+#epubSection .border-neutral-800 { border-color: #262626 !important; }
+#epubSection .p-1 { padding: 0.25rem !important; }
+#epubSection .px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+#epubSection .py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+#epubSection .px-2.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
+#epubSection .font-bold { font-weight: 700 !important; }
+#epubSection .text-xs { font-size: 0.75rem !important; }
+#epubSection .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important; }
+
+/* Safe Tailwind visibility and font-toggle overrides */
+#epubSection .hidden {
+    display: none !important;
+}
+@media (min-width: 768px) {
+    #epubSection .md\:hidden {
+        display: none !important;
+    }
+}
+#epubSection #btnFontSerif.bg-neutral-800\/80,
+#epubSection #btnFontSans.bg-neutral-800\/80 {
+    background-color: rgba(38, 38, 38, 0.8) !important;
+    color: #ffffff !important;
+}
+
+/* SVG icon sizes fix */
+#epubSection svg {
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+#epubSection svg.w-3 { width: 12px !important; }
+#epubSection svg.h-3 { height: 12px !important; }
+#epubSection svg.w-3.5 { width: 14px !important; }
+#epubSection svg.h-3.5 { height: 14px !important; }
+#epubSection svg.w-4 { width: 16px !important; }
+#epubSection svg.h-4 { height: 16px !important; }
+#epubSection svg.w-5 { width: 20px !important; }
+#epubSection svg.h-5 { height: 20px !important; }
+#epubSection svg.w-6 { width: 24px !important; }
+#epubSection svg.h-6 { height: 24px !important; }
     </style>
     <!-- Dependencies for Epub Reader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Tailwind CSS (Preflight disabled to protect vanilla styles) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1440,7 +1583,25 @@ body.epub-active #epubSection {
                 <h3 style="text-align: center; margin-top: 10px; color: var(--primary-color); font-size: 22px;">&#128736; H&#7878; TH&#7888;NG TI&#7879;N &#205;CH</h3>
                 
                 <div class="utilities-grid">
-                    <!-- Card 1: Ket qua XSMB -->
+                    <!-- Card 1: Tool trinh xuat PDF (CVS) -->
+                    <div class="utility-card" id="cardCvs">
+                        <div class="utility-icon" style="color: #1a73e8;">&#128202;</div>
+                        <div class="utility-info">
+                            <div class="utility-title">Tr&#237;ch xu&#7845;t PDF (CSV)</div>
+                            <div class="utility-desc">C&#244;ng c&#7909; tr&#237;ch xu&#7845;t d&#7919; li&#7877;u b&#7843;ng t&#7913; f&#236;le PDF sang CSV s&#7917; d&#7909;ng AI Gemini.</div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Tinh Tong EX -->
+                    <div class="utility-card" id="cardEX">
+                        <div class="utility-icon" style="color: #2ecc71;">&#128202;</div>
+                        <div class="utility-info">
+                            <div class="utility-title">T&#237;nh T&#7893;ng EX</div>
+                            <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Ket qua XSMB -->
                     <div class="utility-card" id="cardXSMB">
                         <div class="utility-icon" style="color: #f1c40f;">&#127942;</div>
                         <div class="utility-info">
@@ -1449,7 +1610,7 @@ body.epub-active #epubSection {
                         </div>
                     </div>
                     
-                    <!-- Card 2: Phong Chat -->
+                    <!-- Card 4: Phong Chat -->
                     <div class="utility-card" id="cardChatroom">
                         <div class="utility-icon" style="color: #3498db;">&#128172;</div>
                         <div class="utility-info">
@@ -1458,16 +1619,7 @@ body.epub-active #epubSection {
                         </div>
                     </div>
                     
-                    <!-- Card 3: Tinh Tong EX -->
-                    <div class="utility-card" id="cardEX">
-                        <div class="utility-icon" style="color: #2ecc71;">&#128202;</div>
-                        <div class="utility-info">
-                            <div class="utility-title">Tính tổng EX</div>
-                            <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Card 4: Epub Reader -->
+                    <!-- Card 5: Epub Reader -->
                     <div class="utility-card" id="cardEpub">
                         <div class="utility-icon" style="color: #e67e22;">&#128214;</div>
                         <div class="utility-info">
@@ -1476,12 +1628,12 @@ body.epub-active #epubSection {
                         </div>
                     </div>
 
-                    <!-- Card 5: Tool trinh xuat PDF (CVS) -->
-                    <div class="utility-card" id="cardCvs">
-                        <div class="utility-icon" style="color: #1a73e8;">&#128202;</div>
+                    <!-- Card 6: Music Player -->
+                    <div class="utility-card" id="cardZeng">
+                        <div class="utility-icon" style="color: #1db954;">&#127911;</div>
                         <div class="utility-info">
-                            <div class="utility-title">Tr&#237;ch xu&#7845;t PDF (CSV)</div>
-                            <div class="utility-desc">C&#244;ng c&#7909; tr&#237;ch xu&#7845;t d&#7919; li&#7877;u b&#7843;ng t&#7913; f&#236;le PDF sang CSV s&#7917; d&#7909;ng AI Gemini.</div>
+                            <div class="utility-title">Music Player</div>
+                            <div class="utility-desc">Tr&#236;nh ph&#225;t nh&#7841;c v&#224; video tr&#7921;c tuy&#7871;n chuy&#234;n nghi&#7877;p k&#7871;t h&#7907;p YouTube.</div>
                         </div>
                     </div>
                 </div>
@@ -1768,7 +1920,25 @@ body.epub-active #epubSection {
             </div>
             <h3 style="text-align: center; margin-top: 10px; color: var(--primary-color); font-size: 22px;">&#128736; H&#7878; TH&#7888;NG TI&#7879;N &#205;CH</h3>
             <div class="utilities-grid">
-                <!-- Card 1: Ket qua XSMB -->
+                <!-- Card 1: Tool trinh xuat PDF (CVS) -->
+                <div class="utility-card" id="cardCvs_main">
+                    <div class="utility-icon" style="color: #1a73e8;">&#128202;</div>
+                    <div class="utility-info">
+                        <div class="utility-title">Tr&#237;ch xu&#7845;t PDF (CSV)</div>
+                        <div class="utility-desc">C&#244;ng c&#7909; tr&#237;ch xu&#7845;t d&#7919; li&#7877;u b&#7843;ng t&#7913; f&#236;le PDF sang CSV s&#7917; d&#7909;ng AI Gemini.</div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Tinh Tong EX -->
+                <div class="utility-card" id="cardEX_main">
+                    <div class="utility-icon" style="color: #2ecc71;">&#128202;</div>
+                    <div class="utility-info">
+                        <div class="utility-title">T&#237;nh T&#7893;ng EX</div>
+                        <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Ket qua XSMB -->
                 <div class="utility-card" id="cardXSMB_main">
                     <div class="utility-icon" style="color: #f1c40f;">&#127942;</div>
                     <div class="utility-info">
@@ -1777,7 +1947,7 @@ body.epub-active #epubSection {
                     </div>
                 </div>
                 
-                <!-- Card 2: Phong Chat -->
+                <!-- Card 4: Phong Chat -->
                 <div class="utility-card" id="cardChatroom_main">
                     <div class="utility-icon" style="color: #3498db;">&#128172;</div>
                     <div class="utility-info">
@@ -1786,16 +1956,7 @@ body.epub-active #epubSection {
                     </div>
                 </div>
                 
-                <!-- Card 3: Tinh Tong EX -->
-                <div class="utility-card" id="cardEX_main">
-                    <div class="utility-icon" style="color: #2ecc71;">&#128202;</div>
-                    <div class="utility-info">
-                        <div class="utility-title">TĂ­nh Tá»•ng EX</div>
-                        <div class="utility-desc">B&#7897; c&#244;ng c&#7909; t&#237;nh t&#7893;ng, g&#7897;p nh&#243;m v&#224; ph&#226;n t&#225;ch s&#7889; li&#7877;u th&#244;ng minh chuy&#234;n d&#7909;ng.</div>
-                    </div>
-                </div>
-                
-                <!-- Card 4: Epub Reader -->
+                <!-- Card 5: Epub Reader -->
                 <div class="utility-card" id="cardEpub_main">
                     <div class="utility-icon" style="color: #e67e22;">&#128214;</div>
                     <div class="utility-info">
@@ -1804,12 +1965,12 @@ body.epub-active #epubSection {
                     </div>
                 </div>
 
-                <!-- Card 5: Tool trinh xuat PDF (CVS) -->
-                <div class="utility-card" id="cardCvs_main">
-                    <div class="utility-icon" style="color: #1a73e8;">&#128202;</div>
+                <!-- Card 6: Music Player -->
+                <div class="utility-card" id="cardZeng_main">
+                    <div class="utility-icon" style="color: #1db954;">&#127911;</div>
                     <div class="utility-info">
-                        <div class="utility-title">Tr&#237;ch xu&#7845;t PDF (CSV)</div>
-                        <div class="utility-desc">C&#244;ng c&#7909; tr&#237;ch xu&#7845;t d&#7919; li&#7877;u b&#7843;ng t&#7913; f&#236;le PDF sang CSV s&#7917; d&#7909;ng AI Gemini.</div>
+                        <div class="utility-title">Music Player</div>
+                        <div class="utility-desc">Tr&#236;nh ph&#225;t nh&#7841;c v&#224; video tr&#7921;c tuy&#7871;n chuy&#234;n nghi&#7877;p k&#7871;t h&#7907;p YouTube.</div>
                     </div>
                 </div>
             </div>
@@ -1873,7 +2034,7 @@ body.epub-active #epubSection {
       </div>
 
       <!-- Sidebar (Right) -->
-      <div class="yh-sidebar" id="appSidebar">
+      <div class="yh-resizer" id="chatResizer"></div><div class="yh-sidebar" id="appSidebar">
 
         <!-- Nickname Box -->
         <div class="yh-box">
@@ -2135,7 +2296,7 @@ body.epub-active #epubSection {
   <header class="h-16 border-b border-neutral-800 bg-[#0c0c0c] px-4 md:px-6 flex items-center justify-between z-10 shrink-0">
     <div class="flex items-center gap-3"><button onclick="goBackFromUtility()" class="px-3 py-1.5 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-xs flex items-center gap-1" style="border:1px solid #333; margin-right:10px; cursor:pointer;">&#11013; Quay l&#7841;i</button>
       <!-- Mobile left menu button -->
-      <button onclick="toggleMobileSidebar('left')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
+      <button onclick="toggleEpubMobileSidebar('left')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
         <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
       
@@ -2175,14 +2336,14 @@ body.epub-active #epubSection {
       </div>
       
       <!-- Mobile right settings button -->
-      <button onclick="toggleMobileSidebar('right')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
+      <button onclick="toggleEpubMobileSidebar('right')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
         <i data-lucide="settings" class="w-5 h-5"></i>
       </button>
     </div>
   </header>
 
   <!-- Mobile Backdrop Overlay -->
-  <div id="sidebarBackdrop" onclick="toggleMobileSidebar('backdrop')" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity duration-300"></div>
+  <div id="sidebarBackdrop" onclick="toggleEpubMobileSidebar('backdrop')" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity duration-300"></div>
 
   <!-- Main Grid Workspace -->
   <main class="flex-1 flex overflow-hidden relative">
@@ -2193,7 +2354,7 @@ body.epub-active #epubSection {
       <!-- Mobile sidebar header -->
       <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800 shrink-0 bg-neutral-950/20">
         <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Thư viện & Mục lục</span>
-        <button onclick="toggleMobileSidebar('left', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
+        <button onclick="toggleEpubMobileSidebar('left', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
           <i data-lucide="x" class="w-3.5 h-3.5"></i>
         </button>
       </div>
@@ -2287,6 +2448,17 @@ body.epub-active #epubSection {
           </button>
         </div>
 
+        <!-- Upper Chapter Navigation Buttons -->
+        <div class="flex items-center gap-2 hidden" id="upperChapterNav">
+          <button onclick="goToPrevChapter()" id="btnPrevChapterUpper" class="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-md flex items-center gap-1 font-bold text-xs" style="background: #262626; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: bold; cursor: pointer;">
+            &#11013; Ch&#432;&#417;ng tr&#432;&#7899;c
+          </button>
+          <span id="chapterIndicatorUpper" class="text-xs font-semibold text-neutral-500" style="color: gray;">Ch&#432;&#417;ng --/--</span>
+          <button onclick="goToNextChapter()" id="btnNextChapterUpper" class="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-md flex items-center gap-1 font-bold text-xs" style="background: #262626; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: bold; cursor: pointer;">
+            Ch&#432;&#417;ng sau &#10145;
+          </button>
+        </div>
+
         <div class="flex items-center gap-2 md:gap-3">
           <button onclick="toggleFontSerif(true)" id="btnFontSerif" class="px-2.5 py-1 rounded border border-neutral-700/30 hover:bg-black/10 transition-all font-serif">Serif</button>
           <button onclick="toggleFontSerif(false)" id="btnFontSans" class="px-2.5 py-1 rounded bg-neutral-800/80 text-white font-sans">Sans</button>
@@ -2321,7 +2493,7 @@ body.epub-active #epubSection {
       <!-- Mobile sidebar header -->
       <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-neutral-800 shrink-0 bg-neutral-950/20">
         <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Cấu hình đọc & Giọng nói</span>
-        <button onclick="toggleMobileSidebar('right', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
+        <button onclick="toggleEpubMobileSidebar('right', true)" class="p-1 rounded bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 transition-colors">
           <i data-lucide="x" class="w-3.5 h-3.5"></i>
         </button>
       </div>
@@ -2383,13 +2555,13 @@ body.epub-active #epubSection {
           <!-- FPT.AI Professional TTS Section -->
           <div>
             <h3 class="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
-              <i data-lucide="mic-2" class="w-4 h-4 text-amber-500"></i> FPT.AI Giọng Chuyên Nghiệp
+              <i data-lucide="mic-2" class="w-4 h-4 text-amber-500"></i> FPT.AI Gi&#7ecd;ng Chuy&#234;n Nghi&#7879;p
             </h3>
             <div class="flex flex-col gap-3 bg-neutral-900/60 p-4 rounded-xl border border-neutral-800">
               <!-- Toggle -->
               <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-neutral-300">Bật FPT.AI TTS</span>
-                <button id="fptaiToggleBtn" onclick="toggleFptAi()" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-neutral-800 text-neutral-400 border-neutral-700 hover:border-neutral-600">Tắt</button>
+                <span class="text-[11px] font-bold text-neutral-300">B&#7853;t FPT.AI TTS</span>
+                <button id="fptaiToggleBtn" onclick="toggleFptAi()" class="px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-neutral-800 text-neutral-400 border-neutral-700 hover:border-neutral-600">T&#7855;t</button>
               </div>
               <!-- Settings (shown when enabled) -->
               <div id="fptaiSettingsPanel" class="hidden flex-col gap-3">
@@ -2397,35 +2569,35 @@ body.epub-active #epubSection {
                 <div class="flex flex-col gap-1.5">
                   <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">API Key</label>
                   <div class="flex gap-1.5">
-                    <input type="password" id="fptaiApiKeyInput" placeholder="Nhập API Key FPT.AI..." class="flex-1 bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200">
-                    <button onclick="saveFptAiKey()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold rounded-lg transition-colors shrink-0">Lưu</button>
+                    <input type="password" id="fptaiApiKeyInput" placeholder="Nh&#7853;p API Key FPT.AI..." class="flex-1 bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200">
+                    <button onclick="saveFptAiKey()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold rounded-lg transition-colors shrink-0">L&#432;u</button>
                   </div>
-                  <a href="https://fpt.ai/tts" target="_blank" rel="noopener" class="text-[10px] text-amber-500 hover:text-amber-400 transition-colors">Đăng ký API Key miễn phí →</a>
+                  <a href="https://fpt.ai/tts" target="_blank" rel="noopener" class="text-[10px] text-amber-500 hover:text-amber-400 transition-colors">&#272;&#259;ng k&#253; API Key mi&#7877;n ph&#237; &#8594;</a>
                 </div>
                 <!-- Voice -->
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Giọng đọc</label>
+                  <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">Gi&#7ecd;ng &#273;&#7885;c</label>
                   <select id="fptaiVoiceSelect" onchange="localStorage.setItem('fptai_voice', this.value)" class="w-full bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-neutral-200">
-                    <option value="leminh">⭐ Lê Minh — Nam · Nam bộ</option>
-                    <option value="banmai">Ban Mai — Nữ · Nam bộ</option>
-                    <option value="myan">Mỹ An — Nữ · Nam bộ</option>
-                    <option value="lannhi">Lan Nhi — Nữ · Nam bộ</option>
-                    <option value="giahuy">Gia Huy — Nam · Bắc bộ</option>
-                    <option value="minhquang">Minh Quang — Nam · Bắc bộ</option>
-                    <option value="thuminh">Thu Minh — Nữ · Bắc bộ</option>
-                    <option value="ngoclam">Ngọc Lam — Nữ · Bắc bộ</option>
-                    <option value="linhsan">Linh San — Nữ · Bắc bộ</option>
+                    <option value="leminh">&#11088; L&#234; Minh &#8212; Nam &middot; Nam b&#7897;</option>
+                    <option value="banmai">Ban Mai &#8212; N&#7919; &middot; Nam b&#7897;</option>
+                    <option value="myan">M&#253; An &#8212; N&#7919; &middot; Nam b&#7897;</option>
+                    <option value="lannhi">Lan Nhi &#8212; N&#7919; &middot; Nam b&#7897;</option>
+                    <option value="giahuy">Gia Huy &#8212; Nam &middot; B&#7855;c b&#7897;</option>
+                    <option value="minhquang">Minh Quang &#8212; Nam &middot; B&#7855;c b&#7897;</option>
+                    <option value="thuminh">Thu Minh &#8212; N&#7919; &middot; B&#7855;c b&#7897;</option>
+                    <option value="ngoclam">Ng&#7885;c Lam &#8212; N&#7919; &middot; B&#7855;c b&#7897;</option>
+                    <option value="linhsan">Linh San &#8212; N&#7919; &middot; B&#7855;c b&#7897;</option>
                   </select>
-                  <p class="text-[9px] text-neutral-500 leading-tight">Giọng <strong>Lê Minh</strong> (Nam bộ) gần nhất với phong cách kể chuyện truyền thuyết.</p>
+                  <p class="text-[9px] text-neutral-500 leading-tight">Gi&#7ecd;ng <strong>L&#234; Minh</strong> (Nam b&#7897;) g&#7847;n nh&#7845;t v&#7899;i phong c&#225;ch k&#7875; chuy&#7877;n truy&#7875;n thuy&#7875;t.</p>
                 </div>
                 <!-- Speed -->
                 <div class="flex flex-col gap-1.5">
                   <div class="flex justify-between items-center text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
-                    <span>Tốc độ FPT.AI</span>
+                    <span>T&#7889;c &#273;&#7897; FPT.AI</span>
                     <span id="fptaiSpeedVal" class="text-amber-500">0</span>
                   </div>
                   <input type="range" id="fptaiSpeedRange" min="-3" max="3" step="1" value="0" oninput="document.getElementById('fptaiSpeedVal').innerText = this.value; localStorage.setItem('fptai_speed', this.value)" class="w-full h-1 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
-                  <p class="text-[9px] text-neutral-500">-3 (chậm) → 0 (chuẩn) → +3 (nhanh)</p>
+                  <p class="text-[9px] text-neutral-500">-3 (ch&#7853;m) &#8594; 0 (chu&#7849;n) &#8594; +3 (nhanh)</p>
                 </div>
               </div>
             </div>
@@ -2523,10 +2695,13 @@ body.epub-active #epubSection {
   <!-- Global Notification Toast Container -->
   <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
+  <!-- GOOGLE DRIVE CREDENTIALS MODAL -->
   <!-- Exit Focus Mode Floating Button -->
   <button id="exitFocusBtn" onclick="toggleFocusMode(false)" class="fixed top-4 right-4 z-50 hidden px-3.5 py-2 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-850 text-[10px] font-bold uppercase tracking-wider transition-all backdrop-blur flex items-center gap-1.5 shadow-lg select-none">
     <i data-lucide="eye-off" class="w-4 h-4 text-emerald-500"></i> Thoát tập trung (ESC)
   </button>
+
+
 
   
 
@@ -2536,7 +2711,7 @@ body.epub-active #epubSection {
                 <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
             </div>
             <div style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #ddd; max-width: 800px; margin: 0 auto; box-sizing: border-box;">
-                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">đŸ“ Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
+                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">📊 Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
                 
                 <div class="input-group-cvs" style="margin-top: 20px;">
                     <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #444; font-size: 14px;">1. Gemini API Key:</label>
@@ -2558,7 +2733,15 @@ body.epub-active #epubSection {
                 </div>
 
                 <div id="outputCvs" style="white-space: pre-wrap; background: #202124; color: #fff; padding: 20px; border-radius: 8px; margin-top: 20px; display: none; font-family: 'Consolas', monospace; font-size: 13px; max-height: 400px; overflow: auto; border: 1px solid #333;"></div>
-                <button id="copyBtnCvs" onclick="copyToClipboardCvs()" style="width: 100%; padding: 15px; margin-top: 15px; background-color: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: none;">đŸ“‹ Copy D&#7919; Li&#7879;u</button>
+                <button id="copyBtnCvs" onclick="copyToClipboardCvs()" style="width: 100%; padding: 15px; margin-top: 15px; background-color: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: none;">📋 Copy D&#7919; Li&#7879;u</button>
+            </div>
+        </div>
+        <div id="zengSection" class="main-section" style="display: none;">
+            <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
+            </div>
+            <div style="width:100%; height:calc(100vh - 150px); border-radius: 12px; overflow: hidden; border: 1px solid #ddd; background-color: #0d0d0d;">
+                <iframe src="zeng.html" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
 
@@ -4305,7 +4488,12 @@ body.epub-active #epubSection {
     };
 
         function showSection(id) {
-        const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection','cvsSection'];
+        // Reset scroll position to top on section transitions
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection','cvsSection','zengSection'];
         sections.forEach(s => {
             const el = document.getElementById(s) || DOM[s];
             if (el) el.style.display = (s === id) ? 'block' : 'none';
@@ -4324,6 +4512,11 @@ body.epub-active #epubSection {
         // Toggle body classes to enable/disable scoped CSS styles
         if (id === 'chatroomSection') {
             document.body.classList.add('chatroom-active');
+            setTimeout(() => {
+                if (typeof window.initChatResizer === 'function') {
+                    window.initChatResizer();
+                }
+            }, 50);
         } else {
             document.body.classList.remove('chatroom-active');
         }
@@ -4408,6 +4601,15 @@ body.epub-active #epubSection {
             showSection('cvsSection');
         };
     }
+    const cardZeng = document.getElementById('cardZeng');
+    if (cardZeng) {
+        cardZeng.onclick = () => {
+            lastActivePage = 'home';
+            DOM.homePage.style.display = 'none';
+            DOM.mainPage.style.display = 'block';
+            showSection('zengSection');
+        };
+    }
 
     // Card bindings for mainPage utilitiesSection (lastActivePage = 'main')
     const cardXSMB_main = document.getElementById('cardXSMB_main');
@@ -4446,6 +4648,94 @@ body.epub-active #epubSection {
             showSection('cvsSection');
         };
     }
+    const cardZeng_main = document.getElementById('cardZeng_main');
+    if (cardZeng_main) {
+        cardZeng_main.onclick = () => {
+            lastActivePage = 'main';
+            showSection('zengSection');
+        };
+    }
+
+    // Chat Resizer Logic for Resizable Sidebar
+    function initChatResizer() {
+        const resizer = document.getElementById('chatResizer');
+        const chatArea = document.querySelector('.yh-chat-area');
+        const sidebar = document.querySelector('.yh-sidebar');
+        const container = document.querySelector('.yh-main-layout');
+        if (!resizer || !chatArea || !sidebar || !container) return;
+
+        const totalWidth = container.clientWidth || 800;
+        const initialChatWidth = (totalWidth * 2) / 3;
+        chatArea.style.flex = 'none';
+        chatArea.style.width = initialChatWidth + 'px';
+        sidebar.style.flex = '1';
+        sidebar.style.width = 'auto';
+
+        let isDragging = false;
+
+        resizer.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            isDragging = true;
+            resizer.classList.add('dragging');
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+            if (!isDragging) return;
+            const containerRect = container.getBoundingClientRect();
+            let newChatWidth = e.clientX - containerRect.left;
+            
+            const minChatWidth = 150;
+            const minSidebarWidth = 150;
+            const maxChatWidth = containerRect.width - minSidebarWidth;
+
+            if (newChatWidth < minChatWidth) newChatWidth = minChatWidth;
+            if (newChatWidth > maxChatWidth) newChatWidth = maxChatWidth;
+
+            chatArea.style.width = newChatWidth + 'px';
+        }
+
+        function onMouseUp() {
+            if (!isDragging) return;
+            isDragging = false;
+            resizer.classList.remove('dragging');
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        // Mobile touch events
+        resizer.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            resizer.classList.add('dragging');
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+        });
+
+        function onTouchMove(e) {
+            if (!isDragging) return;
+            const containerRect = container.getBoundingClientRect();
+            const touch = e.touches[0];
+            let newChatWidth = touch.clientX - containerRect.left;
+            const minChatWidth = 100;
+            const minSidebarWidth = 100;
+            const maxChatWidth = containerRect.width - minSidebarWidth;
+
+            if (newChatWidth < minChatWidth) newChatWidth = minChatWidth;
+            if (newChatWidth > maxChatWidth) newChatWidth = maxChatWidth;
+
+            chatArea.style.width = newChatWidth + 'px';
+        }
+
+        function onTouchEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            resizer.classList.remove('dragging');
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+        }
+    }
+    window.initChatResizer = initChatResizer;
 
 
 
@@ -5964,27 +6254,26 @@ body.epub-active #epubSection {
     // PDF.js worker setup
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    // --- Global State ---
     let zip = null;
     let epubMetadata = {};
     let epubSpine = [];
     let epubManifest = {};
     let chaptersData = [];
-    let opfDirectory = '';
-
+    let opfDirectory = "";
+    
     let currentChapterIdx = -1;
     let currentBlockIdx = -1;
     let currentTextBlocks = [];
-
-    // TTS playback state
+    
+    // TTS Audio Player States
     let isPlaying = false;
     let isMuted = false;
     let savedVolume = 1.0;
     let currentUtterance = null;
     let readingFontSerif = false;
     let readingFontSize = 100;
-
-    let readingMode = localStorage.getItem('reading_mode') || 'voice'; // 'text' or 'voice'
+    
+    let readingMode = localStorage.getItem('reading_mode') || 'voice'; // text or voice
     let isFocusMode = false;
     let activeBlockWords = [];
     let currentActiveBookId = null;
@@ -5994,8 +6283,9 @@ body.epub-active #epubSection {
     let fptAiApiKey = localStorage.getItem('fptai_api_key') || '';
     let fptAiCurrentAudio = null;
 
+    
     // Responsive sidebar toggle
-    function toggleMobileSidebar(side, forceClose = false) {
+    function toggleEpubMobileSidebar(side, forceClose = false) {
       const left = document.getElementById('leftSidebar');
       const right = document.getElementById('rightSidebar');
       const backdrop = document.getElementById('sidebarBackdrop');
@@ -6088,7 +6378,9 @@ body.epub-active #epubSection {
     // Initialize Lucide Icons
     lucide.createIcons();
 
-    // === Drag & Drop / File Upload ===
+    // ----------------------------------------------------
+    // Drag & Drop / File Upload Handler
+    // ----------------------------------------------------
     function triggerNewUpload() {
       document.getElementById('epubInput').click();
     }
@@ -6513,7 +6805,7 @@ body.epub-active #epubSection {
       }
       
       chaptersList.innerHTML = chaptersData.map(ch => `
-        <button id="sidebar-ch-${ch.index}" onclick="loadChapter(${ch.index}); toggleMobileSidebar('left', true);" class="w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-between group">
+        <button id="sidebar-ch-${ch.index}" onclick="loadChapter(${ch.index}); toggleEpubMobileSidebar('left', true);" class="w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-between group">
           <div class="truncate pr-2 flex items-center gap-2">
             <i data-lucide="play-circle" class="w-3.5 h-3.5 text-neutral-500 shrink-0 group-hover:text-emerald-500 transition-colors"></i>
             <span class="truncate font-semibold text-xs text-neutral-300 group-hover:text-white">${ch.title}</span>
@@ -6635,7 +6927,9 @@ body.epub-active #epubSection {
       lucide.createIcons();
     }
 
-    // === Book Content Rendering & Navigation ===
+    // ----------------------------------------------------
+    // Book Content Rendering & Selection
+    // ----------------------------------------------------
     function loadChapter(idx, startAtBlockIdx = 0) {
       if (idx < 0 || idx >= chaptersData.length) return;
       
@@ -6656,12 +6950,44 @@ body.epub-active #epubSection {
       document.getElementById('playerChapterTitle').innerText = currentChapter.title;
       document.getElementById('footerChapterTitle').innerText = currentChapter.title;
       
+      // Update upper navigation buttons and indicator
+      const upperNav = document.getElementById('upperChapterNav');
+      if (upperNav) upperNav.classList.remove('hidden');
+      
+      const btnPrevUpper = document.getElementById('btnPrevChapterUpper');
+      const btnNextUpper = document.getElementById('btnNextChapterUpper');
+      const indicatorUpper = document.getElementById('chapterIndicatorUpper');
+      
+      if (indicatorUpper) {
+        indicatorUpper.innerText = "\u0043\u0068\u01b0\u01a1\u006e\u0067 " + (idx + 1) + " / " + chaptersData.length;
+      }
+      
+      if (btnPrevUpper) {
+        if (idx === 0) {
+          btnPrevUpper.disabled = true;
+          btnPrevUpper.style.opacity = '0.3';
+          btnPrevUpper.style.pointerEvents = 'none';
+        } else {
+          btnPrevUpper.disabled = false;
+          btnPrevUpper.style.opacity = '1.0';
+          btnPrevUpper.style.pointerEvents = 'auto';
+        }
+      }
+      if (btnNextUpper) {
+        if (idx === chaptersData.length - 1) {
+          btnNextUpper.disabled = true;
+          btnNextUpper.style.opacity = '0.3';
+          btnNextUpper.style.pointerEvents = 'none';
+        } else {
+          btnNextUpper.disabled = false;
+          btnNextUpper.style.opacity = '1.0';
+          btnNextUpper.style.pointerEvents = 'auto';
+        }
+      }
+      
       // Reset reader scroll position to top
       const readerContent = document.getElementById('readerContent');
       if (readerContent) readerContent.scrollTop = 0;
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
 
       const display = document.getElementById('bookTextDisplay');
       document.getElementById('emptyStateReader').classList.add('hidden');
@@ -6690,17 +7016,21 @@ body.epub-active #epubSection {
         <!-- Navigation Buttons at the bottom of the reading pane -->
         <div class="flex justify-between items-center mt-10 pt-6 border-t border-neutral-700/10 gap-4" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.2); display: flex; justify-content: space-between; align-items: center;">
           <button onclick="goToPrevChapter()" class="px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-sm flex items-center gap-1.5 cursor-pointer" ${idx === 0 ? 'disabled style="opacity: 0.3; pointer-events: none;"' : ''} style="cursor: pointer; padding: 10px 15px; border-radius: 8px; font-weight: bold; background: #262626; color: #fff; border: none;">
-            &#11013; Chương trước
+            &#11013; Ch&#432;&#417;ng tr&#432;&#7899;c
           </button>
-          <span class="text-sm font-semibold" style="color: gray;">Chương ${idx + 1} / ${chaptersData.length}</span>
+          <span class="text-sm font-semibold" style="color: gray;">Ch&#432;&#417;ng ${idx + 1} / ${chaptersData.length}</span>
           <button onclick="goToNextChapter()" class="px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-sm flex items-center gap-1.5 cursor-pointer" ${idx === chaptersData.length - 1 ? 'disabled style="opacity: 0.3; pointer-events: none;"' : ''} style="cursor: pointer; padding: 10px 15px; border-radius: 8px; font-weight: bold; background: #262626; color: #fff; border: none;">
-            Chương sau &#129094;
+            Ch&#432;&#417;ng sau &#10145;
           </button>
         </div>
       `;
       
       updateChapterProgressBar(startAtBlockIdx);
+      
+      // Update system Media Session
       updateMediaSessionMetadata();
+      
+
 
       if (isPlaying) {
         speakParagraph(startAtBlockIdx);
@@ -6757,7 +7087,9 @@ body.epub-active #epubSection {
       selectAndSpeakParagraph(targetBlockIdx);
     }
 
-    // === Text To Speech (TTS) ===
+    // ----------------------------------------------------
+    // Text To Speech (TTS) Logic
+    // ----------------------------------------------------
     function togglePlayback() {
       if (currentChapterIdx === -1) {
         alert("Vui lòng tải sách và chọn một chương để bắt đầu đọc.");
@@ -6809,9 +7141,10 @@ body.epub-active #epubSection {
       // Pause keep alive audio
       const keepAlive = document.getElementById('keepAliveAudio');
       if (keepAlive) keepAlive.pause();
-
-      // Cancel browser TTS
-      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+      
+      if (typeof speechSynthesis !== 'undefined') {
+        speechSynthesis.cancel();
+      }
 
       // Stop FPT.AI audio if active
       if (fptAiCurrentAudio) {
@@ -6902,10 +7235,10 @@ body.epub-active #epubSection {
 
     function speakParagraph(blockIdx) {
       if (typeof speechSynthesis === 'undefined' && !useFptAi) {
-        alert('Trình duyệt của bạn không hỗ trợ công nghệ đọc văn bản (TTS).');
+        alert("Tr\u00ecnh duy\u1ec7t c\u1ee7a b\u1ea1n kh\u00f4ng h\u1ed7 tr\u1ee3 c\u00f4ng ngh\u1ec7 \u0111\u1ecdc v\u0103n b\u1ea3n (TTS).");
         return;
       }
-
+      
       // Clean up previous block word highlight & restore normal text
       if (currentBlockIdx !== -1 && currentBlockIdx !== blockIdx) {
         const prevBlockEl = document.getElementById(`block-${currentBlockIdx}`);
@@ -6914,23 +7247,25 @@ body.epub-active #epubSection {
           prevBlockEl.classList.remove('active-read-block');
         }
       }
-
-      // Cancel any ongoing browser TTS
-      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
-
+      
+      speechSynthesis.cancel();
+      
       if (blockIdx < 0 || blockIdx >= currentTextBlocks.length) {
         if (currentChapterIdx + 1 < chaptersData.length) {
           loadChapter(currentChapterIdx + 1, 0);
         } else {
           stopPlayback();
-          alert('Chúc mừng! Bạn đã nghe hết quyển sách này rồi. 🎉');
+          alert("Chúc mừng! Bạn đã nghe hết quyển sách này rồi. 🎉");
         }
         return;
       }
-
+      
+      // Prepare word spans for active block
+      prepareWordSpans(blockIdx);
+      
       setReadingPointer(blockIdx, true);
       const textToSpeak = currentTextBlocks[blockIdx];
-
+      
       // === Route to FPT.AI engine if enabled ===
       if (useFptAi) {
         speakWithFptAi(textToSpeak, () => {
@@ -6938,12 +7273,9 @@ body.epub-active #epubSection {
         });
         return;
       }
-
-      // === Browser Web Speech API ===
-      prepareWordSpans(blockIdx);
-
+      
       currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-
+      
       // Bind voice selection
       const voiceSelect = document.getElementById('voiceSelect');
       const selectedVoiceName = voiceSelect.value;
@@ -6952,36 +7284,48 @@ body.epub-active #epubSection {
         const match = voices.find(v => v.name === selectedVoiceName);
         if (match) currentUtterance.voice = match;
       }
-
+      
       // Bind settings parameters
       currentUtterance.rate = parseFloat(document.getElementById('rateRange').value) || 1.0;
       currentUtterance.pitch = parseFloat(document.getElementById('pitchRange').value) || 1.0;
       currentUtterance.volume = isMuted ? 0 : (parseFloat(document.getElementById('volumeRange').value) || 1.0);
-
-      // Word boundary highlight
+      
+      // Word Boundary highlight
       currentUtterance.onboundary = function(e) {
         if (e.name === 'word') {
           const charIndex = e.charIndex;
           const activeWord = activeBlockWords.find(w => charIndex >= w.start && charIndex < w.end);
           if (activeWord) {
+            // Remove previous word highlight
             const prevActive = document.querySelector('.active-word-highlight');
-            if (prevActive) prevActive.classList.remove('active-word-highlight');
+            if (prevActive) {
+              prevActive.classList.remove('active-word-highlight');
+            }
+            
+            // Add highlight to current word
             const currentWordEl = document.getElementById(activeWord.domId);
-            if (currentWordEl) currentWordEl.classList.add('active-word-highlight');
+            if (currentWordEl) {
+              currentWordEl.classList.add('active-word-highlight');
+            }
           }
         }
       };
-
+      
       currentUtterance.onend = function() {
+        // Clear word spans and restore text
         const blockEl = document.getElementById(`block-${blockIdx}`);
-        if (blockEl) blockEl.innerText = textToSpeak;
-        if (isPlaying) speakParagraph(currentBlockIdx + 1);
+        if (blockEl) {
+          blockEl.innerText = textToSpeak;
+        }
+        if (isPlaying) {
+          speakParagraph(currentBlockIdx + 1);
+        }
       };
-
+      
       currentUtterance.onerror = function(e) {
-        console.warn('Speech end/cancel status:', e);
+        console.warn("Speech end/cancel status:", e);
       };
-
+      
       speechSynthesis.speak(currentUtterance);
     }
 
@@ -7008,18 +7352,6 @@ body.epub-active #epubSection {
       }
     }
 
-    function goToPrevChapter() {
-      if (currentChapterIdx > 0) {
-        loadChapter(currentChapterIdx - 1);
-      }
-    }
-
-    function goToNextChapter() {
-      if (currentChapterIdx < chaptersData.length - 1) {
-        loadChapter(currentChapterIdx + 1);
-      }
-    }
-
     // System lock screen MediaSession controller
     function updateMediaSessionMetadata() {
       if ('mediaSession' in navigator && currentChapterIdx !== -1) {
@@ -7039,135 +7371,9 @@ body.epub-active #epubSection {
       }
     }
 
-    // === FPT.AI TTS Engine ===
-
-    function toggleFptAi() {
-      useFptAi = !useFptAi;
-      localStorage.setItem('use_fptai', String(useFptAi));
-
-      const btn = document.getElementById('fptaiToggleBtn');
-      const panel = document.getElementById('fptaiSettingsPanel');
-
-      if (useFptAi) {
-        if (btn) {
-          btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-amber-600 text-white border-amber-500';
-          btn.innerText = 'Đang bật';
-        }
-        if (panel) { panel.classList.remove('hidden'); panel.classList.add('flex'); }
-        // Stop any ongoing browser TTS
-        if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
-        showNotification('Đã bật FPT.AI — Giọng Việt chuyên nghiệp');
-      } else {
-        if (btn) {
-          btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-neutral-800 text-neutral-400 border-neutral-700 hover:border-neutral-600';
-          btn.innerText = 'Tắt';
-        }
-        if (panel) { panel.classList.add('hidden'); panel.classList.remove('flex'); }
-        if (fptAiCurrentAudio) {
-          fptAiCurrentAudio.pause();
-          fptAiCurrentAudio.src = '';
-          fptAiCurrentAudio = null;
-        }
-        showNotification('Đã tắt FPT.AI — Dùng giọng hệ thống', 'info');
-      }
-    }
-
-    function saveFptAiKey() {
-      const key = document.getElementById('fptaiApiKeyInput').value.trim();
-      if (!key) { showNotification('Vui lòng nhập API Key FPT.AI', 'error'); return; }
-      fptAiApiKey = key;
-      localStorage.setItem('fptai_api_key', key);
-      showNotification('Đã lưu API Key FPT.AI thành công!');
-    }
-
-    async function speakWithFptAi(text, onEnd) {
-      if (!fptAiApiKey) {
-        showNotification('Chưa có API Key FPT.AI. Vui lòng nhập trong cài đặt bên phải.', 'error');
-        if (onEnd) onEnd();
-        return;
-      }
-
-      // FPT.AI limit: ~2000 chars per request
-      const safeText = text.length > 1800 ? text.substring(0, 1800) : text;
-      const voice = document.getElementById('fptaiVoiceSelect')?.value || 'leminh';
-      const speed = document.getElementById('fptaiSpeedRange')?.value || '0';
-
-      try {
-        const response = await fetch('https://api.fpt.ai/hmi/tts/v5', {
-          method: 'POST',
-          headers: {
-            'api-key': fptAiApiKey,
-            'voice': voice,
-            'speed': speed,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: safeText
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-
-        if (data.error !== 0 || !data.async) {
-          throw new Error(data.message || 'API trả về lỗi không xác định');
-        }
-
-        playFptAiWithRetry(data.async, onEnd);
-
-      } catch (e) {
-        console.error('FPT.AI request error:', e);
-        showNotification('Lỗi FPT.AI: ' + e.message, 'error');
-        if (onEnd) onEnd();
-      }
-    }
-
-    // Play FPT.AI audio with retry logic (file may not be ready immediately)
-    function playFptAiWithRetry(url, onEnd, maxRetries = 12, delayMs = 800) {
-      let attempt = 0;
-
-      const tryPlay = () => {
-        if (!isPlaying || attempt >= maxRetries) {
-          if (attempt >= maxRetries) showNotification('FPT.AI không phản hồi đúng hạn, thử lại.', 'error');
-          if (onEnd) onEnd();
-          return;
-        }
-        attempt++;
-
-        if (fptAiCurrentAudio) {
-          fptAiCurrentAudio.pause();
-          fptAiCurrentAudio.src = '';
-        }
-
-        fptAiCurrentAudio = new Audio();
-        fptAiCurrentAudio.volume = isMuted ? 0 : (parseFloat(document.getElementById('volumeRange').value) || 1.0);
-
-        fptAiCurrentAudio.oncanplay = () => {
-          if (!isPlaying) return;
-          fptAiCurrentAudio.play().catch(e => {
-            console.warn('FPT.AI play() error:', e);
-            if (onEnd) onEnd();
-          });
-        };
-
-        fptAiCurrentAudio.onended = () => {
-          fptAiCurrentAudio = null;
-          if (onEnd) onEnd();
-        };
-
-        fptAiCurrentAudio.onerror = () => {
-          // File not ready yet on server, retry after delay
-          setTimeout(tryPlay, delayMs);
-        };
-
-        fptAiCurrentAudio.src = url;
-        fptAiCurrentAudio.load();
-      };
-
-      // Initial delay: give FPT.AI server time to generate the audio file
-      setTimeout(tryPlay, 1000);
-    }
-
-    // === TTS Voice Setting Controls ===
+    // ----------------------------------------------------
+    // TTS Voice Setting Controls
+    // ----------------------------------------------------
     function updateSpeechParam(param, val) {
       if (param === 'speed') {
         document.getElementById('speedVal').innerText = parseFloat(val).toFixed(1) + 'x';
@@ -7207,7 +7413,9 @@ body.epub-active #epubSection {
       }
     }
 
-    // === Font Formatting & Page Styling ===
+    // ----------------------------------------------------
+    // Font formatting & Page Styling
+    // ----------------------------------------------------
     function adjustFontSize(delta) {
       readingFontSize = Math.max(70, Math.min(200, readingFontSize + delta));
       document.getElementById('fontSizeDisplay').innerText = readingFontSize + '%';
@@ -7249,7 +7457,9 @@ body.epub-active #epubSection {
       }
     }
 
-    // === LocalStorage Reading Progress Persistence ===
+    // ----------------------------------------------------
+    // LocalStorage Reading Progress Persistence
+    // ----------------------------------------------------
     function saveProgress(bookTitle, chapterIndex, blockIndex) {
       if (!bookTitle) return;
       const progress = { chapterIndex, blockIndex };
@@ -7262,7 +7472,9 @@ body.epub-active #epubSection {
       return data ? JSON.parse(data) : null;
     }
 
-    // === UI Notifications & Reading Mode Controls ===
+    // ----------------------------------------------------
+    // New Features: 2 Reading Modes & Google Drive
+    // ----------------------------------------------------
 
     // Show Notification Toast
     function showNotification(message, type = 'success') {
@@ -7340,7 +7552,9 @@ body.epub-active #epubSection {
       lucide.createIcons();
     }
 
-    // === IndexedDB Local Library Storage ===
+    // ----------------------------------------------------
+    // IndexedDB Local Library Storage
+    // ----------------------------------------------------
     const DB_NAME = 'LocalLibraryDB';
     const DB_VERSION = 1;
     const STORE_NAME = 'books';
@@ -7434,7 +7648,9 @@ body.epub-active #epubSection {
       });
     }
 
-    // === Multiple File & Folder Upload Handlers ===
+    // ----------------------------------------------------
+    // Multiple Files & Folder Upload Handlers
+    // ----------------------------------------------------
     function triggerFileInput(type) {
       if (type === 'file') {
         document.getElementById('epubInput').click();
@@ -7628,7 +7844,9 @@ body.epub-active #epubSection {
       }
     }
 
-    // === Library View Switching & Bookshelf Listing ===
+    // ----------------------------------------------------
+    // Library View Switching & Bookshelf Listing
+    // ----------------------------------------------------
     function showLibraryView() {
       document.getElementById('uploadDropzone').classList.remove('hidden');
       document.getElementById('localLibraryContainer').classList.remove('hidden');
@@ -7838,18 +8056,14 @@ body.epub-active #epubSection {
       }
     }
 
-    // === Utility Helpers ===
+
+
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // === Focus Mode ===
+    // Toggle Focus Mode
     function toggleFocusMode(active) {
       isFocusMode = active;
       if (active) {
@@ -7864,28 +8078,9 @@ body.epub-active #epubSection {
     window.addEventListener('load', () => {
       // Restore reading mode
       setReadingMode(readingMode, false);
+      
 
-      // Restore FPT.AI settings from localStorage
-      if (useFptAi) {
-        const btn = document.getElementById('fptaiToggleBtn');
-        const panel = document.getElementById('fptaiSettingsPanel');
-        if (btn) { btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-amber-600 text-white border-amber-500'; btn.innerText = 'Đang bật'; }
-        if (panel) { panel.classList.remove('hidden'); panel.classList.add('flex'); }
-      }
-      if (fptAiApiKey) {
-        const keyInput = document.getElementById('fptaiApiKeyInput');
-        if (keyInput) keyInput.value = fptAiApiKey;
-      }
-      const savedFptVoice = localStorage.getItem('fptai_voice');
-      if (savedFptVoice) { const s = document.getElementById('fptaiVoiceSelect'); if (s) s.value = savedFptVoice; }
-      const savedFptSpeed = localStorage.getItem('fptai_speed');
-      if (savedFptSpeed) {
-        const r = document.getElementById('fptaiSpeedRange');
-        const v = document.getElementById('fptaiSpeedVal');
-        if (r) r.value = savedFptSpeed;
-        if (v) v.innerText = savedFptSpeed;
-      }
-
+      
       // Initialize IndexedDB and load last active book or library list
       openDB().then(async () => {
         await refreshLocalLibraryList();
@@ -7954,10 +8149,150 @@ body.epub-active #epubSection {
         }
       });
     });
+
+    function goToPrevChapter() {
+      if (currentChapterIdx > 0) {
+        loadChapter(currentChapterIdx - 1);
+      }
+    }
+
+    function goToNextChapter() {
+      if (currentChapterIdx < chaptersData.length - 1) {
+        loadChapter(currentChapterIdx + 1);
+      }
+    }
+
+    // === FPT.AI TTS Engine ===
+
+    function toggleFptAi() {
+      useFptAi = !useFptAi;
+      localStorage.setItem('use_fptai', String(useFptAi));
+
+      const btn = document.getElementById('fptaiToggleBtn');
+      const panel = document.getElementById('fptaiSettingsPanel');
+
+      if (useFptAi) {
+        if (btn) {
+          btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-amber-600 text-white border-amber-500';
+          btn.innerText = '\u0110\u0061\u006e\u0067\u0020\u0062\u1ead\u0074';
+        }
+        if (panel) { panel.classList.remove('hidden'); panel.classList.add('flex'); }
+        // Stop any ongoing browser TTS
+        if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+        showNotification('\u0110\u00e3\u0020\u0062\u1ead\u0074\u0020\u0046\u0050\u0054\u002e\u0041\u0049\u0020\u2014\u0020\u0047\u0069\u1ecd\u006e\u0067\u0020\u0056\u01b0\u1ee3\u0074\u0020\u0063\u0068\u0075\u0079\u00ea\u006e\u0020\u006e\u0067\u0068\u0069\u1ec7\u0070');
+      } else {
+        if (btn) {
+          btn.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold transition-all border bg-neutral-800 text-neutral-400 border-neutral-700 hover:border-neutral-600';
+          btn.innerText = '\u0054\u1ea5\u0074';
+        }
+        if (panel) { panel.classList.add('hidden'); panel.classList.remove('flex'); }
+        if (fptAiCurrentAudio) {
+          fptAiCurrentAudio.pause();
+          fptAiCurrentAudio.src = '';
+          fptAiCurrentAudio = null;
+        }
+        showNotification('\u0110\u00e3\u0020\u0074\u1ea5\u0074\u0020\u0046\u0050\u0054\u002e\u0041\u0049\u0020\u2014\u0020\u0044\u00f9\u006e\u0067\u0020\u0067\u0069\u1ecd\u006e\u0067\u0020\u0068\u1ec7\u0020\u0074\u0068\u1ed1\u006e\u0067', 'info');
+      }
+    }
+
+    function saveFptAiKey() {
+      const key = document.getElementById('fptaiApiKeyInput').value.trim();
+      if (!key) { showNotification('\u0056\u0075\u0069\u0020\u006c\u00f2\u006e\u0067\u0020\u006e\u0068\u1ead\u0070\u0020\u0041\u0050\u0049\u0020\u004b\u0065\u0079\u0020\u0046\u0050\u0054\u002e\u0041\u0049', 'error'); return; }
+      fptAiApiKey = key;
+      localStorage.setItem('fptai_api_key', key);
+      showNotification('\u0110\u00e3\u0020\u006c\u01b0\u0075\u0020\u0041\u0050\u0049\u0020\u004b\u0065\u0079\u0020\u0046\u0050\u0054\u002e\u0041\u0049\u0020\u0074\u0068\u00e0\u006e\u0067\u0020\u0063\u00f4\u006e\u0067\u0021');
+    }
+
+    async function speakWithFptAi(text, onEnd) {
+      if (!fptAiApiKey) {
+        showNotification('\u0043\u0068\u01b0\u0061\u0020\u0063\u00f3\u0020\u0041\u0050\u0049\u0020\u004b\u0065\u0079\u0020\u0046\u0050\u0054\u002e\u0041\u0049\u002e\u0020\u0056\u0075\u0069\u0020\u006c\u00f2\u006e\u0067\u0020\u006e\u0068\u1ead\u0070\u0020\u0074\u0072\u006f\u006e\u0067\u0020\u0063\u00e0\u0069\u0020\u0111\u1eb7\u0074\u0020\u0062\u00ea\u006e\u0020\u0070\u0068\u1ea3\u0069\u002e', 'error');
+        if (onEnd) onEnd();
+        return;
+      }
+
+      // FPT.AI limit: ~2000 chars per request
+      const safeText = text.length > 1800 ? text.substring(0, 1800) : text;
+      const voice = document.getElementById('fptaiVoiceSelect')?.value || 'leminh';
+      const speed = document.getElementById('fptaiSpeedRange')?.value || '0';
+
+      try {
+        const response = await fetch('https://api.fpt.ai/hmi/tts/v5', {
+          method: 'POST',
+          headers: {
+            'api-key': fptAiApiKey,
+            'voice': voice,
+            'speed': speed,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: safeText
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        if (data.error !== 0 || !data.async) {
+          throw new Error(data.message || 'API trả về lỗi không xác định');
+        }
+
+        playFptAiWithRetry(data.async, onEnd);
+
+      } catch (e) {
+        console.error('FPT.AI request error:', e);
+        showNotification('Lỗi FPT.AI: ' + e.message, 'error');
+        if (onEnd) onEnd();
+      }
+    }
+
+    // Play FPT.AI audio with retry logic (file may not be ready immediately)
+    function playFptAiWithRetry(url, onEnd, maxRetries = 12, delayMs = 800) {
+      let attempt = 0;
+
+      const tryPlay = () => {
+        if (!isPlaying || attempt >= maxRetries) {
+          if (attempt >= maxRetries) showNotification('\u0046\u0050\u0054\u002e\u0041\u0049\u0020\u006b\u0068\u00f4\u006e\u0067\u0020\u0070\u0068\u1ea3\u006e\u0020\u0068\u1ed3\u0069\u0020\u0111\u00fa\u006e\u0067\u0020\u0068\u1ea1\u006e\u002c\u0020\u0074\u1eed\u0020\u006c\u1ea1\u0069\u002e', 'error');
+          if (onEnd) onEnd();
+          return;
+        }
+        attempt++;
+
+        if (fptAiCurrentAudio) {
+          fptAiCurrentAudio.pause();
+          fptAiCurrentAudio.src = '';
+        }
+
+        fptAiCurrentAudio = new Audio();
+        fptAiCurrentAudio.volume = isMuted ? 0 : (parseFloat(document.getElementById('volumeRange').value) || 1.0);
+
+        fptAiCurrentAudio.oncanplay = () => {
+          if (!isPlaying) return;
+          fptAiCurrentAudio.play().catch(e => {
+            console.warn('FPT.AI play() error:', e);
+            if (onEnd) onEnd();
+          });
+        };
+
+        fptAiCurrentAudio.onended = () => {
+          fptAiCurrentAudio = null;
+          if (onEnd) onEnd();
+        };
+
+        fptAiCurrentAudio.onerror = () => {
+          // File not ready yet on server, retry after delay
+          setTimeout(tryPlay, delayMs);
+        };
+
+        fptAiCurrentAudio.src = url;
+        fptAiCurrentAudio.load();
+      };
+
+      // Initial delay: give FPT.AI server time to generate the audio file
+      setTimeout(tryPlay, 1000);
+    }
   
     
     // Export functions to window for epub-reader.html inline HTML onclick/onchange/oninput resolution
-    window.toggleMobileSidebar = toggleMobileSidebar;
+    window.toggleEpubMobileSidebar = toggleEpubMobileSidebar;
     window.setReadingMode = setReadingMode;
     window.setReaderTheme = setReaderTheme;
     window.triggerFileInput = triggerFileInput;
