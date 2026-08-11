@@ -497,8 +497,15 @@
             border-color: #107c41 !important;
         }
 
-/* --- CHATROOM CSS --- */
 
+        /* =======================================================================
+           PART B: STYLESHEET (CORE & INTEGRATED MODULES CSS)
+           ======================================================================= */
+
+        /* -----------------------------------------------------------------------
+           MODULE: Chatroom CSS
+           ----------------------------------------------------------------------- */
+        
     /* =====================================================================
        DESIGN SYSTEM & CSS VARIABLES
        ===================================================================== */
@@ -1020,19 +1027,22 @@
 .yh-resizer:hover, .yh-resizer.dragging { background: #800080 !important; }
 
 
-/* --- EX CSS --- */
-
+        /* -----------------------------------------------------------------------
+           MODULE: Excel Calc CSS
+           ----------------------------------------------------------------------- */
+        
     /* Custom Scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
 
     .grid-table-th {
       background-color: #f8fafc;
-      color: #475569;
-      font-size: 14px !important;
+      color: #1e293b;
+      font-size: 15px !important;
       font-weight: 800 !important;
       text-transform: uppercase;
+      padding: 12px 14px !important;
     }
 
     .grid-input {
@@ -1040,35 +1050,39 @@
       touch-action: manipulation;
     }
     .grid-input:focus {
-      outline: 2.5px solid #107c41;
-      outline-offset: -2.5px;
+      outline: 3px solid #107c41;
+      outline-offset: -3px;
       background-color: #ffffff;
     }
     
     .grid-input-active {
-      outline: 2.5px solid #107c41 !important;
-      outline-offset: -2.5px;
+      outline: 3px solid #107c41 !important;
+      outline-offset: -3px;
       background-color: #ffffff !important;
     }
     .dark .grid-input-active {
-      outline: 2.5px solid #22c55e !important;
+      outline: 3px solid #22c55e !important;
       background-color: #1e293b !important;
     }
 
-    /* Large font size for inputs and totals */
+    /* Prominent & Large font size for inputs and totals */
     .value-input {
-      font-size: 26px !important;
+      font-size: 28px !important;
       font-weight: 800 !important;
-      padding: 8px 12px !important;
-      height: 48px !important;
+      padding: 8px 16px !important;
+      height: 56px !important;
+      border-radius: 8px !important;
     }
     #currentTotal {
       font-size: 24px !important;
-      padding: 4px 14px !important;
+      font-weight: 900 !important;
+      padding: 4px 16px !important;
+      border-radius: 8px !important;
+      color: #dc2626 !important;
     }
     .row-number {
-      font-size: 16px !important;
-      font-weight: bold !important;
+      font-size: 18px !important;
+      font-weight: 800 !important;
     }
 
     @keyframes fadeIn {
@@ -1078,8 +1092,10 @@
     .animate-fade-in { animation: fadeIn 0.15s ease-out forwards; }
   
 
-/* --- EPUB CSS --- */
-
+        /* -----------------------------------------------------------------------
+           MODULE: Epub Reader CSS
+           ----------------------------------------------------------------------- */
+        
     :root {
       --spotify-green: #1DB954;
       --spotify-green-hover: #1ed760;
@@ -1296,170 +1312,407 @@
     
   
 
-/* --- EPUB CONTAINER SCROLL FIX --- */
-body.epub-active #epubSection {
-    height: calc(100vh - 120px) !important;
-    display: flex !important;
-    flex-direction: column !important;
+        /* -----------------------------------------------------------------------
+           MODULE: Youtube Music Player (ZENG) CSS
+           ----------------------------------------------------------------------- */
+        /* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Vinyl Animation */
+.vinyl-spin { animation: spin 4s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.paused { animation-play-state: paused; }
+
+/* Sliders */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: #535353;
+    border-radius: 2px;
+}
+input[type=range]:hover::-webkit-slider-runnable-track {
+    background: #1DB954;
+}
+input[type=range]::-webkit-slider-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4px;
+    display: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.group:hover input[type=range]::-webkit-slider-thumb,
+input[type=range]:active::-webkit-slider-thumb {
+    display: block;
 }
 
-/* --- UTILITIES LIST STYLE OVERRIDES --- */
-.utilities-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    max-width: 750px !important;
-    margin: 20px auto 0 auto !important;
-}
-.utility-card {
-    background: var(--container-bg) !important;
-    border: 1px solid #d2d2d2 !important;
-    border-radius: 12px !important;
-    padding: 15px 20px !important;
-    text-align: left !important;
-    cursor: pointer !important;
-    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.03) !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 18px !important;
-}
-.utility-card:hover {
-    transform: translateX(6px) !important;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08) !important;
-    border-color: var(--primary-color) !important;
-}
-.utility-icon {
-    font-size: 28px !important;
-    margin-bottom: 0 !important;
-    display: flex !important;
+/* Playlist Items */
+.track-active { background-color: rgba(255, 255, 255, 0.1); }
+.track-active .track-title { color: #1DB954; font-weight: 600; }
+.track-active .track-index { display: none; }
+.track-active .playing-icon { display: flex; color: #1DB954; }
+
+.track-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+#ytPlayerDiv { pointer-events: auto; }
+
+/* Tailwind Colors Overrides for Zeng Module */
+.bg-zeng-dark { background-color: #0d0d0d !important; }
+.bg-zeng-panel { background-color: #181818 !important; }
+.text-zeng-light { color: #b3b3b3 !important; }
+.bg-zeng-green { background-color: #1DB954 !important; }
+.text-zeng-green { color: #1DB954 !important; }
+.bg-zeng-burgundy { background-color: #800020 !important; }
+
+/* --- ZENG PLAYER CONTROL BUTTONS RESET & STYLES --- */
+#zengSection button,
+.zeng-player-root button {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    line-height: normal !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 52px !important;
-    height: 52px !important;
+    cursor: pointer !important;
+}
+
+/* Header & Sidebar Action Buttons */
+#zengSection #btnTrending,
+.zeng-player-root #btnTrending {
+    background-color: #800020 !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    padding: 6px 14px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    box-shadow: 0 0 15px rgba(128,0,32,0.3) !important;
+}
+#zengSection label[for="fileInput"],
+.zeng-player-root label[for="fileInput"] {
+    background-color: rgba(255,255,255,0.1) !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    padding: 6px 14px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+#zengSection #btnFetchMore,
+.zeng-player-root #btnFetchMore {
+    background-color: #1db954 !important;
+    color: #000000 !important;
+    border-radius: 9999px !important;
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+#zengSection #btnClearAll,
+.zeng-player-root #btnClearAll {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+
+/* Play/Pause Main Center Circle Button */
+#zengSection #btnPlayPause,
+.zeng-player-root #btnPlayPause {
+    width: 38px !important;
+    height: 38px !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
     border-radius: 50% !important;
-    background-color: #f0f3f6 !important;
-    transition: all 0.25s ease !important;
+    transition: transform 0.15s ease, background-color 0.15s ease !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4) !important;
     flex-shrink: 0 !important;
 }
-.utility-card:hover .utility-icon {
-    background-color: var(--primary-color) !important;
+#zengSection #btnPlayPause:hover,
+.zeng-player-root #btnPlayPause:hover {
+    transform: scale(1.08) !important;
+    background-color: #1ed760 !important;
+}
+#zengSection #btnPlayPause i,
+.zeng-player-root #btnPlayPause i {
+    color: #000000 !important;
+    font-size: 14px !important;
+}
+
+/* Footer Control Icon Buttons (Shuffle, Prev, Next, Repeat, Mute, Fullscreen, TogglePlaylist) */
+#zengSection #btnShuffle,
+#zengSection #btnPrev,
+#zengSection #btnNext,
+#zengSection #btnRepeat,
+#zengSection #btnMute,
+#zengSection #btnFullscreen,
+#zengSection #btnTogglePlaylist,
+.zeng-player-root #btnShuffle,
+.zeng-player-root #btnPrev,
+.zeng-player-root #btnNext,
+.zeng-player-root #btnRepeat,
+.zeng-player-root #btnMute,
+.zeng-player-root #btnFullscreen,
+.zeng-player-root #btnTogglePlaylist {
+    color: #b3b3b3 !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 4px !important;
+    transition: color 0.2s ease, transform 0.15s ease !important;
+    cursor: pointer !important;
+}
+#zengSection #btnShuffle:hover,
+#zengSection #btnPrev:hover,
+#zengSection #btnNext:hover,
+#zengSection #btnRepeat:hover,
+#zengSection #btnMute:hover,
+#zengSection #btnFullscreen:hover,
+#zengSection #btnTogglePlaylist:hover,
+.zeng-player-root #btnShuffle:hover,
+.zeng-player-root #btnPrev:hover,
+.zeng-player-root #btnNext:hover,
+.zeng-player-root #btnRepeat:hover,
+.zeng-player-root #btnMute:hover,
+.zeng-player-root #btnFullscreen:hover,
+.zeng-player-root #btnTogglePlaylist:hover {
     color: #ffffff !important;
-    transform: scale(1.05) !important;
-}
-.utility-info {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 4px !important;
-}
-.utility-title {
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    margin-bottom: 0 !important;
-    color: var(--text-color) !important;
-}
-.utility-desc {
-    font-size: 12px !important;
-    color: var(--text-light) !important;
-    line-height: 1.4 !important;
+    transform: scale(1.15) !important;
 }
 
-/* --- CVS SECTION STYLES --- */
-#cvsSection .error { background-color: #fdecea; color: #d93025; border: 1px solid #fad2cf; display: block !important; }
-#cvsSection .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block !important; }
-#cvsSection .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; display: block !important; }
-
-/* --- THEME SWITCHER HIDING RULE --- */
-#themeSwitcher {
-    display: none !important;
+#zengSection #btnShuffle.text-zeng-green,
+#zengSection #btnRepeat.text-zeng-green,
+.zeng-player-root #btnShuffle.text-zeng-green,
+.zeng-player-root #btnRepeat.text-zeng-green {
+    color: #1db954 !important;
 }
 
-/* --- CUSTOM BACK BUTTON & SPACE SAVING STYLES --- */
-.back-btn {
-    padding: 6px 12px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
-}
-.main-section .nav-header {
-    padding-bottom: 6px !important;
-    margin-bottom: 10px !important;
-}
+        /* -----------------------------------------------------------------------
+           LAYOUT FIXES & STYLING OVERRIDES
+           ----------------------------------------------------------------------- */
+        body.epub-active #epubSection {
+            height: calc(100vh - 120px) !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
 
-/* --- EPUB READER STYLE RESET OVERRIDES --- */
-#epubSection button,
-#epubSection label,
-#epubSection input {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    color: inherit;
-    font: inherit;
-    width: auto;
-    height: auto;
-    box-shadow: none;
-    border-radius: 0;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-}
+        .utilities-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+            max-width: 750px !important;
+            margin: 20px auto 0 auto !important;
+        }
+        .utility-card {
+            background: var(--container-bg) !important;
+            border: 1px solid #d2d2d2 !important;
+            border-radius: 12px !important;
+            padding: 15px 20px !important;
+            text-align: left !important;
+            cursor: pointer !important;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03) !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 18px !important;
+        }
+        .utility-card:hover {
+            transform: translateX(6px) !important;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08) !important;
+            border-color: var(--primary-color) !important;
+        }
+        .utility-icon {
+            font-size: 28px !important;
+            margin-bottom: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 52px !important;
+            height: 52px !important;
+            border-radius: 50% !important;
+            background-color: #f0f3f6 !important;
+            transition: all 0.25s ease !important;
+            flex-shrink: 0 !important;
+        }
+        .utility-card:hover .utility-icon {
+            background-color: var(--primary-color) !important;
+            color: #ffffff !important;
+            transform: scale(1.05) !important;
+        }
+        .utility-info {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 4px !important;
+        }
+        .utility-title {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            margin-bottom: 0 !important;
+            color: var(--text-color) !important;
+        }
+        .utility-desc {
+            font-size: 12px !important;
+            color: var(--text-light) !important;
+            line-height: 1.4 !important;
+        }
 
-/* Restore Tailwind style utilities for buttons and labels */
-#epubSection .bg-neutral-800 { background-color: #262626 !important; }
-#epubSection .bg-neutral-850 { background-color: #202020 !important; }
-#epubSection .bg-neutral-900 { background-color: #171717 !important; }
-#epubSection .bg-emerald-600 { background-color: #059669 !important; }
-#epubSection .bg-emerald-500 { background-color: #10b981 !important; }
-#epubSection .text-neutral-300 { color: #d4d4d4 !important; }
-#epubSection .text-neutral-400 { color: #a3a3a3 !important; }
-#epubSection .text-white { color: #ffffff !important; }
-#epubSection .rounded-lg { border-radius: 0.5rem !important; }
-#epubSection .rounded-md { border-radius: 0.375rem !important; }
-#epubSection .rounded-full { border-radius: 9999px !important; }
-#epubSection .border { border: 1px solid #262626 !important; }
-#epubSection .border-neutral-800 { border-color: #262626 !important; }
-#epubSection .p-1 { padding: 0.25rem !important; }
-#epubSection .px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-#epubSection .py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
-#epubSection .px-2.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
-#epubSection .font-bold { font-weight: 700 !important; }
-#epubSection .text-xs { font-size: 0.75rem !important; }
-#epubSection .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important; }
+        #cvsSection .error { background-color: #fdecea; color: #d93025; border: 1px solid #fad2cf; display: block !important; }
+        #cvsSection .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block !important; }
+        #cvsSection .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; display: block !important; }
 
-/* Safe Tailwind visibility and font-toggle overrides */
-#epubSection .hidden {
-    display: none !important;
-}
-@media (min-width: 768px) {
-    #epubSection .md\:hidden {
-        display: none !important;
-    }
-}
-#epubSection #btnFontSerif.bg-neutral-800\/80,
-#epubSection #btnFontSans.bg-neutral-800\/80 {
-    background-color: rgba(38, 38, 38, 0.8) !important;
-    color: #ffffff !important;
-}
+        #themeSwitcher {
+            display: none !important;
+        }
 
-/* SVG icon sizes fix */
-#epubSection svg {
-    display: inline-block !important;
-    vertical-align: middle !important;
-}
-#epubSection svg.w-3 { width: 12px !important; }
-#epubSection svg.h-3 { height: 12px !important; }
-#epubSection svg.w-3.5 { width: 14px !important; }
-#epubSection svg.h-3.5 { height: 14px !important; }
-#epubSection svg.w-4 { width: 16px !important; }
-#epubSection svg.h-4 { height: 16px !important; }
-#epubSection svg.w-5 { width: 20px !important; }
-#epubSection svg.h-5 { height: 20px !important; }
-#epubSection svg.w-6 { width: 24px !important; }
-#epubSection svg.h-6 { height: 24px !important; }
+        .back-btn {
+            padding: 6px 12px !important;
+            font-size: 13px !important;
+            border-radius: 4px !important;
+        }
+        .main-section .nav-header {
+            padding-bottom: 4px !important;
+            margin-bottom: 6px !important;
+        }
+
+        /* Compact Page Header, Padding & Main Copyright Footer Override */
+        .main-page-logo { font-size: 22px !important; margin-top: 4px !important; margin-bottom: 4px !important; padding: 0 !important; }
+        .main-page-logo .online-badge { padding: 1px 6px !important; font-size: 10px !important; }
+        #mainPage { max-width: 1200px; margin: 0 auto; padding: 12px 20px !important; }
+        .main-copyright { text-align: center; margin-top: 6px !important; margin-bottom: 2px !important; padding: 2px 0 !important; font-size: 11px !important; color: #aaa; font-weight: 500; }
+        .main-section .nav-header { padding-bottom: 6px !important; margin-bottom: 8px !important; display: flex !important; }
+        .main-section .nav-header .back-btn,
+        .back-btn {
+            background-color: #107c41 !important;
+            color: #ffffff !important;
+            padding: 6px 16px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            border-radius: 4px !important;
+            border: none !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+        }
+
+        #epubSection button,
+        #epubSection label,
+        #epubSection input {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            color: inherit;
+            font: inherit;
+            width: auto;
+            height: auto;
+            box-shadow: none;
+            border-radius: 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        #epubSection .epub-back-btn {
+            background-color: #262626 !important;
+            color: #ffffff !important;
+            border: 1px solid #444444 !important;
+            padding: 6px 14px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            z-index: 50 !important;
+            position: relative !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            margin-right: 12px !important;
+        }
+        #epubSection .epub-back-btn:hover {
+            background-color: #404040 !important;
+            border-color: #555555 !important;
+        }
+
+        #epubSection .bg-neutral-800 { background-color: #262626 !important; }
+        #epubSection .bg-neutral-850 { background-color: #202020 !important; }
+        #epubSection .bg-neutral-900 { background-color: #171717 !important; }
+        #epubSection .bg-emerald-600 { background-color: #059669 !important; }
+        #epubSection .bg-emerald-500 { background-color: #10b981 !important; }
+        #epubSection .text-neutral-300 { color: #d4d4d4 !important; }
+        #epubSection .text-neutral-400 { color: #a3a3a3 !important; }
+        #epubSection .text-white { color: #ffffff !important; }
+        #epubSection .rounded-lg { border-radius: 0.5rem !important; }
+        #epubSection .rounded-md { border-radius: 0.375rem !important; }
+        #epubSection .rounded-full { border-radius: 9999px !important; }
+        #epubSection .border { border: 1px solid #262626 !important; }
+        #epubSection .border-neutral-800 { border-color: #262626 !important; }
+        #epubSection .p-1 { padding: 0.25rem !important; }
+        #epubSection .px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+        #epubSection .py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+        #epubSection .px-2.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
+        #epubSection .font-bold { font-weight: 700 !important; }
+        #epubSection .text-xs { font-size: 0.75rem !important; }
+        #epubSection .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important; }
+
+        #epubSection .hidden {
+            display: none !important;
+        }
+        @media (min-width: 768px) {
+            #epubSection .md\:hidden {
+                display: none !important;
+            }
+        }
+        #epubSection #btnFontSerif.bg-neutral-800\/80,
+        #epubSection #btnFontSans.bg-neutral-800\/80 {
+            background-color: rgba(38, 38, 38, 0.8) !important;
+            color: #ffffff !important;
+        }
+
+        #epubSection svg {
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+        #epubSection svg.w-3 { width: 12px !important; }
+        #epubSection svg.h-3 { height: 12px !important; }
+        #epubSection svg.w-3.5 { width: 14px !important; }
+        #epubSection svg.h-3.5 { height: 14px !important; }
+        #epubSection svg.w-4 { width: 16px !important; }
+        #epubSection svg.h-4 { height: 16px !important; }
+        #epubSection svg.w-5 { width: 20px !important; }
+        #epubSection svg.h-5 { height: 20px !important; }
+        #epubSection svg.w-6 { width: 24px !important; }
+        #epubSection svg.h-6 { height: 24px !important; }
     </style>
+    <!-- =======================================================================
+         PART A: INTEGRATED DEPENDENCIES & CDN LIBRARIES
+         ======================================================================= -->
     <!-- Dependencies for Epub Reader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -1579,7 +1832,10 @@ body.epub-active #epubSection {
                 <div style="font-size: 12px; color: var(--text-light); margin-top: 5px; font-style: italic;">* Hỗ trợ format: "Mã","Ngày","LH","Doanh thu","Hoa hồng","Thưởng","Nộp"</div>
             </div>
 
-                        <div id="panelUtilities" style="display:none; margin-top: 15px;">
+                        <!-- =======================================================================
+                 PART C: BODY LAYOUT - INTEGRATED UTILITIES
+                 ======================================================================= -->
+            <div id="panelUtilities" style="display:none; margin-top: 15px;">
                 <h3 style="text-align: center; margin-top: 10px; color: var(--primary-color); font-size: 22px;">&#128736; H&#7878; TH&#7888;NG TI&#7879;N &#205;CH</h3>
                 
                 <div class="utilities-grid">
@@ -1914,6 +2170,9 @@ body.epub-active #epubSection {
                 </div>
             </div>
         </div>
+        <!-- -----------------------------------------------------------------------
+             MODULE: Main Utilities Grid Card Wrapper Layout
+             ----------------------------------------------------------------------- -->
         <div id="utilitiesSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                 <button class="back-btn" onclick="showSection(lastActiveSection || 'reportSection')">&#11013; Quay l&#7841;i B&#225;o c&#225;o</button>
@@ -1975,6 +2234,9 @@ body.epub-active #epubSection {
                 </div>
             </div>
         </div>
+        <!-- -----------------------------------------------------------------------
+             MODULE: Chatroom Section Layout
+             ----------------------------------------------------------------------- -->
         <div id="chatroomSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                 <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
@@ -2078,6 +2340,9 @@ body.epub-active #epubSection {
   </div>
             </div>
         </div>
+        <!-- -----------------------------------------------------------------------
+             MODULE: Excel Calculation Section Layout
+             ----------------------------------------------------------------------- -->
         <div id="exSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                 <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
@@ -2101,11 +2366,8 @@ body.epub-active #epubSection {
 
     <!-- Right Header Controls -->
     <div class="flex items-center space-x-1.5 text-xs flex-shrink-0">
-      <button onclick="resetCurrentTable()" title="Làm mới" class="p-2 sm:px-2.5 sm:py-1 bg-white/10 hover:bg-white/20 rounded font-medium transition flex items-center gap-1">
-        <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Làm mới</span>
-      </button>
-      <button onclick="goBackFromUtility()" title="Trở về Trang chủ" class="px-2.5 py-1 bg-white text-excel-800 font-bold hover:bg-slate-100 rounded shadow-sm transition flex items-center gap-1">
-        <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Quay lại</span>
+      <button onclick="resetCurrentTable()" title="L&#220;m m&#7899;i (X&#243;a l&#7883;ch s&#7917; & bảng t&#205;nh)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg font-bold transition flex items-center gap-1.5 text-xs sm:text-sm">
+        <i class="fa-solid fa-rotate-right"></i> <span>L&#220;m m&#7899;i</span>
       </button>
     </div>
   </header>
@@ -2122,33 +2384,33 @@ body.epub-active #epubSection {
   </div>
 
   <!-- ==================== MAIN WORKSPACE ==================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 overflow-hidden min-h-0">
+  <main class="flex-1 max-w-[1500px] w-full mx-auto p-3 sm:p-5 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden min-h-[550px]">
     
     <!-- LEFT PANEL: CURRENT INPUT GRID (7 cols) -->
     <section id="inputSection" class="flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-shrink-0 lg:col-span-7 lg:flex">
       
       <!-- Card Header -->
-      <div class="px-3 sm:px-4 py-2 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0 z-20">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-table text-excel-800 text-sm"></i>
-          <h2 class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100">Bảng Nhập Dữ Liệu</h2>
+      <div class="px-4 sm:px-5 py-3 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0 z-20">
+        <div class="flex items-center space-x-2.5">
+          <i class="fa-solid fa-table text-excel-800 text-base"></i>
+          <h2 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100">B&#7843;ng Nh&#7853;p D&#7919; Li&#7879;u</h2>
         </div>
       </div>
 
       <!-- Grid Table Container -->
-      <div class="overflow-y-auto p-2 sm:p-3 relative flex-1 min-h-0">
+      <div class="overflow-y-auto p-3 sm:p-4 relative flex-1 min-h-0">
         <div class="border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden shadow-xs">
           <table class="w-full text-left border-collapse">
             <thead class="sticky top-0 z-10 bg-slate-100 dark:bg-slate-800">
               <tr class="bg-slate-100 dark:bg-slate-800 border-b border-slate-300 dark:border-slate-700">
-                <th class="py-2 px-2 text-center grid-table-th w-10 border-r border-slate-200 dark:border-slate-700">STT</th>
-                <th class="py-2 px-3 grid-table-th">
-                  <div class="flex items-center space-x-2">
-                    <span>GIÁ TRỊ:</span>
-                    <span id="currentTotal" style="color: #e53e3e !important;" class="font-mono font-extrabold text-sm sm:text-base bg-excel-50 dark:bg-slate-800 border border-excel-200 dark:border-slate-700 px-2 py-0.5 rounded shadow-xs">0</span>
+                <th class="py-3 px-3 text-center grid-table-th w-12 border-r border-slate-200 dark:border-slate-700">STT</th>
+                <th class="py-3 px-4 grid-table-th">
+                  <div class="flex items-center space-x-3">
+                    <span class="text-sm sm:text-base font-extrabold">GI&#193; TR&#7882;:</span>
+                    <span id="currentTotal" style="color: #dc2626 !important;" class="font-mono font-black text-lg sm:text-xl bg-excel-50 dark:bg-slate-800 border border-excel-200 dark:border-slate-700 px-3 py-1 rounded-lg shadow-xs">0</span>
                   </div>
                 </th>
-                <th class="py-2 px-2 text-center grid-table-th w-20">THAO TÁC</th>
+                <th class="py-3 px-3 text-center grid-table-th w-24">THAO T&#193;C</th>
               </tr>
             </thead>
             <tbody id="inputTableBody" class="divide-y divide-slate-200 dark:divide-slate-800">
@@ -2159,35 +2421,35 @@ body.epub-active #epubSection {
       </div>
 
       <!-- DESKTOP ACTION BUTTONS BAR (DESKTOP ONLY) -->
-      <div class="hidden lg:block p-3 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex-shrink-0 z-20">
-        <div class="grid grid-cols-3 gap-2">
-          <button onclick="addRow(true)" class="py-2.5 px-2 bg-excel-800 hover:bg-excel-900 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
-            <i class="fa-solid fa-plus-circle"></i> + Dòng
+      <div class="hidden lg:block p-3.5 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex-shrink-0 z-20">
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="addRow(true)" class="py-3 px-3 bg-excel-800 hover:bg-excel-900 active:scale-95 text-white font-extrabold text-sm sm:text-base rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus-circle text-base"></i> + D&#242;ng
           </button>
-          <button onclick="splitGroup()" title="Phím tắt: Ctrl + S" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
-            <i class="fa-solid fa-scissors"></i> Lưu Tách
+          <button onclick="splitGroup()" title="Ph&#237;m t&#7855;t: Ctrl + S" class="py-3 px-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-sm sm:text-base rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-scissors text-base"></i> L&#432;u T&#225;ch
           </button>
-          <button onclick="mergeGroups()" title="Phím tắt: Ctrl + A" class="py-2.5 px-2 bg-sky-700 hover:bg-sky-800 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-1">
-            <i class="fa-solid fa-object-group"></i> Gộp
+          <button onclick="mergeGroups()" title="Ph&#237;m t&#7855;t: Ctrl + A" class="py-3 px-3 bg-sky-700 hover:bg-sky-800 active:scale-95 text-white font-extrabold text-sm sm:text-base rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-object-group text-base"></i> G&#7897;p
           </button>
         </div>
       </div>
     </section>
 
     <!-- RIGHT PANEL: SPLIT HISTORY CARD (5 cols) -->
-    <section id="historySection" class="hidden lg:flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-1 min-h-[180px] lg:min-h-0 lg:col-span-5">
-      <div class="px-3 sm:px-4 py-2 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0">
-        <h2 class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
-          <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Lịch Sử Lần Tách
+    <section id="historySection" class="hidden lg:flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-1 min-h-[250px] lg:min-h-0 lg:col-span-5">
+      <div class="px-4 sm:px-5 py-3 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-shrink-0">
+        <h2 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 flex items-center gap-2.5">
+          <i class="fa-solid fa-clock-rotate-left text-amber-600 text-base"></i> L&#7883;ch S&#7917; L&#7847;n T&#225;ch
         </h2>
-        <span id="historyBadge" class="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full">0 phần</span>
+        <span id="historyBadge" class="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 text-xs sm:text-sm font-black px-3 py-1 rounded-full">0 ph&#7847;n</span>
       </div>
 
       <!-- History Items Scrollable Container -->
-      <div id="historyContainer" class="flex-1 overflow-y-auto p-3 space-y-2 min-h-0">
-        <div id="emptyHistoryState" class="flex flex-col items-center justify-center h-full text-center py-4 text-slate-400">
-          <i class="fa-solid fa-box-open text-2xl text-slate-300 dark:text-slate-700 mb-1"></i>
-          <p class="text-xs font-semibold text-slate-500">Chưa có phần nào được lưu tách.</p>
+      <div id="historyContainer" class="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
+        <div id="emptyHistoryState" class="flex flex-col items-center justify-center h-full text-center py-6 text-slate-400">
+          <i class="fa-solid fa-box-open text-4xl text-slate-300 dark:text-slate-700 mb-2"></i>
+          <p class="text-sm font-semibold text-slate-500">Ch&#432;a c&#243; ph&#7847;n n&#220;o &#273;&#432;&#7851;c l&#432;u t&#225;ch.</p>
         </div>
       </div>
 
@@ -2289,24 +2551,32 @@ body.epub-active #epubSection {
 
             </div>
         </div>
+        <!-- -----------------------------------------------------------------------
+             MODULE: Epub Reader Section Layout
+             ----------------------------------------------------------------------- -->
         <div id="epubSection" class="main-section" style="display: none;">
             
 
   <!-- Top Navigation Header -->
   <header class="h-16 border-b border-neutral-800 bg-[#0c0c0c] px-4 md:px-6 flex items-center justify-between z-10 shrink-0">
-    <div class="flex items-center gap-3"><button onclick="goBackFromUtility()" class="px-3 py-1.5 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-xs flex items-center gap-1" style="border:1px solid #333; margin-right:10px; cursor:pointer;">&#11013; Quay l&#7841;i</button>
+    <div class="flex items-center gap-3">
+      <!-- Back button to return to main page/utilities -->
+      <button onclick="goBackFromUtility()" class="epub-back-btn px-3 py-1.5 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 font-bold text-xs flex items-center gap-1 shrink-0 z-30" style="border:1px solid #444; cursor:pointer;">
+        &#11013; Quay l&#7841;i
+      </button>
+
       <!-- Mobile left menu button -->
-      <button onclick="toggleEpubMobileSidebar('left')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400">
+      <button onclick="toggleEpubMobileSidebar('left')" class="md:hidden p-1.5 rounded-lg hover:bg-neutral-800 text-neutral-400 shrink-0">
         <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
       
-      <div class="flex items-center gap-2">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-950/20">
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-950/20 shrink-0">
           <i data-lucide="headphones" class="w-5 h-5 text-white"></i>
         </div>
         <div class="hidden sm:block">
           <h1 class="text-base font-bold tracking-tight">EPUB VoiceReader<span class="text-emerald-500 text-xs">™</span></h1>
-          <p class="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">Sách Nói Đa Định Dạng</p>
+          <p class="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">S&#225;ch N&#243;i &#270;a &#270;&#7883;nh D&#7841;ng</p>
         </div>
       </div>
     </div>
@@ -2706,12 +2976,15 @@ body.epub-active #epubSection {
   
 
         </div>
+        <!-- -----------------------------------------------------------------------
+             MODULE: PDF Extract (CVS) Section Layout
+             ----------------------------------------------------------------------- -->
         <div id="cvsSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                 <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
             </div>
             <div style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #ddd; max-width: 800px; margin: 0 auto; box-sizing: border-box;">
-                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">📊 Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
+                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">đŸ“ Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
                 
                 <div class="input-group-cvs" style="margin-top: 20px;">
                     <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #444; font-size: 14px;">1. Gemini API Key:</label>
@@ -2731,22 +3004,203 @@ body.epub-active #epubSection {
                 <div class="progress-wrapper-cvs" id="progressWrapperCvs" style="width: 100%; background-color: #e0e0e0; border-radius: 8px; margin-top: 15px; display: none; overflow: hidden; height: 22px;">
                     <div class="progress-bar-cvs" id="progressBarCvs" style="width: 0%; height: 100%; background-color: #34a853; text-align: center; line-height: 22px; color: white; font-size: 13px; font-weight: bold; transition: width 0.4s ease;">0%</div>
                 </div>
-
+ 
                 <div id="outputCvs" style="white-space: pre-wrap; background: #202124; color: #fff; padding: 20px; border-radius: 8px; margin-top: 20px; display: none; font-family: 'Consolas', monospace; font-size: 13px; max-height: 400px; overflow: auto; border: 1px solid #333;"></div>
-                <button id="copyBtnCvs" onclick="copyToClipboardCvs()" style="width: 100%; padding: 15px; margin-top: 15px; background-color: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: none;">📋 Copy D&#7919; Li&#7879;u</button>
+                <button id="copyBtnCvs" onclick="copyToClipboardCvs()" style="width: 100%; padding: 15px; margin-top: 15px; background-color: #ff9800; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: none;">đŸ“‹ Copy D&#7919; Li&#7879;u</button>
             </div>
         </div>
+        <!-- -----------------------------------------------------------------------
+             MODULE: Youtube Music Player (ZENG) Native Section Layout
+             ----------------------------------------------------------------------- -->
         <div id="zengSection" class="main-section" style="display: none;">
-            <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+            <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
                 <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
             </div>
-            <div style="width:100%; height:calc(100vh - 150px); border-radius: 12px; overflow: hidden; border: 1px solid #ddd; background-color: #0d0d0d;">
-                <iframe src="zeng.html" style="width:100%; height:100%; border:none;"></iframe>
+            <div style="width:100%; height:calc(100vh - 170px); min-height:520px; border-radius: 12px; overflow: hidden; border: 1px solid #333; background-color: #0d0d0d; flex-direction: column; position: relative;" class="bg-zeng-dark text-white font-sans flex flex-col overflow-hidden select-none relative">
+                
+    
+    <!-- HEADER -->
+    <header class="h-14 bg-black flex items-center justify-between px-4 sm:px-6 shrink-0 z-30 shadow-md">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-7 h-7 rounded-full bg-zeng-green flex items-center justify-center shadow-[0_0_15px_rgba(29,185,84,0.5)] shrink-0">
+                <i class="fas fa-play text-black text-xs ml-0.5"></i>
+            </div>
+            <h1 class="text-base sm:text-lg font-bold tracking-wider hidden xs:block">ZENG<span class="font-light">PLAYER</span></h1>
+        </div>
+
+        <!-- YOUTUBE SEARCH -->
+        <div class="flex-1 max-w-xs sm:max-w-md md:max-w-xl mx-2 sm:mx-4 relative">
+            <div class="flex items-center gap-2 bg-[#242424] hover:bg-[#2a2a2a] transition rounded-full px-3 sm:px-4 py-1 sm:py-1.5 border border-white/10 focus-within:border-zeng-green/50 focus-within:bg-black">
+                <i class="fab fa-youtube text-[#ff0000] text-sm sm:text-base"></i>
+                <input type="text" id="ytSearchInput" placeholder="T&#236;m YouTube..." class="bg-transparent text-xs text-white focus:outline-none w-full placeholder-gray-500">
+                <button id="btnYtSearch" class="text-zeng-light hover:text-white transition px-1 sm:px-2">
+                    <i class="fas fa-search text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <button id="btnTrending" class="bg-zeng-burgundy hover:bg-[#9a0028] text-white px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1 sm:gap-2 border border-white/10 shadow-[0_0_15px_rgba(128,0,32,0.3)]" title="Th&#7883;nh h&#224;nh YouTube">
+                <i class="fas fa-fire text-yellow-400 text-xs"></i> <span class="hidden sm:inline">Th&#7883;nh h&#224;nh</span>
+            </button>
+            <label for="fileInput" class="cursor-pointer bg-white/10 hover:bg-white/20 text-white px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1 sm:gap-2 border border-white/10" title="Ch&#7885;n th&#432; m&#7909;c nh&#7841;c offline">
+                <i class="fas fa-folder-open text-xs"></i> <span class="hidden sm:inline">Nh&#7841;c Offline</span>
+            </label>
+            <input type="file" id="fileInput" accept="audio/*, video/*" multiple webkitdirectory class="hidden">
+        </div>
+    </header>
+
+    <!-- SEARCH RESULTS MODAL -->
+    <div id="ytSearchResults" class="absolute top-14 left-0 right-0 bg-[#121212] border-b border-white/10 shadow-2xl z-40 max-h-[60vh] overflow-y-auto hidden flex flex-col">
+        <div class="p-3 flex justify-between items-center border-b border-white/5 bg-[#181818] sticky top-0 z-10">
+            <h2 class="text-sm sm:text-base font-bold">K&#7871;t qu&#7843; t&#7911; YouTube: <span id="lblSearchQuery" class="text-zeng-green font-normal"></span></h2>
+            <button id="btnCloseSearch" class="text-zeng-light hover:text-white p-1.5"><i class="fas fa-times text-lg"></i></button>
+        </div>
+        <div id="ytSearchLoading" class="p-8 text-center text-zeng-light hidden">
+            <i class="fas fa-circle-notch fa-spin text-3xl mb-3 text-zeng-green"></i>
+            <p class="text-xs">&#272;ang t&#236;m ki&#7871;m...</p>
+        </div>
+        <div id="ytResultsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-3">
+            <!-- Items injected by JS -->
+        </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <main class="flex-1 flex overflow-hidden relative z-0 min-h-0">
+        
+        <!-- PLAYER AREA (Left) -->
+        <div class="flex-1 bg-gradient-to-br from-[#2a2a2a] to-zeng-dark relative flex flex-col items-center justify-center p-3 sm:p-5 overflow-hidden min-h-0" id="playerArea">
+            
+            <!-- YouTube UI -->
+            <div id="ytContainer" class="w-full h-full max-h-full rounded-xl overflow-hidden shadow-2xl bg-black hidden items-center justify-center relative min-h-0">
+                <div id="ytPlayerDiv" class="w-full h-full"></div>
+            </div>
+
+            <!-- Video UI (Offline) -->
+            <div id="videoContainer" class="w-full h-full max-h-full rounded-xl overflow-hidden shadow-2xl bg-black hidden items-center justify-center relative group min-h-0">
+                <video id="videoElement" class="w-full h-full object-contain" playsinline></video>
+                <button id="btnPip" class="absolute top-4 right-4 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-10 flex items-center justify-center text-sm" title="Picture in Picture">
+                    <i class="fas fa-external-link-alt"></i>
+                </button>
+            </div>
+
+            <!-- Audio UI (Offline - Modern Glassmorphism Album Showcase) -->
+            <div id="audioContainer" class="w-full h-full flex flex-col items-center justify-center transition-all duration-500 min-h-0">
+                <!-- Modern Album Artwork Card (Replaces Vinyl Disc) -->
+                <div class="relative group">
+                    <div id="vinylCover" class="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-2xl border border-white/10 bg-gradient-to-br from-neutral-800 to-black shadow-2xl flex items-center justify-center overflow-hidden transition-all duration-300">
+                        <div id="vinylLabel" class="w-full h-full bg-cover bg-center flex items-center justify-center" style="background: linear-gradient(135deg, #1f2937, #111827);">
+                            <i class="fas fa-music text-4xl sm:text-5xl text-emerald-500/80 drop-shadow-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3 sm:mt-5 text-center max-w-xs sm:max-w-md w-full px-4">
+                    <h2 id="displayTitle" class="text-base sm:text-xl font-bold truncate text-white drop-shadow-md">Ch&#432;a c&#243; Media</h2>
+                    <p id="displayType" class="text-xs text-zeng-light mt-1 font-medium tracking-wide">H&#220;y ch&#7885;n nh&#7841;c &#273;&#7875; b&#7855;t &#273;&#7847;u ph&#225;t</p>
+                </div>
+                
+                <!-- Custom Canvas Visualizer -->
+                <div class="h-8 sm:h-10 w-full max-w-[280px] sm:max-w-md mt-3 sm:mt-4 flex items-end justify-center" id="visualizerBox">
+                    <canvas id="visualizerCanvas" width="300" height="48" class="opacity-80 w-full"></canvas>
+                </div>
+            </div>
+            
+            <audio id="audioElement"></audio>
+        </div>
+
+        <!-- PLAYLIST (Right / Responsive toggle sheet on mobile) -->
+        <aside id="playlistSidebar" class="hidden md:flex w-[320px] lg:w-[360px] bg-zeng-panel flex-col border-l border-white/5 shrink-0 z-10 shadow-xl transition-all duration-300 min-h-0">
+            <div class="p-3 sm:p-4 border-b border-white/5 flex justify-between items-center bg-[#1e1e1e]">
+                <h3 class="font-bold text-sm sm:text-base text-white">Danh S&#225;ch Ph&#225;t</h3>
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span id="trackCount" class="text-[10px] sm:text-xs text-zeng-light font-bold bg-white/10 px-2 py-1 rounded-full">0 b&#220;i</span>
+                    <button id="btnFetchMore" class="bg-zeng-green hover:bg-green-600 text-black text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full transition" title="L&#7845;y th&#234;m nh&#7841;c th&#7883;nh h&#224;nh">L&#7845;y ti&#7871;p</button>
+                    <button id="btnClearAll" class="bg-red-600 hover:bg-red-700 text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full transition" title="X&#243;a to&#224;n b&#7899; danh s&#225;ch">X&#243;a h&#7871;t</button>
+                </div>
+            </div>
+            
+            <div id="dropZone" class="flex-1 overflow-y-auto relative min-h-0">
+                <!-- Drop Overlay -->
+                <div id="dropOverlay" class="absolute inset-0 bg-zeng-green/20 border-2 border-dashed border-zeng-green z-50 hidden flex-col items-center justify-center text-white backdrop-blur-sm pointer-events-none transition-all">
+                    <i class="fas fa-cloud-download-alt text-5xl mb-3 drop-shadow-lg"></i>
+                    <p class="font-bold text-lg drop-shadow">Th&#7843; v&#220;o &#273;&#226;y</p>
+                </div>
+                
+                <ul id="playlist" class="p-2 space-y-1">
+                    <div class="h-full flex flex-col items-center justify-center text-zeng-light opacity-60 p-6 text-center mt-12">
+                        <i class="fas fa-music text-4xl mb-3"></i>
+                        <p class="text-xs">K&#233;o th&#7843; file/th&#432; m&#7909;c v&#220;o &#273;&#226;y<br>ho&#7866;c d&#249;ng n&#250;t <b>Nh&#7841;c Offline</b><br>ho&#7866;c <b>T&#236;m ki&#7871;m YouTube</b></p>
+                    </div>
+                </ul>
+            </div>
+        </aside>
+    </main>
+
+    <!-- BOTTOM CONTROLS -->
+    <footer class="h-18 bg-[#121212] border-t border-white/10 flex items-center justify-between px-4 shrink-0 relative z-30 shadow-2xl">
+        <!-- Left Info -->
+        <div class="w-1/4 sm:w-1/3 flex items-center gap-3 overflow-hidden">
+            <div id="thumbCover" class="w-10 h-10 sm:w-14 sm:h-14 bg-[#282828] rounded shadow-md flex items-center justify-center shrink-0 overflow-hidden bg-cover bg-center">
+                <i id="thumbIcon" class="fas fa-music text-zeng-light text-base sm:text-xl"></i>
+            </div>
+            <div class="overflow-hidden min-w-0">
+                <div id="bottomTitle" class="text-white text-xs sm:text-sm font-bold truncate cursor-default">Chưa phát</div>
+                <div id="bottomArtist" class="text-[10px] sm:text-xs text-zeng-light truncate mt-0.5 sm:mt-1">ZENG Player</div>
+            </div>
+        </div>
+
+        <!-- Center Player -->
+        <div class="flex-1 sm:w-1/3 flex flex-col items-center justify-center gap-1.5 sm:gap-2 px-2">
+            <div class="flex items-center gap-3.5 sm:gap-6">
+                <button id="btnShuffle" class="text-zeng-light hover:text-white transition text-xs sm:text-base" title="Trộn bài">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button id="btnPrev" class="text-zeng-light hover:text-white transition text-base sm:text-xl">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="btnPlayPause" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-white text-black rounded-full hover:scale-105 transition shadow-lg shrink-0">
+                    <i id="playIcon" class="fas fa-play ml-0.5 sm:ml-1 text-xs sm:text-sm"></i>
+                </button>
+                <button id="btnNext" class="text-zeng-light hover:text-white transition text-base sm:text-xl">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button id="btnRepeat" class="text-zeng-light hover:text-white transition relative text-xs sm:text-base" title="Lặp lại">
+                    <i class="fas fa-redo"></i>
+                    <span id="repeatIndicator" class="absolute -top-1.5 -right-1.5 text-[8px] bg-zeng-green text-black font-bold w-2.5 h-2.5 rounded-full flex items-center justify-center hidden">1</span>
+                </button>
+            </div>
+            <div class="flex items-center w-full max-w-[280px] sm:max-w-md gap-2 sm:gap-3 text-[10px] sm:text-xs text-zeng-light font-mono group">
+                <span id="timeCurrent" class="w-8 sm:w-10 text-right">0:00</span>
+                <input type="range" id="progressBar" min="0" max="100" value="0" class="flex-1">
+                <span id="timeDuration" class="w-8 sm:w-10">0:00</span>
+            </div>
+        </div>
+
+        <!-- Right Volume & Menu -->
+        <div class="w-1/4 sm:w-1/3 flex items-center justify-end gap-2.5 sm:gap-3 pr-1 group">
+            <button id="btnMute" class="text-zeng-light hover:text-white transition w-5 sm:w-6 text-center hidden md:inline-block">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="w-16 sm:w-24 hidden md:flex items-center">
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+            </div>
+            <button id="btnFullscreen" class="text-zeng-light hover:text-white transition w-5 sm:w-6 text-center" title="Toàn màn hình">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button id="btnTogglePlaylist" class="text-zeng-light hover:text-white transition w-5 sm:w-6 text-center md:hidden" title="Danh sách phát">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </footer>
             </div>
         </div>
 
 
-                <div id="xosoSection" class="main-section" style="display: none;">
+                <!-- -----------------------------------------------------------------------
+             MODULE: XSMB Northern Lottery Section Layout
+             ----------------------------------------------------------------------- -->
+        <div id="xosoSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                 <button class="back-btn" id="btnBackFromXoso" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
             </div>
@@ -2915,6 +3369,15 @@ body.epub-active #epubSection {
     <button class="yh-tool-btn" style="width:100%; margin-top:4px; padding:6px;" onclick="closeModals()">Đóng</button>
   </div>
 
+  <!-- ===================================================================
+       APPLICATION SCRIPT
+       =================================================================== -->
+  
+
+
+    <!-- -----------------------------------------------------------------------
+         MODULE: Background Hidden Minh Ngoc XSMB Loader Container
+         ----------------------------------------------------------------------- -->
     <div id="hiddenXosoContainer" style="position: absolute; left: -9999px; top: -9999px; width: 100%; display: block;">
         <div id="box_kqxs_minhngoc">
             <script language="javascript">
@@ -4530,7 +4993,15 @@ body.epub-active #epubSection {
         }
     }
 
-    // --- UTILITIES NAVIGATION ---
+
+    /* =======================================================================
+       PART D: JAVASCRIPT (CORE NAVIGATION & INTEGRATED MODULES LOGIC)
+       ======================================================================= */
+
+    /* -----------------------------------------------------------------------
+       CORE: Utilities Tab Navigation & Resizer Logic
+       ----------------------------------------------------------------------- */
+        // --- UTILITIES NAVIGATION ---
     let lastActivePage = 'home';
     
     function goBackFromUtility() {
@@ -4737,7 +5208,10 @@ body.epub-active #epubSection {
     }
     window.initChatResizer = initChatResizer;
 
-
+    /* -----------------------------------------------------------------------
+       MODULE: Chatroom Logic (MQTT Connection & Messaging Engine)
+       ----------------------------------------------------------------------- */
+    
 
     // =====================================================================
     // STATE & CONFIGURATION
@@ -5793,7 +6267,10 @@ body.epub-active #epubSection {
     };
   
 
-(function() {
+    /* -----------------------------------------------------------------------
+       MODULE: Excel Calculation Logic (IIFE)
+       ----------------------------------------------------------------------- */
+    (function() {
     
     let rowCount = 0;
     let separatedGroups = [];
@@ -6095,10 +6572,16 @@ body.epub-active #epubSection {
       return sum;
     }
 
-    function resetCurrentTable() {
+    function clearInputTable() {
       tableBody.innerHTML = '';
       addRow(true);
       calculateCurrentTotal();
+    }
+
+    function resetCurrentTable() {
+      separatedGroups = [];
+      renderHistory();
+      clearInputTable();
     }
 
     /* SPLIT GROUP - AUTOMATICALLY DISMISSES MOBILE KEYBOARD & SWITCHES TO HISTORY TAB */
@@ -6129,7 +6612,7 @@ body.epub-active #epubSection {
       });
 
       renderHistory();
-      resetCurrentTable();
+      clearInputTable();
 
       if (window.innerWidth < 1024) {
         switchMobileTab('history');
@@ -6246,10 +6729,13 @@ body.epub-active #epubSection {
     window.deleteRow = deleteRow;
     window.splitGroup = splitGroup;
     window.mergeGroups = mergeGroups;
-    window.handleKeyDown = handleKeyDown; // Export keydown handler to resolve enter row insertion crash
+    window.handleKeyDown = handleKeyDown;
 })();
 
-(function() {
+    /* -----------------------------------------------------------------------
+       MODULE: Epub Reader Logic (IIFE with SpeechSynthesis & FPT.AI)
+       ----------------------------------------------------------------------- */
+    (function() {
     
     // PDF.js worker setup
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
@@ -8291,7 +8777,7 @@ body.epub-active #epubSection {
     }
   
     
-    // Export functions to window for epub-reader.html inline HTML onclick/onchange/oninput resolution
+    // Export functions to window
     window.toggleEpubMobileSidebar = toggleEpubMobileSidebar;
     window.setReadingMode = setReadingMode;
     window.setReaderTheme = setReaderTheme;
@@ -8319,9 +8805,14 @@ body.epub-active #epubSection {
     window.updateSpeechParam = updateSpeechParam;
     window.goToPrevChapter = goToPrevChapter;
     window.goToNextChapter = goToNextChapter;
+    window.speakWithFptAi = speakWithFptAi;
+    window.playFptAiWithRetry = playFptAiWithRetry;
 })();
 
-(function() {
+    /* -----------------------------------------------------------------------
+       MODULE: PDF Extract (CVS) Logic (IIFE with Gemini API Engine)
+       ----------------------------------------------------------------------- */
+    (function() {
     
     let progressInterval;
 
@@ -8507,10 +8998,1119 @@ body.epub-active #epubSection {
     }
 
     
-    // Export to window for inline onclick execution
+    // Export to window
     window.processPDF = processPDF;
     window.copyToClipboardCvs = copyToClipboardCvs;
 })();
+
+    /* -----------------------------------------------------------------------
+       MODULE: Youtube Music Player (ZENG) Logic
+       ----------------------------------------------------------------------- */
+    // Helper to safely set CSS classes on both HTML elements and SVG elements (FontAwesome)
+function setClass(el, cls) {
+    if (!el) return;
+    if (typeof el.setAttribute === 'function') {
+        el.setAttribute('class', cls);
+    } else {
+        el.className = cls;
+    }
+}
+
+        // YouTube API Global Variables
+        let ytPlayer = null;
+        let ytReady = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const DOM = {
+                fileInput: document.getElementById('fileInput'),
+                playlist: document.getElementById('playlist'),
+                trackCount: document.getElementById('trackCount'),
+                dropZone: document.getElementById('dropZone'),
+                dropOverlay: document.getElementById('dropOverlay'),
+                
+                audioElement: document.getElementById('audioElement'),
+                videoElement: document.getElementById('videoElement'),
+                audioContainer: document.getElementById('audioContainer'),
+                videoContainer: document.getElementById('videoContainer'),
+                ytContainer: document.getElementById('ytContainer'),
+                
+                vinylCover: document.getElementById('vinylCover'),
+                displayTitle: document.getElementById('displayTitle'),
+                displayType: document.getElementById('displayType'),
+                canvas: document.getElementById('visualizerCanvas'),
+                
+                bottomTitle: document.getElementById('bottomTitle'),
+                bottomArtist: document.getElementById('bottomArtist'),
+                thumbCover: document.getElementById('thumbCover'),
+                thumbIcon: document.getElementById('thumbIcon'),
+                
+                btnPlayPause: document.getElementById('btnPlayPause'),
+                playIcon: document.getElementById('playIcon'),
+                btnPrev: document.getElementById('btnPrev'),
+                btnNext: document.getElementById('btnNext'),
+                btnShuffle: document.getElementById('btnShuffle'),
+                btnRepeat: document.getElementById('btnRepeat'),
+                repeatIndicator: document.getElementById('repeatIndicator'),
+                
+                progressBar: document.getElementById('progressBar'),
+                timeCurrent: document.getElementById('timeCurrent'),
+                timeDuration: document.getElementById('timeDuration'),
+                
+                btnMute: document.getElementById('btnMute'),
+                volumeSlider: document.getElementById('volumeSlider'),
+                btnFullscreen: document.getElementById('btnFullscreen'),
+                btnPip: document.getElementById('btnPip'),
+
+                // Search UI
+                ytSearchInput: document.getElementById('ytSearchInput'),
+                btnYtSearch: document.getElementById('btnYtSearch'),
+                ytSearchResults: document.getElementById('ytSearchResults'),
+                ytResultsGrid: document.getElementById('ytResultsGrid'),
+                btnCloseSearch: document.getElementById('btnCloseSearch'),
+                lblSearchQuery: document.getElementById('lblSearchQuery'),
+                ytSearchLoading: document.getElementById('ytSearchLoading'),
+                
+                btnTrending: document.getElementById('btnTrending'),
+                btnTogglePlaylist: document.getElementById('btnTogglePlaylist'),
+                btnFetchMore: document.getElementById('btnFetchMore'),
+                btnClearAll: document.getElementById('btnClearAll')
+            };
+
+            // Debug Validation
+            const missingElements = [];
+            for (const [key, element] of Object.entries(DOM)) {
+                if (!element) missingElements.push(key);
+            }
+            if (missingElements.length > 0) {
+                const errDiv = document.createElement('div');
+                errDiv.style.position = 'fixed';
+                errDiv.style.bottom = '10px';
+                errDiv.style.right = '10px';
+                errDiv.style.backgroundColor = 'red';
+                errDiv.style.color = 'white';
+                errDiv.style.padding = '10px';
+                errDiv.style.zIndex = '100000';
+                errDiv.innerHTML = `<strong>Lỗi giao diện:</strong> Không tìm thấy các phần tử: ${missingElements.join(', ')}`;
+                document.body.appendChild(errDiv);
+            }
+
+            // --- State ---
+            let tracks = [];
+            let currentTrackIndex = -1;
+            let activePlayerType = 'none';
+            let isPlaying = false;
+            let isDraggingProgress = false;
+            let ytTimer = null;
+            let isPlaylistOpen = false;
+            
+            let repeatMode = 0; 
+            let isShuffled = false;
+            let shuffleOrder = [];
+
+            // Web Audio API
+            let audioCtx = null;
+            let analyser = null;
+            let sourceNodes = new Map();
+            let canvasCtx = DOM.canvas ? DOM.canvas.getContext('2d') : null;
+            let animationId;
+
+
+            // --- Hoisted Helper & Core Functions ---
+            function formatTime(secs) {
+                if (isNaN(secs) || secs < 0) return '0:00';
+                const m = Math.floor(secs / 60);
+                const s = Math.floor(secs % 60);
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            }
+
+            function isMedia(file) {
+                const name = file.name.toLowerCase();
+                return file.type.startsWith('audio/') || file.type.startsWith('video/') ||
+                       name.match(/\.(mp3|wav|m4a|mp4|webm|ogg|mov|avi)$/);
+            }
+            
+            function isVideo(file) {
+                return file.type.startsWith('video/') || file.name.toLowerCase().match(/\.(mp4|webm|mov|avi)$/);
+            }
+
+            function startYtTimer() {
+                if (ytTimer) clearInterval(ytTimer);
+                ytTimer = setInterval(() => {
+                    if (ytPlayer && isPlaying && !isDraggingProgress) {
+                        const ct = ytPlayer.getCurrentTime();
+                        if (DOM.progressBar) DOM.progressBar.value = ct;
+                        if (DOM.timeCurrent) DOM.timeCurrent.textContent = formatTime(ct);
+                    }
+                }, 500);
+            }
+
+            function stopYtTimer() {
+                if (ytTimer) clearInterval(ytTimer);
+            }
+
+            function initAudioContext(mediaElement) {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioCtx.createAnalyser();
+                    analyser.fftSize = 128;
+                }
+                if (!sourceNodes.has(mediaElement)) {
+                    try {
+                        const source = audioCtx.createMediaElementSource(mediaElement);
+                        source.connect(analyser);
+                        analyser.connect(audioCtx.destination);
+                        sourceNodes.set(mediaElement, source);
+                    } catch (e) {
+                        console.log('AudioRouting exists or error:', e);
+                    }
+                }
+            }
+
+            let simOffset = 0;
+            function drawVisualizer() {
+                if (!isPlaying || !canvasCtx || !DOM.canvas) {
+                    if (canvasCtx && DOM.canvas) canvasCtx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+                    return;
+                }
+                
+                cancelAnimationFrame(animationId);
+                animationId = requestAnimationFrame(drawVisualizer);
+                
+                const barCount = 32;
+                const barWidth = (DOM.canvas.width / barCount) - 2;
+                let x = 0;
+
+                canvasCtx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+
+                if (activePlayerType === 'audio' && analyser) {
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+                    analyser.getByteFrequencyData(dataArray);
+
+                    for (let i = 0; i < barCount; i++) {
+                        const barHeight = (dataArray[i] / 255) * DOM.canvas.height;
+                        const gradient = canvasCtx.createLinearGradient(0, DOM.canvas.height, 0, 0);
+                        gradient.addColorStop(0, '#1DB954');
+                        gradient.addColorStop(1, '#1ed760');
+                        
+                        canvasCtx.fillStyle = gradient;
+                        const y = DOM.canvas.height - barHeight;
+                        canvasCtx.beginPath();
+                        canvasCtx.roundRect(x, y, barWidth, barHeight, 3);
+                        canvasCtx.fill();
+                        x += barWidth + 2;
+                    }
+                } else {
+                    // Simulated visualizer for YouTube, local Video, or fallback
+                    simOffset += 0.15;
+                    for (let i = 0; i < barCount; i++) {
+                        const waveVal = Math.sin(i * 0.3 + simOffset) * 0.4 + 0.6; // [0.2, 1.0]
+                        const noise = Math.random() * 0.25;
+                        const finalVal = Math.max(0.1, Math.min(1.0, waveVal * 0.7 + noise));
+                        const barHeight = finalVal * DOM.canvas.height;
+
+                        const gradient = canvasCtx.createLinearGradient(0, DOM.canvas.height, 0, 0);
+                        gradient.addColorStop(0, '#1DB954');
+                        gradient.addColorStop(1, '#1ed760');
+                        
+                        canvasCtx.fillStyle = gradient;
+                        const y = DOM.canvas.height - barHeight;
+                        canvasCtx.beginPath();
+                        canvasCtx.roundRect(x, y, barWidth, barHeight, 3);
+                        canvasCtx.fill();
+                        x += barWidth + 2;
+                    }
+                }
+            }
+
+            function setupPlayerEvents(player, type) {
+                if (!player) return;
+                player.addEventListener('timeupdate', () => {
+                    if (activePlayerType !== type) return;
+                    if (!isDraggingProgress) {
+                        if (DOM.progressBar) DOM.progressBar.value = player.currentTime;
+                        if (DOM.timeCurrent) DOM.timeCurrent.textContent = formatTime(player.currentTime);
+                    }
+                });
+                player.addEventListener('loadedmetadata', () => {
+                    if (activePlayerType !== type) return;
+                    if (DOM.progressBar) DOM.progressBar.max = player.duration;
+                    if (DOM.timeDuration) DOM.timeDuration.textContent = formatTime(player.duration);
+                });
+                player.addEventListener('ended', handleTrackEnd);
+                player.addEventListener('play', () => {
+                    if (activePlayerType !== type) return;
+                    isPlaying = true;
+                    if (DOM.playIcon) setClass(DOM.playIcon, 'fas fa-pause ml-0');
+                    if (DOM.vinylCover) DOM.vinylCover.classList.remove('paused');
+                    if (type === 'audio') {
+                        initAudioContext(DOM.audioElement);
+                        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                    }
+                    drawVisualizer();
+                });
+                player.addEventListener('pause', () => {
+                    if (activePlayerType !== type) return;
+                    isPlaying = false;
+                    if (DOM.playIcon) setClass(DOM.playIcon, 'fas fa-play ml-1');
+                    if (DOM.vinylCover) DOM.vinylCover.classList.add('paused');
+                    cancelAnimationFrame(animationId);
+                    if (canvasCtx && DOM.canvas) canvasCtx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+                });
+            }
+
+            function playTrack(index) {
+                if (index < 0 || index >= tracks.length) return;
+                currentTrackIndex = index;
+                const track = tracks[index];
+
+                if (DOM.audioElement) DOM.audioElement.pause();
+                if (DOM.videoElement) DOM.videoElement.pause();
+                if (ytPlayer && ytReady) {
+                    try { ytPlayer.stopVideo(); } catch(e) {}
+                }
+                stopYtTimer();
+                isPlaying = false;
+                if (DOM.playIcon) setClass(DOM.playIcon, 'fas fa-play ml-1');
+                if (DOM.vinylCover) DOM.vinylCover.classList.add('paused');
+
+                // Hide all player areas by default
+                if (DOM.audioContainer) DOM.audioContainer.classList.add('hidden');
+                if (DOM.videoContainer) {
+                    DOM.videoContainer.classList.remove('flex');
+                    DOM.videoContainer.classList.add('hidden');
+                }
+                if (DOM.ytContainer) {
+                    DOM.ytContainer.classList.remove('flex');
+                    DOM.ytContainer.classList.add('hidden');
+                }
+
+                // Clear artwork backgrounds
+                if (DOM.thumbCover) DOM.thumbCover.style.backgroundImage = 'none';
+                if (DOM.thumbIcon) setClass(DOM.thumbIcon, '');
+                
+                const vinylLabel = document.getElementById('vinylLabel');
+                if (vinylLabel) {
+                    vinylLabel.style.backgroundImage = 'repeating-radial-gradient(#800020, #800020 10px, #500014 10px, #500014 20px)';
+                }
+
+                if (track.type === 'local') {
+                    const url = URL.createObjectURL(track.file);
+                    const isVid = isVideo(track.file);
+
+                    if (isVid && DOM.videoElement) {
+                        activePlayerType = 'video';
+                        if (DOM.videoContainer) {
+                            DOM.videoContainer.classList.remove('hidden');
+                            DOM.videoContainer.classList.add('flex');
+                        }
+                        if (DOM.thumbIcon) setClass(DOM.thumbIcon, 'fas fa-video text-zeng-light text-xl');
+                        DOM.videoElement.src = url;
+                        DOM.videoElement.volume = DOM.volumeSlider ? parseFloat(DOM.volumeSlider.value) : 1;
+                        DOM.videoElement.play().catch(e => console.log('Autoplay error:', e));
+                    } else if (DOM.audioElement) {
+                        activePlayerType = 'audio';
+                        if (DOM.audioContainer) DOM.audioContainer.classList.remove('hidden');
+                        if (DOM.thumbIcon) setClass(DOM.thumbIcon, 'fas fa-music text-zeng-light text-xl');
+                        DOM.audioElement.src = url;
+                        DOM.audioElement.volume = DOM.volumeSlider ? parseFloat(DOM.volumeSlider.value) : 1;
+                        DOM.audioElement.play().catch(e => console.log('Autoplay error:', e));
+                    }
+                    
+                    if (DOM.displayTitle) DOM.displayTitle.textContent = track.name;
+                    if (DOM.displayType) DOM.displayType.textContent = isVid ? 'Đang phát Video (Offline)' : 'Đang phát Nhạc (Offline)';
+                    if (DOM.bottomTitle) DOM.bottomTitle.textContent = track.name;
+                    if (DOM.bottomArtist) DOM.bottomArtist.textContent = track.artist || 'Local File';
+                    
+                } else if (track.type === 'youtube') {
+                    activePlayerType = 'youtube';
+                    if (DOM.ytContainer) {
+                        DOM.ytContainer.classList.remove('hidden');
+                        DOM.ytContainer.classList.add('flex');
+                    }
+                    
+                    if (track.thumb) {
+                        if (DOM.thumbCover) DOM.thumbCover.style.backgroundImage = `url('${track.thumb}')`;
+                        if (vinylLabel) vinylLabel.style.backgroundImage = `url('${track.thumb}')`;
+                    } else if (DOM.thumbIcon) {
+                        setClass(DOM.thumbIcon, 'fab fa-youtube text-red-500 text-2xl');
+                    }
+
+                    if (DOM.displayTitle) DOM.displayTitle.textContent = track.name;
+                    if (DOM.displayType) DOM.displayType.textContent = 'Đang phát YouTube';
+                    if (DOM.bottomTitle) DOM.bottomTitle.textContent = track.name;
+                    if (DOM.bottomArtist) DOM.bottomArtist.textContent = track.artist || 'YouTube';
+
+                    const volVal = DOM.volumeSlider ? parseFloat(DOM.volumeSlider.value) : 1;
+                    if (ytReady && ytPlayer) {
+                        try {
+                            ytPlayer.loadVideoById(track.videoId);
+                            ytPlayer.setVolume(volVal * 100);
+                            ytPlayer.playVideo();
+                        } catch(e) { console.error('YT load error', e); }
+                    } else {
+                        const checkReady = setInterval(() => {
+                            if (ytReady && ytPlayer) {
+                                clearInterval(checkReady);
+                                try {
+                                    ytPlayer.loadVideoById(track.videoId);
+                                    ytPlayer.setVolume(volVal * 100);
+                                    ytPlayer.playVideo();
+                                } catch(e) { console.error('YT load error inside interval', e); }
+                            }
+                        }, 500);
+                    }
+                }
+                
+                renderPlaylist();
+            }
+
+            function handleTrackEnd() {
+                if (repeatMode === 2) {
+                    if (activePlayerType === 'audio' && DOM.audioElement) { DOM.audioElement.currentTime = 0; DOM.audioElement.play(); }
+                    else if (activePlayerType === 'video' && DOM.videoElement) { DOM.videoElement.currentTime = 0; DOM.videoElement.play(); }
+                    else if (activePlayerType === 'youtube' && ytPlayer) { ytPlayer.seekTo(0); ytPlayer.playVideo(); }
+                } else {
+                    playNext();
+                }
+            }
+
+            function playNext() {
+                if (tracks.length === 0) return;
+                let next = -1;
+                if (isShuffled) {
+                    const currentPos = shuffleOrder.indexOf(currentTrackIndex);
+                    if (currentPos < shuffleOrder.length - 1) next = shuffleOrder[currentPos + 1];
+                    else if (repeatMode === 1) next = shuffleOrder[0];
+                } else {
+                    if (currentTrackIndex < tracks.length - 1) next = currentTrackIndex + 1;
+                    else if (repeatMode === 1) next = 0;
+                }
+                if (next !== -1) playTrack(next);
+                else {
+                    if(activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.pause();
+                    if(activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.pause();
+                    if(activePlayerType === 'youtube' && ytPlayer) ytPlayer.pauseVideo();
+                    isPlaying = false;
+                }
+            }
+
+            function playPrev() {
+                if (tracks.length === 0) return;
+                let currentTime = 0;
+                if (activePlayerType === 'audio' && DOM.audioElement) currentTime = DOM.audioElement.currentTime;
+                else if (activePlayerType === 'video' && DOM.videoElement) currentTime = DOM.videoElement.currentTime;
+                else if (activePlayerType === 'youtube' && ytPlayer) currentTime = ytPlayer.getCurrentTime();
+
+                if (currentTime > 3) {
+                    if (activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.currentTime = 0;
+                    else if (activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.currentTime = 0;
+                    else if (activePlayerType === 'youtube' && ytPlayer) ytPlayer.seekTo(0);
+                    return;
+                }
+                
+                let prev = -1;
+                if (isShuffled) {
+                    const currentPos = shuffleOrder.indexOf(currentTrackIndex);
+                    if (currentPos > 0) prev = shuffleOrder[currentPos - 1];
+                    else if (repeatMode === 1) prev = shuffleOrder[shuffleOrder.length - 1];
+                } else {
+                    if (currentTrackIndex > 0) prev = currentTrackIndex - 1;
+                    else if (repeatMode === 1) prev = tracks.length - 1;
+                }
+                if (prev !== -1) playTrack(prev);
+            }
+
+            function generateShuffleOrder() {
+                shuffleOrder = [...Array(tracks.length).keys()];
+                for (let i = shuffleOrder.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffleOrder[i], shuffleOrder[j]] = [shuffleOrder[j], shuffleOrder[i]];
+                }
+                if (currentTrackIndex !== -1) {
+                    const idx = shuffleOrder.indexOf(currentTrackIndex);
+                    [shuffleOrder[0], shuffleOrder[idx]] = [shuffleOrder[idx], shuffleOrder[0]];
+                }
+            }
+
+            function renderPlaylist() {
+                if (DOM.trackCount) DOM.trackCount.textContent = `${tracks.length} bài`;
+                if (!DOM.playlist) return;
+
+                if (tracks.length === 0) {
+                    DOM.playlist.innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center text-zeng-light opacity-60 p-6 text-center mt-20">
+                            <i class="fas fa-music text-5xl mb-4"></i>
+                            <p class="text-sm">Kéo thả file/thư mục vào đây<br>hoặc dùng nút <b>Nhạc Offline</b><br>hoặc <b>Tìm kiếm YouTube</b></p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                DOM.playlist.innerHTML = '';
+                tracks.forEach((track, index) => {
+                    const isActive = index === currentTrackIndex;
+                    const li = document.createElement('li');
+                    setClass(li, `track-item group flex items-center p-3 rounded-lg cursor-pointer transition ${isActive ? 'track-active' : ''}`);
+                    const isYt = track.type === 'youtube';
+                    const iconType = isYt ? '<i class="fab fa-youtube text-red-500"></i>' : '<i class="fas fa-file-audio text-blue-400"></i>';
+
+                    li.innerHTML = `
+                        <div class="w-8 flex items-center justify-center shrink-0">
+                            ${isActive 
+                                ? `<i class="fas fa-chart-bar playing-icon text-sm"></i>`
+                                : `<span class="track-index text-zeng-light text-sm group-hover:hidden">${index + 1}</span>
+                                   <i class="fas fa-play text-white text-sm hidden group-hover:block ml-1"></i>`
+                            }
+                        </div>
+                        ${isYt && track.thumb ? `<img src="${track.thumb}" class="w-10 h-10 object-cover rounded mr-3 opacity-80 group-hover:opacity-100">` : ''}
+                        <div class="flex-1 overflow-hidden ${!isYt ? 'ml-2' : ''}">
+                            <div class="track-title text-sm truncate ${isActive ? '' : 'text-white'}">${track.name}</div>
+                            <div class="text-xs text-zeng-light truncate flex items-center gap-1">
+                                ${iconType} ${track.artist}
+                            </div>
+                        </div>
+                        <button class="delete-btn opacity-0 group-hover:opacity-100 p-2 text-zeng-light hover:text-red-500 transition" title="Xóa">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+
+                    li.addEventListener('click', (e) => {
+                        if (!e.target.closest('.delete-btn')) {
+                            playTrack(index);
+                            // On mobile, automatically close playlist sheet when track is selected
+                            if (isPlaylistOpen && DOM.btnTogglePlaylist) {
+                                DOM.btnTogglePlaylist.click();
+                            }
+                        }
+                    });
+                    li.querySelector('.delete-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        tracks.splice(index, 1);
+                        if (currentTrackIndex === index) {
+                            currentTrackIndex = -1;
+                            if (activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.pause();
+                            if (activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.pause();
+                            if (activePlayerType === 'youtube' && ytPlayer) {
+                                try { ytPlayer.stopVideo(); } catch(e) {}
+                            }
+                            if(tracks.length > 0) playTrack(Math.min(index, tracks.length - 1));
+                            else playTrack(-1);
+                        } else if (currentTrackIndex > index) currentTrackIndex--;
+                        if (isShuffled) generateShuffleOrder();
+                        renderPlaylist();
+                    });
+                    DOM.playlist.appendChild(li);
+                });
+                
+                const activeLi = DOM.playlist.querySelector('.track-active');
+                if (activeLi) activeLi.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            function loadLocalFiles(fileList) {
+                const newTracks = [];
+                for (let i = 0; i < fileList.length; i++) {
+                    if (isMedia(fileList[i])) {
+                        newTracks.push({
+                            type: 'local',
+                            name: fileList[i].name,
+                            artist: fileList[i].webkitRelativePath ? fileList[i].webkitRelativePath.split('/')[0] : 'Local File',
+                            file: fileList[i]
+                        });
+                    }
+                }
+                if (newTracks.length > 0) {
+                    tracks = [...tracks, ...newTracks];
+                    if (isShuffled) generateShuffleOrder();
+                    renderPlaylist();
+                    if (currentTrackIndex === -1) playTrack(tracks.length - newTracks.length);
+                }
+            }
+
+            // --- Parallel Multi-Provider YouTube Search Racing (Invidious + Piped) ---
+            const YT_PROXY_ENDPOINTS = [
+                "https://yewtu.be/api/v1/search?q=",
+                "https://invidious.projectsegfau.lt/api/v1/search?q=",
+                "https://inv.us.projectsegfau.lt/api/v1/search?q=",
+                "https://invidious.lunar.icu/api/v1/search?q=",
+                "https://invidious.flokinet.to/api/v1/search?q=",
+                "https://pipedapi.palvelu.org/search?q=",
+                "https://pipedapi.drgns.space/search?q="
+            ];
+
+            async function fetchPipedParallel(endpoint) {
+                const match = endpoint.match(/q=([^&]+)/);
+                const rawQuery = match ? match[1] : '';
+
+                const controllers = [];
+                const promises = YT_PROXY_ENDPOINTS.map(baseUrl => {
+                    const controller = new AbortController();
+                    controllers.push(controller);
+                    const targetUrl = baseUrl + rawQuery;
+
+                    return fetch(targetUrl, { signal: controller.signal })
+                        .then(async res => {
+                            if (res.ok) {
+                                const data = await res.json();
+                                let items = Array.isArray(data) ? data : (data && data.items ? data.items : []);
+                                if (items && items.length > 0) {
+                                    controllers.forEach(c => { try { c.abort(); } catch(e) {} });
+                                    return items;
+                                }
+                            }
+                            throw new Error("No data");
+                        });
+                });
+
+                try {
+                    return await Promise.any(promises);
+                } catch (aggregateError) {
+                    throw new Error("T&#7845;t c&#7843; c&#225;c m&#225;y ch&#7911; YouTube d&#7911; ph&#242;ng &#273;&#7875;u &#273;ang b&#7853;n. Vui l&#242;ng th&#7917; l&#7841;i sau gi&#226;y l&#225;t ho&#7866;c d&#225;n link tr&#7911;c ti&#7871;p!");
+                }
+            }
+
+            function mapPipedItem(item) {
+                const videoId = item.videoId || (item.url ? item.url.replace('/watch?v=', '').split('&')[0] : '');
+                const title = item.title || "YouTube Video";
+                const author = item.author || item.uploaderName || "YouTube";
+                let thumbnail = item.thumbnail || (item.videoThumbnails && item.videoThumbnails[0] ? item.videoThumbnails[0].url : '');
+                if (!thumbnail || thumbnail.includes('undefined')) {
+                    thumbnail = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+                }
+
+                let secs = 0;
+                if (typeof item.duration === 'number') {
+                    secs = item.duration;
+                } else if (item.durationString) {
+                    const parts = item.durationString.split(':').map(Number);
+                    if (parts.length === 2) secs = parts[0] * 60 + parts[1];
+                    else if (parts.length === 3) secs = parts[0] * 3600 + parts[1] * 60 + parts[2];
+                }
+                const durationText = formatTime(secs);
+                
+                return {
+                    videoId: videoId,
+                    title: title,
+                    author: author,
+                    thumbnail: thumbnail,
+                    durationText: durationText
+                };
+            }
+
+            function isPlayableVideo(item) {
+                if (!item) return false;
+                if (item.type && (item.type === 'playlist' || item.type === 'channel' || item.type === 'mix')) return false;
+                
+                let videoId = item.videoId || '';
+                if (!videoId && item.url) {
+                    if (item.url.includes('/playlist') || item.url.includes('list=')) return false;
+                    const match = item.url.match(/[?&]v=([^&]+)/);
+                    if (match) videoId = match[1];
+                    else if (!item.url.includes('/')) videoId = item.url;
+                }
+                
+                if (!videoId || videoId.length !== 11 || videoId.startsWith('PL')) {
+                    return false;
+                }
+                return true;
+            }
+
+            async function searchYouTube(query) {
+                if (DOM.ytSearchResults) DOM.ytSearchResults.classList.remove('hidden');
+                if (DOM.ytSearchLoading) DOM.ytSearchLoading.classList.remove('hidden');
+                if (DOM.ytResultsGrid) DOM.ytResultsGrid.innerHTML = '';
+                if (DOM.lblSearchQuery) DOM.lblSearchQuery.textContent = query;
+
+                const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+                const match = query.match(ytRegex);
+                if (match && match[1]) {
+                    const videoId = match[1];
+                    try {
+                        const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+                        const data = await res.json();
+                        addYouTubeTrack({
+                            videoId: videoId,
+                            title: data.title || 'YouTube Video',
+                            author: data.author_name || 'YouTube',
+                            thumb: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+                        });
+                        if (DOM.ytSearchResults) DOM.ytSearchResults.classList.add('hidden');
+                        return;
+                    } catch (e) {
+                        addYouTubeTrack({
+                            videoId: videoId,
+                            title: 'YouTube Video',
+                            author: 'YouTube',
+                            thumb: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+                        });
+                        if (DOM.ytSearchResults) DOM.ytSearchResults.classList.add('hidden');
+                        return;
+                    }
+                }
+
+                try {
+                    const data = await fetchPipedParallel(`search?q=${encodeURIComponent(query)}`);
+                    const rawItems = Array.isArray(data) ? data : (data && data.items ? data.items : []);
+                    const videos = rawItems.filter(isPlayableVideo).map(mapPipedItem);
+                    if (DOM.ytSearchLoading) DOM.ytSearchLoading.classList.add('hidden');
+                    if (videos.length === 0) {
+                        if (DOM.ytResultsGrid) DOM.ytResultsGrid.innerHTML = '<div class="col-span-full text-center p-4">Không tìm thấy video nào. Vui lòng thử lại!</div>';
+                        return;
+                    }
+                    renderYtSearchResults(videos);
+                } catch (err) {
+                    console.error("YouTube search error", err);
+                    if (DOM.ytSearchLoading) DOM.ytSearchLoading.classList.add('hidden');
+                    if (DOM.ytResultsGrid) {
+                        DOM.ytResultsGrid.innerHTML = `<div class="col-span-full text-center text-red-400 p-4">Lỗi: ${err.message}</div>`;
+                    }
+                }
+            }
+
+            function renderYtSearchResults(results) {
+                if (!DOM.ytResultsGrid) return;
+                DOM.ytResultsGrid.innerHTML = '';
+                results.slice(0, 24).forEach(item => {
+                    const card = document.createElement('div');
+                    setClass(card, 'bg-[#242424] hover:bg-[#333] transition rounded-lg p-3 cursor-pointer group flex flex-col gap-2 border border-white/5');
+                    
+                    card.innerHTML = `
+                        <div class="relative w-full aspect-video rounded overflow-hidden">
+                            <img src="${item.thumbnail}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                <i class="fas fa-plus text-white text-3xl"></i>
+                            </div>
+                            <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">${item.durationText}</div>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="text-white text-sm font-bold line-clamp-2 leading-tight">${item.title}</h4>
+                            <p class="text-zeng-light text-xs mt-1 truncate"><i class="fas fa-user-circle"></i> ${item.author}</p>
+                        </div>
+                    `;
+
+                    card.onclick = () => {
+                        addYouTubeTrack({
+                            videoId: item.videoId,
+                            title: item.title,
+                            author: item.author,
+                            thumb: item.thumbnail
+                        });
+                        if (DOM.ytSearchResults) DOM.ytSearchResults.classList.add('hidden');
+                    };
+                    DOM.ytResultsGrid.appendChild(card);
+                });
+            }
+
+            function addYouTubeTrack(ytData) {
+                tracks.push({
+                    type: 'youtube',
+                    name: ytData.title,
+                    artist: ytData.author,
+                    videoId: ytData.videoId,
+                    thumb: ytData.thumb
+                });
+                if (isShuffled) generateShuffleOrder();
+                renderPlaylist();
+                playTrack(tracks.length - 1);
+            }
+
+            // --- Initialize Setup ---
+            setupPlayerEvents(DOM.audioElement, 'audio');
+            setupPlayerEvents(DOM.videoElement, 'video');
+
+            // --- YouTube Setup (Dynamic Loading to prevent race conditions) ---
+            window.onYtStateChange = (event) => {
+                if (activePlayerType !== 'youtube') return;
+                
+                if (event.data === YT.PlayerState.PLAYING) {
+                    isPlaying = true;
+                    if (DOM.playIcon) setClass(DOM.playIcon, 'fas fa-pause ml-0');
+                    if (DOM.vinylCover) DOM.vinylCover.classList.remove('paused');
+                    if (DOM.progressBar && ytPlayer) {
+                        DOM.progressBar.max = ytPlayer.getDuration();
+                        DOM.timeDuration.textContent = formatTime(ytPlayer.getDuration());
+                    }
+                    
+                    // Force set volume to match volume slider on active playback
+                    const volVal = DOM.volumeSlider ? parseFloat(DOM.volumeSlider.value) : 1;
+                    try { ytPlayer.setVolume(volVal * 100); } catch(e) {}
+
+                    startYtTimer();
+                    drawVisualizer();
+                } else if (event.data === YT.PlayerState.PAUSED) {
+                    isPlaying = false;
+                    if (DOM.playIcon) setClass(DOM.playIcon, 'fas fa-play ml-1');
+                    if (DOM.vinylCover) DOM.vinylCover.classList.add('paused');
+                    stopYtTimer();
+                    cancelAnimationFrame(animationId);
+                    if (canvasCtx && DOM.canvas) canvasCtx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+                } else if (event.data === YT.PlayerState.ENDED) {
+                    if (DOM.vinylCover) DOM.vinylCover.classList.add('paused');
+                    stopYtTimer();
+                    cancelAnimationFrame(animationId);
+                    if (canvasCtx && DOM.canvas) canvasCtx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+                    handleTrackEnd();
+                }
+            };
+
+            window.onYtError = (event) => {
+                console.warn("YouTube Player error code:", event ? event.data : 'unknown');
+                if (currentTrackIndex >= 0 && currentTrackIndex < tracks.length) {
+                    const brokenTrack = tracks[currentTrackIndex];
+                    console.log("Automatically removing unplayable video:", brokenTrack ? brokenTrack.name : currentTrackIndex);
+                    tracks.splice(currentTrackIndex, 1);
+                    renderPlaylist();
+                    
+                    if (tracks.length > 0) {
+                        const nextIdx = currentTrackIndex >= tracks.length ? 0 : currentTrackIndex;
+                        playTrack(nextIdx);
+                    } else {
+                        currentTrackIndex = -1;
+                        if (DOM.displayTitle) DOM.displayTitle.textContent = "Kh&#244;ng c&#243; media kh&#7843; d&#7909;ng";
+                        if (DOM.displayType) DOM.displayType.textContent = "C&#225;c b&#220;i h&#225;t kh&#244;ng xem &#273;&#432;&#7853;c &#273;&#227; t&#7901; &#273;&#7897;ng b&#7883; lo&#7841;i b&#7887;";
+                    }
+                }
+            };
+
+            window.onYouTubeIframeAPIReady = () => {
+                ytPlayer = new YT.Player('ytPlayerDiv', {
+                    height: '100%',
+                    width: '100%',
+                    playerVars: {
+                        'playsinline': 1,
+                        'controls': 1,
+                        'disablekb': 0,
+                        'autoplay': 1,
+                        'rel': 0
+                    },
+                    events: {
+                        'onReady': () => { ytReady = true; },
+                        'onStateChange': window.onYtStateChange,
+                        'onError': window.onYtError
+                    }
+                });
+            };
+
+            // Dynamically load the YouTube IFrame API script
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // --- Bind Interactive Events ---
+            if (DOM.btnPlayPause) {
+                DOM.btnPlayPause.onclick = () => {
+                    if (tracks.length === 0) return;
+                    if (currentTrackIndex === -1) { playTrack(0); return; }
+                    if (activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.paused ? DOM.audioElement.play() : DOM.audioElement.pause();
+                    else if (activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.paused ? DOM.videoElement.play() : DOM.videoElement.pause();
+                    else if (activePlayerType === 'youtube' && ytPlayer) {
+                        try {
+                            ytPlayer.getPlayerState() === YT.PlayerState.PLAYING ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+                        } catch(e) {}
+                    }
+                };
+            }
+
+            if (DOM.btnNext) DOM.btnNext.onclick = playNext;
+            if (DOM.btnPrev) DOM.btnPrev.onclick = playPrev;
+
+            if (DOM.progressBar) {
+                DOM.progressBar.oninput = (e) => {
+                    isDraggingProgress = true;
+                    if (DOM.timeCurrent) DOM.timeCurrent.textContent = formatTime(e.target.value);
+                };
+                DOM.progressBar.onchange = (e) => {
+                    isDraggingProgress = false;
+                    const val = parseFloat(e.target.value);
+                    if (activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.currentTime = val;
+                    else if (activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.currentTime = val;
+                    else if (activePlayerType === 'youtube' && ytPlayer) ytPlayer.seekTo(val, true);
+                };
+            }
+
+            if (DOM.volumeSlider) {
+                DOM.volumeSlider.oninput = (e) => {
+                    const vol = parseFloat(e.target.value);
+                    if (DOM.audioElement) DOM.audioElement.volume = vol;
+                    if (DOM.videoElement) DOM.videoElement.volume = vol;
+                    if (ytPlayer && ytReady) {
+                        try { ytPlayer.setVolume(vol * 100); } catch(e) {}
+                    }
+                    if (DOM.btnMute) {
+                        const icon = DOM.btnMute.querySelector('i');
+                        if (icon) {
+                            if (vol == 0) setClass(icon, 'fas fa-volume-mute');
+                            else if (vol < 0.5) setClass(icon, 'fas fa-volume-down');
+                            else setClass(icon, 'fas fa-volume-up');
+                        }
+                    }
+                };
+            }
+            
+            if (DOM.btnMute) {
+                DOM.btnMute.onclick = () => {
+                    if (DOM.volumeSlider) {
+                        const newVol = parseFloat(DOM.volumeSlider.value) == 0 ? 1 : 0;
+                        DOM.volumeSlider.value = newVol;
+                        DOM.volumeSlider.dispatchEvent(new Event('input'));
+                    }
+                };
+            }
+
+            if (DOM.btnShuffle) {
+                DOM.btnShuffle.onclick = () => {
+                    isShuffled = !isShuffled;
+                    setClass(DOM.btnShuffle, isShuffled ? 'text-zeng-green hover:text-green-400 transition' : 'text-zeng-light hover:text-white transition');
+                    if (isShuffled) generateShuffleOrder();
+                };
+            }
+
+            if (DOM.btnRepeat) {
+                DOM.btnRepeat.onclick = () => {
+                    repeatMode = (repeatMode + 1) % 3;
+                    if (repeatMode === 0) {
+                        setClass(DOM.btnRepeat, 'text-zeng-light hover:text-white transition relative');
+                        if (DOM.repeatIndicator) DOM.repeatIndicator.classList.add('hidden');
+                    } else if (repeatMode === 1) {
+                        setClass(DOM.btnRepeat, 'text-zeng-green hover:text-green-400 transition relative');
+                        if (DOM.repeatIndicator) DOM.repeatIndicator.classList.add('hidden');
+                    } else {
+                        setClass(DOM.btnRepeat, 'text-zeng-green hover:text-green-400 transition relative');
+                        if (DOM.repeatIndicator) DOM.repeatIndicator.classList.remove('hidden');
+                    }
+                };
+            }
+
+            if (DOM.btnPip) {
+                DOM.btnPip.onclick = async () => {
+                    if (activePlayerType === 'video' && DOM.videoElement && DOM.videoElement.readyState >= 2) {
+                        if (document.pictureInPictureElement) await document.exitPictureInPicture();
+                        else await DOM.videoElement.requestPictureInPicture();
+                    }
+                };
+            }
+
+            if (DOM.btnFullscreen) {
+                DOM.btnFullscreen.onclick = () => {
+                    if (!document.fullscreenElement) {
+                        if (activePlayerType === 'video' && DOM.videoContainer) DOM.videoContainer.requestFullscreen().catch(()=>{});
+                        else if (activePlayerType === 'youtube' && DOM.ytContainer) DOM.ytContainer.requestFullscreen().catch(()=>{});
+                        else document.documentElement.requestFullscreen();
+                    } else document.exitFullscreen();
+                };
+            }
+
+            if (DOM.fileInput) {
+                DOM.fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) loadLocalFiles(e.target.files);
+                });
+            }
+
+            if (DOM.dropZone) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
+                    DOM.dropZone.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+                });
+                DOM.dropZone.addEventListener('dragenter', () => { if (DOM.dropOverlay) DOM.dropOverlay.classList.remove('hidden'); });
+                DOM.dropZone.addEventListener('dragover', () => { if (DOM.dropOverlay) DOM.dropOverlay.classList.remove('hidden'); });
+                DOM.dropZone.addEventListener('dragleave', (e) => {
+                    if (DOM.dropOverlay && e.target === DOM.dropOverlay) DOM.dropOverlay.classList.add('hidden');
+                });
+                DOM.dropZone.addEventListener('drop', (e) => {
+                    if (DOM.dropOverlay) DOM.dropOverlay.classList.add('hidden');
+                    if (e.dataTransfer.files.length > 0) loadLocalFiles(e.dataTransfer.files);
+                });
+            }
+
+            if (DOM.btnYtSearch) {
+                DOM.btnYtSearch.onclick = () => {
+                    if (DOM.ytSearchInput) {
+                        const query = DOM.ytSearchInput.value.trim();
+                        if (query) searchYouTube(query);
+                    }
+                };
+            }
+            
+            if (DOM.ytSearchInput) {
+                DOM.ytSearchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = DOM.ytSearchInput.value.trim();
+                        if (query) searchYouTube(query);
+                    }
+                });
+            }
+            
+            if (DOM.btnCloseSearch) {
+                DOM.btnCloseSearch.onclick = () => {
+                    if (DOM.ytSearchResults) DOM.ytSearchResults.classList.add('hidden');
+                };
+            }
+
+            // Mobile playlist toggle
+            if (DOM.btnTogglePlaylist) {
+                DOM.btnTogglePlaylist.onclick = () => {
+                    isPlaylistOpen = !isPlaylistOpen;
+                    const sidebar = document.getElementById('playlistSidebar');
+                    if (isPlaylistOpen) {
+                        sidebar.classList.remove('hidden');
+                        sidebar.classList.add('fixed', 'inset-y-16', 'left-0', 'right-0', 'bottom-24', 'w-full', 'z-40', 'flex');
+                        DOM.btnTogglePlaylist.classList.add('text-zeng-green');
+                    } else {
+                        sidebar.classList.add('hidden');
+                        sidebar.classList.remove('fixed', 'inset-y-16', 'left-0', 'right-0', 'bottom-24', 'w-full', 'z-40', 'flex');
+                        DOM.btnTogglePlaylist.classList.remove('text-zeng-green');
+                    }
+                };
+            }
+
+            // Trending Button Event (Loads Vietnam trending music into playlist)
+            if (DOM.btnTrending) {
+                DOM.btnTrending.onclick = async () => {
+                    const originalHTML = DOM.btnTrending.innerHTML;
+                    DOM.btnTrending.innerHTML = '<i class="fas fa-spinner fa-spin text-yellow-400"></i> <span>Đang tải...</span>';
+                    DOM.btnTrending.disabled = true;
+                    
+                    try {
+                        const data = await fetchPipedParallel("search?q=nhac+trending+viet+nam+hay+nhat");
+                        const trendingVideos = (data.items || data || []).map(mapPipedItem);
+                        if (trendingVideos.length > 0) {
+                            const newTracks = trendingVideos.map(video => ({
+                                type: 'youtube',
+                                name: video.title,
+                                artist: video.author,
+                                videoId: video.videoId,
+                                thumb: video.thumbnail
+                            }));
+                            
+                            tracks = [...tracks, ...newTracks];
+                            if (isShuffled) generateShuffleOrder();
+                            renderPlaylist();
+                            
+                            if (currentTrackIndex === -1) {
+                                playTrack(tracks.length - newTracks.length);
+                            }
+                            
+                            alert(`Đã thêm thành công ${newTracks.length} bài hát & video thịnh hành vào danh sách phát!`);
+                        } else {
+                            alert("Không tải được danh sách thịnh hành. Hãy thử lại!");
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert(`Lỗi khi tải danh sách thịnh hành: ${e.message}`);
+                    } finally {
+                        DOM.btnTrending.innerHTML = originalHTML;
+                        DOM.btnTrending.disabled = false;
+                    }
+                };
+            }
+            // State for fetching more (Queries list rotation to get new tracks)
+            const FETCH_MORE_QUERIES = [
+                "nhac tre hay nhat hien nay",
+                "official mv music video viet nam",
+                "nhac remix hot tik tok",
+                "nhac chill lofi viet nam",
+                "nhac pop vpop hay nhat",
+                "nhac tru tinh bolero hay nhat"
+            ];
+            let fetchMoreIndex = 0;
+
+            if (DOM.btnFetchMore) {
+                DOM.btnFetchMore.onclick = async () => {
+                    const originalHTML = DOM.btnFetchMore.innerHTML;
+                    DOM.btnFetchMore.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Lấy tiếp';
+                    DOM.btnFetchMore.disabled = true;
+                    
+                    const query = FETCH_MORE_QUERIES[fetchMoreIndex % FETCH_MORE_QUERIES.length];
+                    fetchMoreIndex++;
+
+                    try {
+                        const data = await fetchPipedParallel(`search?q=${encodeURIComponent(query)}`);
+                        const trendingVideos = (data.items || data || []).map(mapPipedItem);
+                        
+                        // Avoid duplicates
+                        const existingIds = new Set(tracks.filter(t => t.type === 'youtube').map(t => t.videoId));
+                        const newTracks = trendingVideos.filter(v => !existingIds.has(v.videoId)).map(video => ({
+                            type: 'youtube',
+                            name: video.title,
+                            artist: video.author,
+                            videoId: video.videoId,
+                            thumb: video.thumbnail
+                        }));
+
+                        if (newTracks.length > 0) {
+                            tracks = [...tracks, ...newTracks];
+                            if (isShuffled) generateShuffleOrder();
+                            renderPlaylist();
+                            
+                            if (currentTrackIndex === -1) {
+                                playTrack(tracks.length - newTracks.length);
+                            }
+                            
+                            alert(`Đã lấy thêm thành công ${newTracks.length} bài hát mới vào danh sách phát!`);
+                        } else {
+                            alert("Không tìm thấy bài hát mới nào từ lượt tải này. Hãy thử lại!");
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert(`Lỗi khi lấy tiếp nhạc: ${e.message}`);
+                    } finally {
+                        DOM.btnFetchMore.innerHTML = originalHTML;
+                        DOM.btnFetchMore.disabled = false;
+                    }
+                };
+            }
+
+            if (DOM.btnClearAll) {
+                DOM.btnClearAll.onclick = () => {
+                    if (confirm("Bạn có chắc chắn muốn xóa toàn bộ danh sách phát hiện tại?")) {
+                        tracks = [];
+                        currentTrackIndex = -1;
+                        if (DOM.audioElement) DOM.audioElement.pause();
+                        if (DOM.videoElement) DOM.videoElement.pause();
+                        if (ytPlayer && ytReady) {
+                            try { ytPlayer.stopVideo(); } catch(e) {}
+                        }
+                        stopYtTimer();
+                        isPlaying = false;
+                        if (DOM.playIcon) setClass(DOM.playIcon, 'fas fa-play ml-1');
+                        if (DOM.vinylCover) DOM.vinylCover.classList.add('paused');
+
+                        if (DOM.displayTitle) DOM.displayTitle.textContent = "Chưa có Media";
+                        if (DOM.displayType) DOM.displayType.textContent = "Hãy chọn nhạc để bắt đầu phát";
+                        if (DOM.bottomTitle) DOM.bottomTitle.textContent = "Chưa phát";
+                        if (DOM.bottomArtist) DOM.bottomArtist.textContent = "ZENG Player";
+                        if (DOM.thumbCover) DOM.thumbCover.style.backgroundImage = 'none';
+                        if (DOM.thumbIcon) setClass(DOM.thumbIcon, 'fas fa-music text-zeng-light text-xl');
+                        const vinylLabel = document.getElementById('vinylLabel');
+                        if (vinylLabel) vinylLabel.style.backgroundImage = 'repeating-radial-gradient(#800020, #800020 10px, #500014 10px, #500014 20px)';
+
+                        renderPlaylist();
+                    }
+                };
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (DOM.ytSearchInput && e.target === DOM.ytSearchInput) return;
+                if (e.code === 'Space' && e.target === document.body) {
+                    e.preventDefault();
+                    if (DOM.btnPlayPause) DOM.btnPlayPause.click();
+                } else if (e.code === 'ArrowRight') {
+                    if (activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.currentTime += 5;
+                    else if (activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.currentTime += 5;
+                    else if (activePlayerType === 'youtube' && ytPlayer) {
+                        try { ytPlayer.seekTo(ytPlayer.getCurrentTime() + 5, true); } catch(e) {}
+                    }
+                } else if (e.code === 'ArrowLeft') {
+                    if (activePlayerType === 'audio' && DOM.audioElement) DOM.audioElement.currentTime -= 5;
+                    else if (activePlayerType === 'video' && DOM.videoElement) DOM.videoElement.currentTime -= 5;
+                    else if (activePlayerType === 'youtube' && ytPlayer) {
+                        try { ytPlayer.seekTo(ytPlayer.getCurrentTime() - 5, true); } catch(e) {}
+                    }
+                }
+            });
+        });
+    
 
     async function runLogoAnimation() {
         const containers = document.querySelectorAll('.simple-animated-logo'); if (containers.length === 0) return;
@@ -9101,6 +10701,17 @@ body.epub-active #epubSection {
 
     runLogoAnimation(); updateOnlineCounter(); initChatroom();
 })();
+</script>
+<script>
+setTimeout(() => {
+    const home = document.getElementById('homePage');
+    const zeng = document.getElementById('zengSection');
+    const report = [
+        "homeDisp:" + window.getComputedStyle(home).display,
+        "zengDisp:" + window.getComputedStyle(zeng).display
+    ];
+    document.title = "NO_AUTOCLICK: " + report.join(" | ");
+}, 2000);
 </script>
 </body>
 </html>
