@@ -1604,6 +1604,7 @@ input[type=range]:active::-webkit-slider-thumb {
         .main-copyright { text-align: center; margin-top: 6px !important; margin-bottom: 2px !important; padding: 2px 0 !important; font-size: 11px !important; color: #aaa; font-weight: 500; }
         .main-section .nav-header { padding-bottom: 6px !important; margin-bottom: 8px !important; display: flex !important; }
         .main-section .nav-header .back-btn,
+        #zengSection button.back-btn,
         .back-btn {
             background-color: #107c41 !important;
             color: #ffffff !important;
@@ -2175,7 +2176,7 @@ input[type=range]:active::-webkit-slider-thumb {
              ----------------------------------------------------------------------- -->
         <div id="utilitiesSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                <button class="back-btn" onclick="showSection(lastActiveSection || 'reportSection')">&#11013; Quay l&#7841;i B&#225;o c&#225;o</button>
+                <button class="back-btn" onclick="showSection(window.lastActiveSection || 'reportSection')">&#11013; Quay l&#7841;i B&#225;o c&#225;o</button>
             </div>
             <h3 style="text-align: center; margin-top: 10px; color: var(--primary-color); font-size: 22px;">&#128736; H&#7878; TH&#7888;NG TI&#7879;N &#205;CH</h3>
             <div class="utilities-grid">
@@ -4950,17 +4951,38 @@ input[type=range]:active::-webkit-slider-thumb {
         updateDetailedView();
     };
 
-        function showSection(id) {
+        function showSection(id, updateHash = true) {
         // Reset scroll position to top on section transitions
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+
+        // Track previous section
+        if (window.currentSectionId && window.currentSectionId !== id) {
+            window.prevSectionId = window.currentSectionId;
+        }
+        window.currentSectionId = id;
 
         const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection','cvsSection','zengSection'];
         sections.forEach(s => {
             const el = document.getElementById(s) || DOM[s];
             if (el) el.style.display = (s === id) ? 'block' : 'none';
         });
+
+        // Hide/Show page wrappers based on whether we are on homePage
+        if (id === 'homePage') {
+            if (DOM.mainPage) DOM.mainPage.style.display = 'none';
+            if (DOM.homePage) DOM.homePage.style.display = 'block';
+            document.body.classList.remove('chatroom-active');
+            document.body.classList.remove('epub-active');
+            if (updateHash) {
+                location.hash = 'home';
+            }
+            return;
+        } else {
+            if (DOM.homePage) DOM.homePage.style.display = 'none';
+            if (DOM.mainPage) DOM.mainPage.style.display = 'block';
+        }
         
         // Dynamic loading wrapper move for Minh Ngoc lottery widget
         if (id === 'xosoSection') {
@@ -4991,7 +5013,84 @@ input[type=range]:active::-webkit-slider-thumb {
         } else {
             document.body.classList.remove('epub-active');
         }
+
+        // Hash routing sync
+        if (updateHash) {
+            const hashToSection = {
+                'summary': 'summarySection',
+                'report': 'reportSection',
+                'sell': 'sellSection',
+                'xoso': 'xosoSection',
+                'chat': 'chatroomSection',
+                'ex': 'exSection',
+                'epub': 'epubSection',
+                'cvs': 'cvsSection',
+                'music': 'zengSection',
+                'utilities': 'utilitiesSection'
+            };
+            let targetHash = 'home';
+            for (const [k, v] of Object.entries(hashToSection)) {
+                if (v === id) {
+                    targetHash = k;
+                    break;
+                }
+            }
+            location.hash = targetHash;
+        }
     }
+
+    // Router Listener for Hash Changes
+    window.addEventListener('hashchange', () => {
+        const hash = location.hash.replace('#', '');
+        const hashToSection = {
+            'home': 'homePage',
+            'summary': 'summarySection',
+            'report': 'reportSection',
+            'sell': 'sellSection',
+            'xoso': 'xosoSection',
+            'chat': 'chatroomSection',
+            'ex': 'exSection',
+            'epub': 'epubSection',
+            'cvs': 'cvsSection',
+            'music': 'zengSection',
+            'utilities': 'utilitiesSection'
+        };
+        const targetId = hashToSection[hash] || 'homePage';
+        
+        if (targetId === 'chatroomSection' && typeof initMQTTBroker === 'function') {
+            initMQTTBroker();
+        }
+        
+        showSection(targetId, false);
+    });
+
+    // Initial Routing on Page Load
+    window.addEventListener('load', () => {
+        const hash = location.hash.replace('#', '');
+        if (hash && hash !== 'home') {
+            const hashToSection = {
+                'summary': 'summarySection',
+                'report': 'reportSection',
+                'sell': 'sellSection',
+                'xoso': 'xosoSection',
+                'chat': 'chatroomSection',
+                'ex': 'exSection',
+                'epub': 'epubSection',
+                'cvs': 'cvsSection',
+                'music': 'zengSection',
+                'utilities': 'utilitiesSection'
+            };
+            const targetId = hashToSection[hash];
+            if (targetId) {
+                if (DOM.homePage) DOM.homePage.style.display = 'none';
+                if (DOM.mainPage) DOM.mainPage.style.display = 'block';
+                if (targetId === 'chatroomSection' && typeof initMQTTBroker === 'function') {
+                    initMQTTBroker();
+                }
+                showSection(targetId, false);
+            }
+        }
+    });
 
 
     /* =======================================================================
@@ -5008,12 +5107,9 @@ input[type=range]:active::-webkit-slider-thumb {
         document.body.classList.remove('chatroom-active');
         document.body.classList.remove('epub-active');
         if (lastActivePage === 'home') {
-            DOM.mainPage.style.display = 'none';
-            DOM.homePage.style.display = 'block';
-            DOM.tabUtilities.onclick();
+            showSection('homePage');
+            if (DOM.tabUtilities) DOM.tabUtilities.onclick();
         } else {
-            DOM.homePage.style.display = 'none';
-            DOM.mainPage.style.display = 'block';
             showSection('utilitiesSection');
         }
     }
@@ -10228,19 +10324,25 @@ function setClass(el, cls) {
     DOM.btnGoToSell.onclick = () => { showSection('sellSection'); DOM.sellQuantityInput.focus(); };
     DOM.btnBackFromSummary.onclick = () => { showSection('reportSection'); DOM.soSoInput.focus(); };
     DOM.btnBackFromSell.onclick = () => { showSection('reportSection'); DOM.soSoInput.focus(); };
-    let lastActiveSection = 'reportSection';
+    window.lastActiveSection = 'reportSection';
     if (DOM.btnGoToXosoFromReport) {
         DOM.btnGoToXosoFromReport.onclick = () => {
+            window.lastActiveSection = 'reportSection';
             showSection('utilitiesSection');
         };
     }
     if (DOM.btnGoToXosoFromSummary) {
         DOM.btnGoToXosoFromSummary.onclick = () => {
+            window.lastActiveSection = 'summarySection';
             showSection('utilitiesSection');
         };
     }
     DOM.btnBackFromXoso.onclick = () => {
-        showSection(lastActiveSection);
+        if (window.prevSectionId) {
+            showSection(window.prevSectionId);
+        } else {
+            showSection(window.lastActiveSection || 'reportSection');
+        }
     };
     DOM.excelFile1.onchange = (e) => handleFile(e.target.files[0], 1, 'excelFile1');
     DOM.excelFile2.onchange = (e) => handleFile(e.target.files[0], 2, 'excelFile2');
@@ -10418,7 +10520,7 @@ function setClass(el, cls) {
     manualFormOrder.forEach((id, index) => { const el = document.getElementById(id); if (el) { el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (index < manualFormOrder.length - 1) { document.getElementById(manualFormOrder[index + 1]).focus(); } else { DOM.btnCreateManualReport.click(); } } }); } });
     DOM.passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); DOM.btnSubmitPassword.click(); } });
     DOM.btnClearManualReport.onclick = () => { const ids = ['manualAgentName', 'manualDateRange', 'manualLotoDB', 'manualLoCap', 'manualC227', 'manualC323', 'manualThuong']; ids.forEach(id => { const el = document.getElementById(id); if (el) { el.value = ''; if (el.dataset.value) el.dataset.value = ''; } }); DOM.manualAgentName.focus(); };
-    document.querySelectorAll('.simple-animated-logo').forEach(el => el.addEventListener('click', () => location.reload()));
+    document.querySelectorAll('.simple-animated-logo').forEach(el => el.addEventListener('click', () => { location.hash = 'home'; }));
 
     // --- TOGGLES & AUTO-FOCUS ---
     if (DOM.toggleAdvancedTools && DOM.advancedToolsContainer) {
@@ -10701,17 +10803,6 @@ function setClass(el, cls) {
 
     runLogoAnimation(); updateOnlineCounter(); initChatroom();
 })();
-</script>
-<script>
-setTimeout(() => {
-    const home = document.getElementById('homePage');
-    const zeng = document.getElementById('zengSection');
-    const report = [
-        "homeDisp:" + window.getComputedStyle(home).display,
-        "zengDisp:" + window.getComputedStyle(zeng).display
-    ];
-    document.title = "NO_AUTOCLICK: " + report.join(" | ");
-}, 2000);
 </script>
 </body>
 </html>
