@@ -497,6 +497,555 @@
             border-color: #107c41 !important;
         }
 
+        /* --- ROBO (IRON MAN) STYLE THEME VARIABLE OVERRIDES --- */
+        body.theme-robo {
+            --primary-color: #c1121f; /* Hot Rod Red */
+            --primary-dark: #780000;
+            --secondary-color: #ffd700; /* Gold */
+            --secondary-dark: #ffd700;
+            --header-bg: #151518; /* Carbon metallic */
+            --header-text: #ffd700;
+            --body-bg: #0c0c0e; /* Dark space background */
+            --container-bg: #151518; /* Dark metallic panel background */
+            --text-color: #f5f6fa; /* High-contrast white/silver */
+            --text-light: #ffd700; /* Gold details */
+            --border-color: #ffd700; /* Gold borders */
+            --success-color: #00f2fe; /* Glowing Arc Blue */
+            --danger-color: #ff4d4d; /* Brighter neon red */
+            --warning-color: #ff9f43;
+            --logo-color: #ffd700; /* Gold ZENG logo */
+        }
+
+        /* Robo-specific elements */
+        body.theme-robo {
+            color-scheme: dark;
+            background-color: #0c0c0e !important;
+        }
+        body.theme-robo .page {
+            border-radius: 12px !important;
+            border: 2px solid #ffd700 !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 5px 15px rgba(193, 18, 31, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.15) !important;
+            background: #151518 !important;
+            color: #f5f6fa !important;
+            transition: all 0.3s ease;
+        }
+        body.theme-robo .controls-panel {
+            border-radius: 8px !important;
+            border: 1px solid #c1121f !important;
+            background: #1f1f25 !important;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(193, 18, 31, 0.2) !important;
+        }
+        body.theme-robo input[type="text"],
+        body.theme-robo input[type="number"],
+        body.theme-robo input[type="password"],
+        body.theme-robo input[type="file"],
+        body.theme-robo select,
+        body.theme-robo textarea {
+            border-radius: 6px !important;
+            border: 1px solid #ffd700 !important;
+            background: #121215 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo input:focus,
+        body.theme-robo textarea:focus,
+        body.theme-robo select:focus {
+            border-color: #00f2fe !important;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.6) !important;
+        }
+        body.theme-robo button,
+        body.theme-robo .btn {
+            border-radius: 6px !important;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c1121f, #780000) !important;
+            color: #ffd700 !important;
+            border: 1px solid #ffd700 !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(255, 215, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6) !important;
+            transition: all 0.2s ease-in-out !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        body.theme-robo button:hover,
+        body.theme-robo .btn:hover {
+            background: linear-gradient(135deg, #ffd700, #ffb300) !important;
+            color: #c1121f !important;
+            box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+            transform: translateY(-2px) !important;
+        }
+        body.theme-robo button:active,
+        body.theme-robo .btn:active {
+            transform: translateY(1px) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+        }
+        body.theme-robo .tab-btn {
+            border-radius: 6px !important;
+            color: #b2bec3 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        body.theme-robo .tab-btn.active {
+            background: linear-gradient(135deg, #c1121f, #780000) !important;
+            color: #ffd700 !important;
+            border: 1px solid #ffd700 !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+        body.theme-robo .tab-btn.active::after {
+            background-color: #00f2fe !important;
+        }
+        
+        /* 3D Dashboard-Style Dark Table Overrides */
+        body.theme-robo table {
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7) !important;
+            border-radius: 8px !important;
+            overflow: visible !important;
+            border: 1px solid #ffd700 !important;
+            background: #151518 !important;
+        }
+        body.theme-robo th {
+            background: linear-gradient(180deg, #c1121f, #780000) !important;
+            color: #ffd700 !important;
+            border-bottom: 2px solid #ffd700 !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+            font-weight: bold !important;
+            padding: 10px 8px !important;
+        }
+        body.theme-robo td {
+            background: #151518 !important;
+            color: #f5f6fa !important;
+            border: 1px solid #282830 !important;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.8) !important;
+            padding: 8px 6px !important;
+        }
+        body.theme-robo tr:nth-child(even) td {
+            background: #1e1e24 !important;
+        }
+        body.theme-robo #summaryTotalRow td,
+        body.theme-robo #tongCongRow td {
+            background: linear-gradient(180deg, #780000, #c1121f) !important;
+            color: #ffd700 !important;
+            font-weight: bold !important;
+            border-top: 2px solid #ffd700 !important;
+        }
+        
+        /* High contrast colors for text fields inside tables */
+        body.theme-robo td[style*="color: #000"],
+        body.theme-robo td[style*="color: black"],
+        body.theme-robo td[style*="color: #323130"],
+        body.theme-robo td[style*="color: #333"] {
+            color: #f5f6fa !important;
+        }
+        body.theme-robo td[style*="color: green"],
+        body.theme-robo td[style*="color: #107c41"],
+        body.theme-robo span[style*="color: green"],
+        body.theme-robo span[style*="color: #107c41"] {
+            color: #00f2fe !important; /* Glow cyan/arc blue instead of dark green */
+        }
+        body.theme-robo td[style*="color: red"],
+        body.theme-robo td[style*="color: #a80000"],
+        body.theme-robo span[style*="color: red"],
+        body.theme-robo span[style*="color: #a80000"] {
+            color: #ff4d4d !important; /* Brighter neon red instead of dark red */
+        }
+        body.theme-robo td[style*="color: #0b592e"] {
+            color: #00f2fe !important;
+        }
+
+        body.theme-robo .mode-switch {
+            border-radius: 8px !important;
+            border-color: #ffd700 !important;
+            background: #121215 !important;
+        }
+        body.theme-robo h2, body.theme-robo h3 {
+            color: #ffd700 !important;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+        }
+        body.theme-robo .simple-animated-logo .letter {
+            color: #ffd700 !important;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
+        }
+        body.theme-robo .theme-switcher-float {
+            background: #151518 !important;
+            border-color: #ffd700 !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4) !important;
+        }
+        body.theme-robo .theme-switch-btn {
+            color: #b2bec3;
+            background: transparent !important;
+            transform: none !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        body.theme-robo .theme-switch-btn:hover {
+            background: rgba(255, 215, 0, 0.1) !important;
+            color: #ffd700 !important;
+        }
+
+        /* Advanced Tools & Panel Overrides to avoid white clashes */
+        body.theme-robo #advancedToolsContainer {
+            background: #1f1f25 !important;
+            border: 1px solid #ffd700 !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo #advancedToolsContainer label,
+        body.theme-robo #advancedToolsContainer div,
+        body.theme-robo #advancedToolsContainer span {
+            color: #f5f6fa !important;
+        }
+        body.theme-robo #advancedToolsContainer .management-grid > div {
+            background: transparent !important;
+        }
+        body.theme-robo #globalDatesList {
+            background: #121215 !important;
+            border: 1px solid #c1121f !important;
+        }
+        body.theme-robo #datePickerContainer {
+            background: #121215 !important;
+            border: 1px solid #ffd700 !important;
+        }
+        body.theme-robo #advancedToolsContainer div[style*="background: #f8f9fa"] {
+            background: #121215 !important;
+            border: 1px solid #2d2d35 !important;
+        }
+        body.theme-robo #advancedToolsContainer span[style*="color: var(--danger-color)"],
+        body.theme-robo #advancedToolsContainer label[style*="color: var(--danger-color)"] {
+            color: #ff4d4d !important;
+        }
+        body.theme-robo .debt-mode-selector {
+            background: #121215 !important;
+            border: 1px solid #c1121f !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+        }
+        body.theme-robo .debt-mode-selector label,
+        body.theme-robo .debt-mode-selector span {
+            color: #f5f6fa !important;
+        }
+
+        /* =====================================================================
+           ROBO THEME: Chatroom (AuraChat) overrides
+           ===================================================================== */
+        body.theme-robo .yh-window-wrapper,
+        body.theme-robo .yh-window {
+            background: #151518 !important;
+        }
+        body.theme-robo .yh-main-layout {
+            background: #0c0c0e !important;
+        }
+        body.theme-robo .yh-chat-area {
+            background: #151518 !important;
+            border-right-color: #ffd700 !important;
+        }
+        body.theme-robo .yh-tabs {
+            background: #1f1f25 !important;
+            border-bottom-color: #ffd700 !important;
+        }
+        body.theme-robo .yh-tab {
+            background: #252530 !important;
+            border-color: #c1121f !important;
+            color: #b2bec3 !important;
+        }
+        body.theme-robo .yh-tab.active {
+            background: #151518 !important;
+            color: #ffd700 !important;
+            border-top-color: #ffd700 !important;
+        }
+        body.theme-robo .yh-messages {
+            background: #0c0c0e !important;
+            border-color: #ffd700 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .yh-toolbar {
+            background: #1f1f25 !important;
+            border-top-color: #282830 !important;
+        }
+        body.theme-robo .yh-input-area {
+            background: #1f1f25 !important;
+            border-top-color: #282830 !important;
+        }
+        body.theme-robo .yh-input {
+            background: #121215 !important;
+            border-color: #ffd700 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .yh-sidebar {
+            background: #1a1a22 !important;
+            border-left: 1px solid #ffd700 !important;
+        }
+        body.theme-robo .yh-box {
+            background: #151518 !important;
+            border-color: #c1121f !important;
+        }
+        body.theme-robo .yh-box-title {
+            background: linear-gradient(135deg, #c1121f, #780000) !important;
+            color: #ffd700 !important;
+            border-bottom-color: #ffd700 !important;
+        }
+        body.theme-robo .yh-user-list {
+            background: #0c0c0e !important;
+        }
+        body.theme-robo .yh-user-item {
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .yh-user-item:hover {
+            background: rgba(193, 18, 31, 0.4) !important;
+            color: #ffd700 !important;
+        }
+        body.theme-robo .yh-field label {
+            color: #ffd700 !important;
+        }
+        body.theme-robo .yh-field input {
+            background: #121215 !important;
+            border-color: #ffd700 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .yh-menubar {
+            background: #1f1f25 !important;
+            border-bottom-color: #ffd700 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .yh-modal {
+            background: #151518 !important;
+            border-color: #ffd700 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .yh-modal-title {
+            background: linear-gradient(135deg, #780000, #c1121f) !important;
+            color: #ffd700 !important;
+        }
+        body.theme-robo .yh-statusbar {
+            background: #1a1a22 !important;
+            border-top-color: #282830 !important;
+            color: #b2bec3 !important;
+        }
+        body.theme-robo .smiley-picker-popup {
+            background: #1f1f25 !important;
+            border-color: #ffd700 !important;
+        }
+        body.theme-robo .smiley-item {
+            background: #252530 !important;
+            border-color: #c1121f !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .tab-switch-btn {
+            background: #252530 !important;
+            border-color: #c1121f !important;
+            color: #b2bec3 !important;
+        }
+        body.theme-robo .tab-switch-btn.active {
+            background: linear-gradient(135deg, #c1121f, #780000) !important;
+            color: #ffd700 !important;
+        }
+        body.theme-robo .yh-resizer {
+            background: #282830 !important;
+        }
+        body.theme-robo .msg-sender {
+            color: #00f2fe !important;
+        }
+        body.theme-robo .msg-sender.me {
+            color: #ffd700 !important;
+        }
+        body.theme-robo .msg-sys {
+            color: #888 !important;
+        }
+
+        /* =====================================================================
+           ROBO THEME: CVS/PDF Tool card overrides
+           ===================================================================== */
+        body.theme-robo #cvsSection .card-white {
+            background-color: #151518 !important;
+            border-color: #ffd700 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo #cvsSection h2 {
+            color: #ffd700 !important;
+            border-bottom-color: #c1121f !important;
+        }
+        body.theme-robo #cvsSection label {
+            color: #f5f6fa !important;
+        }
+        body.theme-robo #runBtnCvs {
+            background: linear-gradient(135deg, #c1121f, #780000) !important;
+            border: 1px solid #ffd700 !important;
+            color: #ffd700 !important;
+        }
+        body.theme-robo #copyBtnCvs {
+            background: linear-gradient(135deg, #ffd700, #ffb300) !important;
+            color: #151518 !important;
+            border: none !important;
+        }
+        body.theme-robo #progressWrapperCvs {
+            background-color: #282830 !important;
+        }
+
+        /* =====================================================================
+           ROBO THEME: Modal content (popups) overrides
+           ===================================================================== */
+        body.theme-robo .modal-content {
+            background-color: #151518 !important;
+            border: 1px solid #ffd700 !important;
+            color: #f5f6fa !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 20px rgba(255,215,0,0.2) !important;
+        }
+        body.theme-robo .modal-content h2,
+        body.theme-robo .modal-content h3 {
+            color: #ffd700 !important;
+        }
+        body.theme-robo .modal-content label {
+            color: #f5f6fa !important;
+        }
+        body.theme-robo .modal-content hr {
+            border-color: #c1121f !important;
+        }
+
+        /* =====================================================================
+           ROBO THEME: Home page menu buttons and cards
+           ===================================================================== */
+        body.theme-robo .home-menu-btn {
+            background-color: #1f1f25 !important;
+            color: #f5f6fa !important;
+            border-color: #c1121f !important;
+        }
+        body.theme-robo .home-menu-btn:hover {
+            background-color: #282835 !important;
+            border-color: #ffd700 !important;
+            color: #ffd700 !important;
+        }
+
+        /* =====================================================================
+           ROBO THEME: Excel Calc (#exSection) overrides — eliminate all whites
+           ===================================================================== */
+        body.theme-robo #exSection > div[style*="background-color: #f1f5f9"],
+        body.theme-robo #exSection > div[style*="background-color:#f1f5f9"] {
+            background-color: #151518 !important;
+        }
+        /* Input panel card */
+        body.theme-robo #inputSection {
+            background: #151518 !important;
+            border-color: #ffd700 !important;
+        }
+        body.theme-robo #inputSection > div:first-child {
+            background: #1f1f25 !important;
+            border-bottom-color: #282830 !important;
+        }
+        body.theme-robo #inputSection h2 {
+            color: #ffd700 !important;
+        }
+        /* History panel card */
+        body.theme-robo #historySection {
+            background: #151518 !important;
+            border-color: #ffd700 !important;
+        }
+        body.theme-robo #historySection > div:first-child {
+            background: #1f1f25 !important;
+            border-bottom-color: #282830 !important;
+        }
+        body.theme-robo #historySection h2 {
+            color: #ffd700 !important;
+        }
+        /* Mobile tab switcher */
+        body.theme-robo #mobileTabHeader {
+            background: #1f1f25 !important;
+            border-bottom-color: #282830 !important;
+        }
+        body.theme-robo #mobileTabHeader button {
+            color: #b2bec3 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        /* Action buttons bar */
+        body.theme-robo #inputSection > div:last-child,
+        body.theme-robo #historySection > div:last-child {
+            background: #1a1a22 !important;
+            border-top-color: #282830 !important;
+        }
+        /* Desktop action buttons override (remove override from global button rule) */
+        body.theme-robo #inputSection button[onclick="addRow(true)"] {
+            background: linear-gradient(135deg, #c1121f, #780000) !important;
+        }
+        body.theme-robo #inputSection button[onclick="splitGroup()"] {
+            background: linear-gradient(135deg, #107c41, #0a5c30) !important;
+        }
+        body.theme-robo #inputSection button[onclick="mergeGroups()"] {
+            background: linear-gradient(135deg, #0369a1, #024f7c) !important;
+        }
+        /* Mobile keypad */
+        body.theme-robo #mobileCustomKeypad {
+            background: #1a1a22 !important;
+            border-top-color: #282830 !important;
+        }
+        body.theme-robo #mobileCustomKeypad button {
+            background: #252530 !important;
+            border-color: #282835 !important;
+            color: #f5f6fa !important;
+        }
+        body.theme-robo #mobileCustomKeypad button:active {
+            background: #3a3a48 !important;
+        }
+        /* Table inside ex section */
+        body.theme-robo #inputSection table {
+            border-color: #ffd700 !important;
+        }
+        body.theme-robo #inputSection thead,
+        body.theme-robo #inputSection thead tr {
+            background: linear-gradient(180deg, #c1121f, #780000) !important;
+        }
+        body.theme-robo #inputSection thead th {
+            color: #ffd700 !important;
+            border-color: #282830 !important;
+        }
+        /* History items */
+        body.theme-robo #historyContainer {
+            background: #0c0c0e !important;
+        }
+        body.theme-robo #emptyHistoryState p {
+            color: #888 !important;
+        }
+        body.theme-robo #emptyHistoryState i {
+            color: #444 !important;
+        }
+        /* Mobile history badge */
+        body.theme-robo #mobileHistoryBadge {
+            background: rgba(193, 18, 31, 0.3) !important;
+            color: #ffd700 !important;
+        }
+
+
+        #summaryTableContainer {
+            overflow-y: auto !important;
+            max-height: calc(100vh - 370px) !important;
+            min-height: 400px !important;
+        }
+        #summaryTableContainer table {
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+        }
+        #summaryTableContainer table thead th {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+            background-color: #eaeaea; /* Default theme fallback */
+            box-shadow: inset 0 -1px 0 var(--border-color), 0 2px 5px rgba(0,0,0,0.15) !important;
+        }
+        #summaryTableContainer table #summaryTotalRow td {
+            position: sticky !important;
+            bottom: -1px !important; /* -1px to avoid rendering gaps */
+            z-index: 100 !important;
+            background-color: #5d4037; /* Default theme fallback */
+            color: white;
+            box-shadow: inset 0 1px 0 var(--border-color), 0 -2px 5px rgba(0,0,0,0.15) !important;
+        }
+        #summaryTableContainer table tbody td {
+            background-clip: padding-box !important;
+        }
+
 
         /* =======================================================================
            PART B: STYLESHEET (CORE & INTEGRATED MODULES CSS)
@@ -1583,9 +2132,7 @@ input[type=range]:active::-webkit-slider-thumb {
         #cvsSection .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; display: block !important; }
         #cvsSection .info { background-color: #e8f0fe; color: #1a73e8; border: 1px solid #d2e3fc; display: block !important; }
 
-        #themeSwitcher {
-            display: none !important;
-        }
+
 
         .back-btn {
             padding: 6px 12px !important;
@@ -1756,50 +2303,66 @@ input[type=range]:active::-webkit-slider-thumb {
     <!-- THEME SWITCHER & CORE LOGIC -->
     <script>
         function setTheme(theme) {
+            document.body.classList.remove('theme-excel', 'theme-robo');
+            
+            const btnWin11 = document.getElementById('btnThemeWin11');
+            const btnExcel = document.getElementById('btnThemeExcel');
+            const btnRobo = document.getElementById('btnThemeRobo');
+            
+            if (btnWin11) btnWin11.classList.remove('active');
+            if (btnExcel) btnExcel.classList.remove('active');
+            if (btnRobo) btnRobo.classList.remove('active');
+
             if (theme === 'excel') {
                 document.body.classList.add('theme-excel');
-                const btnExcel = document.getElementById('btnThemeExcel');
-                const btnWin11 = document.getElementById('btnThemeWin11');
                 if (btnExcel) btnExcel.classList.add('active');
-                if (btnWin11) btnWin11.classList.remove('active');
                 localStorage.setItem('zeng-theme', 'excel');
+            } else if (theme === 'robo') {
+                document.body.classList.add('theme-robo');
+                if (btnRobo) btnRobo.classList.add('active');
+                localStorage.setItem('zeng-theme', 'robo');
             } else {
-                document.body.classList.remove('theme-excel');
-                const btnExcel = document.getElementById('btnThemeExcel');
-                const btnWin11 = document.getElementById('btnThemeWin11');
                 if (btnWin11) btnWin11.classList.add('active');
-                if (btnExcel) btnExcel.classList.remove('active');
                 localStorage.setItem('zeng-theme', 'win11');
             }
         }
 
         // Apply theme immediately to prevent layout flashing
         (function() {
-            const savedTheme = localStorage.getItem('zeng-theme');
+            const savedTheme = localStorage.getItem('zeng-theme') || 'robo';
             if (savedTheme === 'excel') {
                 document.body.classList.add('theme-excel');
+            } else if (savedTheme === 'robo') {
+                document.body.classList.add('theme-robo');
             }
         })();
 
         // Sync buttons state on DOM ready
         window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('zeng-theme');
+            const savedTheme = localStorage.getItem('zeng-theme') || 'robo';
             const btnWin11 = document.getElementById('btnThemeWin11');
             const btnExcel = document.getElementById('btnThemeExcel');
+            const btnRobo = document.getElementById('btnThemeRobo');
+            
+            if (btnWin11) btnWin11.classList.remove('active');
+            if (btnExcel) btnExcel.classList.remove('active');
+            if (btnRobo) btnRobo.classList.remove('active');
+
             if (savedTheme === 'excel') {
                 if (btnExcel) btnExcel.classList.add('active');
-                if (btnWin11) btnWin11.classList.remove('active');
+            } else if (savedTheme === 'robo') {
+                if (btnRobo) btnRobo.classList.add('active');
             } else {
                 if (btnWin11) btnWin11.classList.add('active');
-                if (btnExcel) btnExcel.classList.remove('active');
             }
         });
     </script>
 
     <!-- THEME SWITCHER WIDGET -->
     <div id="themeSwitcher" class="theme-switcher-float">
-        <button onclick="setTheme('win11')" id="btnThemeWin11" class="theme-switch-btn active">💻 Win 11</button>
+        <button onclick="setTheme('win11')" id="btnThemeWin11" class="theme-switch-btn">💻 Win 11</button>
         <button onclick="setTheme('excel')" id="btnThemeExcel" class="theme-switch-btn">📊 Excel</button>
+        <button onclick="setTheme('robo')" id="btnThemeRobo" class="theme-switch-btn">🌙 Tối</button>
     </div>
 
     <div id="notification-area"></div>
@@ -1893,6 +2456,15 @@ input[type=range]:active::-webkit-slider-thumb {
                             <div class="utility-desc">Tr&#236;nh ph&#225;t nh&#7841;c v&#224; video tr&#7921;c tuy&#7871;n chuy&#234;n nghi&#7877;p k&#7871;t h&#7907;p YouTube.</div>
                         </div>
                     </div>
+
+                    <!-- Card 7: Config Manager -->
+                    <div class="utility-card" id="cardConfig">
+                        <div class="utility-icon" style="color: #9b59b6;">⚙️</div>
+                        <div class="utility-info">
+                            <div class="utility-title">Quản lý Cấu hình</div>
+                            <div class="utility-desc">Quản lý, chỉnh sửa danh sách tổ/nhánh (donvi.txt) và quyền xem (xemma.txt) đồng bộ GitHub.</div>
+                        </div>
+                    </div>
                 </div>
             </div><div id="homeActionContainer" class="home-actions" style="margin-top: 20px;">
                 <button id="btnShowManualReport" class="warning">Thêm thủ công</button>
@@ -1943,21 +2515,15 @@ input[type=range]:active::-webkit-slider-thumb {
                 </div>
 
                 <div id="advancedToolsContainer" style="display: none; background: #fff; border: 1px solid #eee; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
-                    <div class="filter-grid-container" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #eee;">
-                        <div class="filter-column" style="width: 100%;">
-                            <div id="regionLockContainer" class="region-lock-container">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                    <label style="margin: 0; color: #2c3e50;">1. Định nghĩa Vùng:</label>
-                                    <button id="btnSaveRegions" class="success" style="padding: 4px 10px; font-size: 12px; width: auto;">Lưu Định nghĩa</button>
-                                </div>
-                                <textarea id="regionDefinitionsInput" rows="2" placeholder="Đang tải dữ liệu..."></textarea>
-                            </div>
-                        </div>
+                    <!-- Hidden elements to support parsing of donvi.txt branch config -->
+                    <div id="regionLockContainer" class="region-lock-container" style="display: none !important;">
+                        <button id="btnSaveRegions"></button>
+                        <textarea id="regionDefinitionsInput"></textarea>
                     </div>
 
                     <div class="management-grid">
                         <div id="debtContainer" style="margin: 0;">
-                            <label style="color: var(--danger-color); font-weight: 700;">2. Quản lý Nợ cũ:</label>
+                            <label style="color: var(--danger-color); font-weight: 700;">1. Quản lý Nợ cũ:</label>
                             <div class="debt-mode-selector">
                                 <div class="options">
                                     <label><input type="radio" name="debtMode" value="manual"> Thủ công</label>
@@ -1974,7 +2540,7 @@ input[type=range]:active::-webkit-slider-thumb {
                         </div>
 
                         <div id="veBocContainer" style="margin: 0;">
-                            <label style="color: #8e44ad; font-weight: 700;">3. Quản lý Vé Bóc (5k):</label>
+                            <label style="color: #8e44ad; font-weight: 700;">2. Quản lý Vé Bóc (5k):</label>
                             <div class="debt-mode-selector">
                                 <div class="options">
                                     <label><input type="radio" name="veBocMode" value="manual"> Thủ công</label>
@@ -1996,14 +2562,14 @@ input[type=range]:active::-webkit-slider-thumb {
 
                     <div class="revenue-filter-grid" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #dcdde1; grid-template-columns: 1fr;">
                         <div class="revenue-filter-col-left filter-column" style="grid-template-columns: 1fr 1fr 1fr;">
-                            <div class="filter-column"><label>4. Sắp xếp:</label><select id="sortSelect"><option value="default">Mặc định</option><option value="revenue_desc">Doanh số (Cao-Thấp)</option><option value="revenue_asc">Doanh số (Thấp-Cao)</option></select></div>
+                            <div class="filter-column"><label>3. Sắp xếp:</label><select id="sortSelect"><option value="default">Mặc định</option><option value="revenue_desc">Doanh số (Cao-Thấp)</option><option value="revenue_asc">Doanh số (Thấp-Cao)</option></select></div>
                             <div class="filter-column"><label>Doanh số từ:</label><input type="text" id="minRevenueInput" class="manual-currency" inputmode="numeric" placeholder="VD: 300"></div>
                             <div class="filter-column"><label>Đến:</label><input type="text" id="maxRevenueInput" class="manual-currency" inputmode="numeric" placeholder="Tối đa"></div>
                         </div>
                     </div>
 
                     <div class="date-filter-grid" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #dcdde1;">
-                        <label style="color: #2980b9; font-weight: 700;">5. Lọc Ngày (Click chọn ngày hiển thị):</label>
+                        <label style="color: #2980b9; font-weight: 700;">4. Lọc Ngày (Click chọn ngày hiển thị):</label>
                         <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 10px;">
                             <div>
                                 <label style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">Bật/tắt các ngày để hiển thị trên toàn hệ thống:</label>
@@ -2233,6 +2799,15 @@ input[type=range]:active::-webkit-slider-thumb {
                         <div class="utility-desc">Tr&#236;nh ph&#225;t nh&#7841;c v&#224; video tr&#7921;c tuy&#7871;n chuy&#234;n nghi&#7877;p k&#7871;t h&#7907;p YouTube.</div>
                     </div>
                 </div>
+
+                <!-- Card 7: Config Manager -->
+                <div class="utility-card" id="cardConfig_main">
+                    <div class="utility-icon" style="color: #8e44ad;">⚙️</div>
+                    <div class="utility-info">
+                        <div class="utility-title">Quản lý Cấu hình</div>
+                        <div class="utility-desc">Quản lý, chỉnh sửa danh sách tổ/nhánh (donvi.txt) và quyền xem (xemma.txt) đồng bộ GitHub.</div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- -----------------------------------------------------------------------
@@ -2367,8 +2942,8 @@ input[type=range]:active::-webkit-slider-thumb {
 
     <!-- Right Header Controls -->
     <div class="flex items-center space-x-1.5 text-xs flex-shrink-0">
-      <button onclick="resetCurrentTable()" title="L&#220;m m&#7899;i (X&#243;a l&#7883;ch s&#7917; & bảng t&#205;nh)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg font-bold transition flex items-center gap-1.5 text-xs sm:text-sm">
-        <i class="fa-solid fa-rotate-right"></i> <span>L&#220;m m&#7899;i</span>
+      <button onclick="resetCurrentTable()" title="L&#224;m m&#7899;i (X&#243;a l&#7883;ch s&#7917; &amp; b&#7843;ng t&#237;nh)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg font-bold transition flex items-center gap-1.5 text-xs sm:text-sm">
+        <i class="fa-solid fa-rotate-right"></i> <span>L&#224;m m&#7899;i</span>
       </button>
     </div>
   </header>
@@ -2450,7 +3025,7 @@ input[type=range]:active::-webkit-slider-thumb {
       <div id="historyContainer" class="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
         <div id="emptyHistoryState" class="flex flex-col items-center justify-center h-full text-center py-6 text-slate-400">
           <i class="fa-solid fa-box-open text-4xl text-slate-300 dark:text-slate-700 mb-2"></i>
-          <p class="text-sm font-semibold text-slate-500">Ch&#432;a c&#243; ph&#7847;n n&#220;o &#273;&#432;&#7851;c l&#432;u t&#225;ch.</p>
+          <p class="text-sm font-semibold text-slate-500">Ch&#432;a c&#243; ph&#7847;n n&#224;o &#273;&#432;&#7907;c l&#432;u t&#225;ch.</p>
         </div>
       </div>
 
@@ -2840,7 +3415,7 @@ input[type=range]:active::-webkit-slider-thumb {
                 <div class="flex flex-col gap-1.5">
                   <label class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">API Key</label>
                   <div class="flex gap-1.5">
-                    <input type="password" id="fptaiApiKeyInput" placeholder="Nh&#7853;p API Key FPT.AI..." class="flex-1 bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200">
+                    <input type="text" id="fptaiApiKeyInput" placeholder="Nh&#7853;p API Key FPT.AI..." class="flex-1 bg-[#181818] border border-neutral-800 text-xs font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 text-neutral-200" style="-webkit-text-security: disc;">
                     <button onclick="saveFptAiKey()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold rounded-lg transition-colors shrink-0">L&#432;u</button>
                   </div>
                   <a href="https://fpt.ai/tts" target="_blank" rel="noopener" class="text-[10px] text-amber-500 hover:text-amber-400 transition-colors">&#272;&#259;ng k&#253; API Key mi&#7877;n ph&#237; &#8594;</a>
@@ -2984,8 +3559,8 @@ input[type=range]:active::-webkit-slider-thumb {
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                 <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay l&#7841;i</button>
             </div>
-            <div style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #ddd; max-width: 800px; margin: 0 auto; box-sizing: border-box;">
-                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">đŸ“ Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
+            <div class="card-white" style="background-color: #fff; padding: 25px; border-radius: 12px; border: 1px solid #ddd; max-width: 800px; margin: 0 auto; box-sizing: border-box;">
+                <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; margin-top: 0; font-size: 20px;">&#128196; Tool Tr&#237;ch xu&#7845;t B&#225;o c&#225;o PDF (Copy CSV)</h2>
                 
                 <div class="input-group-cvs" style="margin-top: 20px;">
                     <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #444; font-size: 14px;">1. Gemini API Key:</label>
@@ -3194,6 +3769,66 @@ input[type=range]:active::-webkit-slider-thumb {
             </button>
         </div>
     </footer>
+            </div>
+        </div>
+
+        <!-- -----------------------------------------------------------------------
+             MODULE: Config Manager Layout (donvi.txt & xemma.txt)
+             ----------------------------------------------------------------------- -->
+        <div id="configSection" class="main-section" style="display: none;">
+            <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                <button class="back-btn" onclick="goBackFromUtility()">&#11013; Quay lại</button>
+            </div>
+            
+            <div style="width:100%; min-height:550px; border-radius: 12px; border: 1px solid var(--border-color); background-color: var(--container-bg); padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-family: inherit;" class="flex flex-col relative select-none">
+                <h3 style="text-align: center; color: var(--primary-color); font-size: 22px; font-weight: 750; margin-bottom: 20px; letter-spacing: -0.5px;">⚙️ QUẢN LÝ CẤU HÌNH GITHUB</h3>
+                
+                <!-- Github Token & Config Card -->
+                <div style="background: var(--body-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <label style="font-weight: 600; font-size: 13.5px; color: var(--text-light); display: block; margin-bottom: 6px;">GitHub Personal Access Token (PAT):</label>
+                        <input type="text" id="cfgGithubPat" placeholder="Nhập GitHub PAT (classic hoặc fine-grained)..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13.5px; -webkit-text-security: disc;" onchange="saveGithubToken()">
+                    </div>
+                    <div style="min-width: 180px;">
+                        <label style="font-weight: 600; font-size: 13.5px; color: var(--text-light); display: block; margin-bottom: 6px;">Chọn Tệp Quản Lý:</label>
+                        <select id="cfgFileSelect" onchange="loadConfigFile()" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13.5px; font-weight: 600;">
+                            <option value="donvi.txt">donvi.txt (Danh sách tổ/nhánh)</option>
+                            <option value="xemma.txt">xemma.txt (Quyền xem dữ liệu)</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 20px;">
+                        <button onclick="loadConfigFile()" class="btn secondary" style="padding: 8px 14px; font-size: 13px; font-weight: 600; height: 38px;">🔄 Tải lại</button>
+                    </div>
+                </div>
+
+                <!-- Editor Title -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                    <h4 id="cfgEditorTitle" style="font-size: 16px; font-weight: 700; color: var(--text-color); margin: 0;">Đang tải danh sách...</h4>
+                    <button onclick="addNewConfigRow()" class="btn success" style="padding: 6px 12px; font-size: 12.5px; font-weight: 600; border-radius: 4px;">➕ Thêm mới</button>
+                </div>
+
+                <!-- Main Editor List -->
+                <div style="flex: 1; max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; background: var(--body-bg); padding: 10px; margin-bottom: 20px;">
+                    <div id="cfgEditorList" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- List rows go here -->
+                    </div>
+                </div>
+
+                <!-- Save/Commit Panel -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <div>
+                        <label style="font-weight: 600; font-size: 13.5px; color: var(--text-light); display: block; margin-bottom: 4px;">Commit Message:</label>
+                        <input type="text" id="cfgCommitMsg" placeholder="Cập nhật cấu hình qua Tiện ích..." style="width: 320px; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="downloadConfigFile()" class="btn secondary" style="padding: 10px 18px; font-weight: 600; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+                            📥 Tải file về máy
+                        </button>
+                        <button onclick="commitConfigFile()" class="btn primary" style="padding: 10px 24px; font-weight: 700; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+                            🚀 Lưu & Commit GitHub
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -3447,7 +4082,7 @@ input[type=range]:active::-webkit-slider-thumb {
     };
 
     async function loadBranchConfig() {
-        const githubUrl = `https://raw.githubusercontent.com/doducdungvn/tinhtiendaily/refs/heads/main/xemma.txt?t=${Date.now()}`;
+        const githubUrl = `https://raw.githubusercontent.com/doducdungvn/doducdungvn.github.io/main/xemma.txt?t=${Date.now()}`;
         const localUrl = `xemma.txt?t=${Date.now()}`;
 
         async function tryFetchAndParse(url) {
@@ -4415,9 +5050,9 @@ input[type=range]:active::-webkit-slider-thumb {
         let html;
 
         if (appMode === 'excel') {
-            html = `<thead><tr><th width="8%">STT</th><th width="12%">ĐL</th><th>LTô</th><th>LCặp</th><th>Lô 3/23</th><th>Lô 2/27</th>${hasXSKT?'<th>XSKT':''}${hasVeBoc?'<th>VBóc</th>':''}<th>Dsố</th><th>Thưởng</th>${hasDebt?'<th>Nợ cũ':''}<th>Tiền nộp</th></tr></thead><tbody>`;
+            html = `<thead><tr><th width="8%">STT</th><th width="12%">ĐL</th><th>LTô</th><th>LCặp</th><th>Lô 3/23</th><th>Lô 2/27</th>${hasXSKT?'<th>XSKT</th>':''}${hasVeBoc?'<th>VBóc</th>':''}<th>Dsố</th><th>Thưởng</th>${hasDebt?'<th>Nợ cũ</th>':''}<th>Tiền nộp</th></tr></thead><tbody>`;
         } else {
-            html = `<thead><tr><th width="8%">STT</th><th width="12%">ĐL</th><th>Doanh Số</th><th>Hoa hồng</th><th>Thưởng</th>${hasDebt?'<th>Nợ cũ':''}<th>Tiền nộp</th></tr></thead><tbody>`;
+            html = `<thead><tr><th width="8%">STT</th><th width="12%">ĐL</th><th>Doanh Số</th><th>Hoa hồng</th><th>Thưởng</th>${hasDebt?'<th>Nợ cũ</th>':''}<th>Tiền nộp</th></tr></thead><tbody>`;
         }
 
         let stt = 1, sortedGroups = [...groups.entries()];
@@ -4963,7 +5598,13 @@ input[type=range]:active::-webkit-slider-thumb {
         }
         window.currentSectionId = id;
 
-        const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection','cvsSection','zengSection'];
+        // Toggle theme switcher visibility: only show on homePage
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        if (themeSwitcher) {
+            themeSwitcher.style.display = (id === 'homePage') ? 'flex' : 'none';
+        }
+
+        const sections = ['summarySection','reportSection','sellSection','xosoSection','chatroomSection','exSection','epubSection','utilitiesSection','cvsSection','zengSection','configSection'];
         sections.forEach(s => {
             const el = document.getElementById(s) || DOM[s];
             if (el) el.style.display = (s === id) ? 'block' : 'none';
@@ -5026,7 +5667,8 @@ input[type=range]:active::-webkit-slider-thumb {
                 'epub': 'epubSection',
                 'cvs': 'cvsSection',
                 'music': 'zengSection',
-                'utilities': 'utilitiesSection'
+                'utilities': 'utilitiesSection',
+                'config': 'configSection'
             };
             let targetHash = 'home';
             for (const [k, v] of Object.entries(hashToSection)) {
@@ -5054,7 +5696,8 @@ input[type=range]:active::-webkit-slider-thumb {
             'epub': 'epubSection',
             'cvs': 'cvsSection',
             'music': 'zengSection',
-            'utilities': 'utilitiesSection'
+            'utilities': 'utilitiesSection',
+            'config': 'configSection'
         };
         const targetId = hashToSection[hash] || 'homePage';
         
@@ -5079,7 +5722,8 @@ input[type=range]:active::-webkit-slider-thumb {
                 'epub': 'epubSection',
                 'cvs': 'cvsSection',
                 'music': 'zengSection',
-                'utilities': 'utilitiesSection'
+                'utilities': 'utilitiesSection',
+                'config': 'configSection'
             };
             const targetId = hashToSection[hash];
             if (targetId) {
@@ -5090,6 +5734,9 @@ input[type=range]:active::-webkit-slider-thumb {
                 }
                 showSection(targetId, false);
             }
+        } else {
+            const switcher = document.getElementById('themeSwitcher');
+            if (switcher) switcher.style.display = 'flex';
         }
     });
 
@@ -5179,6 +5826,17 @@ input[type=range]:active::-webkit-slider-thumb {
         };
     }
 
+    const cardConfig = document.getElementById('cardConfig');
+    if (cardConfig) {
+        cardConfig.onclick = () => {
+            lastActivePage = 'home';
+            DOM.homePage.style.display = 'none';
+            DOM.mainPage.style.display = 'block';
+            showSection('configSection');
+            loadConfigFile(); // Auto load first file on open
+        };
+    }
+
     // Card bindings for mainPage utilitiesSection (lastActivePage = 'main')
     const cardXSMB_main = document.getElementById('cardXSMB_main');
     if (cardXSMB_main) {
@@ -5223,6 +5881,239 @@ input[type=range]:active::-webkit-slider-thumb {
             showSection('zengSection');
         };
     }
+
+    const cardConfig_main = document.getElementById('cardConfig_main');
+    if (cardConfig_main) {
+        cardConfig_main.onclick = () => {
+            lastActivePage = 'main';
+            showSection('configSection');
+            loadConfigFile(); // Auto load first file on open
+        };
+    }
+
+    // --- CONFIG MANAGER UTILITY LOGIC ---
+    let configData = [];
+    let currentFileSha = '';
+
+    window.saveGithubToken = function() {
+        const pat = document.getElementById('cfgGithubPat').value.trim();
+        localStorage.setItem('github_pat', pat);
+        showNotification("Đã lưu token GitHub", "success");
+    };
+
+    // Load token into input on init
+    setTimeout(() => {
+        const patInput = document.getElementById('cfgGithubPat');
+        if (patInput) {
+            patInput.value = localStorage.getItem('github_pat') || '';
+        }
+    }, 100);
+
+    window.loadConfigFile = async function() {
+        const selectedFile = document.getElementById('cfgFileSelect').value;
+        const patInput = document.getElementById('cfgGithubPat');
+        const pat = patInput ? patInput.value.trim() : '';
+        if (pat) {
+            localStorage.setItem('github_pat', pat); // Auto-save for ease of use
+        }
+        
+        const listContainer = document.getElementById('cfgEditorList');
+        const titleEl = document.getElementById('cfgEditorTitle');
+
+        titleEl.textContent = `Đang tải ${selectedFile}...`;
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-light);"><i class="fas fa-circle-notch fa-spin" style="margin-right: 8px;"></i> Đang tải dữ liệu...</div>`;
+
+        let loadedContent = null;
+        currentFileSha = '';
+
+        // 1. Try to load from GitHub if token is present
+        if (pat) {
+            const repo = 'doducdungvn/doducdungvn.github.io';
+            const url = `https://api.github.com/repos/${repo}/contents/${selectedFile}`;
+            try {
+                const res = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${pat}`,
+                        'Accept': 'application/vnd.github+json'
+                    }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    currentFileSha = data.sha;
+                    loadedContent = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+                    showNotification(`Đã tải ${selectedFile} từ GitHub`, "success");
+                } else {
+                    const errJson = await res.json().catch(() => ({}));
+                    const errMsg = errJson.message || `Lỗi HTTP ${res.status}`;
+                    showNotification(`Lỗi GitHub (${res.status}): ${errMsg}. Chuyển sang tải từ Local.`, "error");
+                }
+            } catch (err) {
+                showNotification(`Lỗi kết nối GitHub: ${err.message}. Chuyển sang tải từ Local.`, "error");
+                console.warn("GitHub API error: ", err);
+            }
+        }
+
+        // 2. Fallback to local if loading from GitHub failed
+        if (loadedContent === null) {
+            try {
+                const res = await fetch(`${selectedFile}?t=${Date.now()}`);
+                if (res.ok) {
+                    loadedContent = await res.text();
+                    showNotification(`Đã tải ${selectedFile} từ Local`, "info");
+                }
+            } catch (err) {
+                console.error("Local file fetch error: ", err);
+            }
+        }
+
+        if (loadedContent === null) {
+            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--danger-color); font-weight: 600;">⚠️ Không thể tải cấu hình! Vui lòng kiểm tra lại token hoặc tệp tin cục bộ.</div>`;
+            titleEl.textContent = `Lỗi tải ${selectedFile}`;
+            return;
+        }
+
+        // 3. Parse content
+        configData = [];
+        const lines = loadedContent.split(/\r?\n/);
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            const colonIdx = trimmed.indexOf(':');
+            if (colonIdx !== -1) {
+                const key = trimmed.substring(0, colonIdx).trim();
+                const val = trimmed.substring(colonIdx + 1).trim();
+                configData.push({ key, value: val });
+            } else {
+                configData.push({ key: trimmed, value: '' });
+            }
+        });
+
+        titleEl.textContent = `Tệp: ${selectedFile} (${configData.length} mục)`;
+        renderConfigRows();
+    };
+
+    function renderConfigRows() {
+        const listContainer = document.getElementById('cfgEditorList');
+        if (!listContainer) return;
+        listContainer.innerHTML = '';
+
+        if (configData.length === 0) {
+            listContainer.innerHTML = `<div style="padding: 30px; text-align: center; color: var(--text-light);">Danh sách trống. Nhấn "Thêm mới" để bắt đầu.</div>`;
+            return;
+        }
+
+        configData.forEach((item, idx) => {
+            const row = document.createElement('div');
+            row.style.cssText = "display: flex; gap: 10px; align-items: center; background: var(--container-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; transition: 0.2s;";
+            row.innerHTML = `
+                <div style="font-weight: bold; color: var(--text-light); font-size: 13px; width: 24px; text-align: center;">${idx + 1}</div>
+                <input type="text" value="${item.key.replace(/"/g, '&quot;')}" placeholder="Tên tổ/Chi nhánh/Quyền..." style="flex: 1; max-width: 250px; padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;" onchange="updateConfigRowKey(${idx}, this.value)">
+                <input type="text" value="${item.value.replace(/"/g, '&quot;')}" placeholder="Danh sách đầu số..." style="flex: 2; padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;" onchange="updateConfigRowValue(${idx}, this.value)">
+                <button onclick="deleteConfigRow(${idx})" class="btn danger" style="padding: 6px 10px; font-size: 12px; flex-shrink: 0; min-width: auto; width: auto; height: 32px;" title="Xóa hàng"><i class="fas fa-trash"></i></button>
+            `;
+            listContainer.appendChild(row);
+        });
+    }
+
+    window.updateConfigRowKey = function(idx, val) {
+        if (configData[idx]) configData[idx].key = val;
+    };
+
+    window.updateConfigRowValue = function(idx, val) {
+        if (configData[idx]) configData[idx].value = val;
+    };
+
+    window.addNewConfigRow = function() {
+        configData.push({ key: 'Mục mới', value: '' });
+        renderConfigRows();
+        const listContainer = document.getElementById('cfgEditorList');
+        if (listContainer) listContainer.scrollTop = listContainer.scrollHeight;
+    };
+
+    window.deleteConfigRow = function(idx) {
+        configData.splice(idx, 1);
+        renderConfigRows();
+    };
+
+    function serializeConfig() {
+        return configData.map(item => `${item.key}: ${item.value}`).join('\n') + '\n';
+    }
+
+    window.downloadConfigFile = function() {
+        const selectedFile = document.getElementById('cfgFileSelect').value;
+        const text = serializeConfig();
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = selectedFile;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showNotification(`Đã tạo liên kết tải về cho ${selectedFile}`, "success");
+    };
+
+    window.commitConfigFile = async function() {
+        const pat = localStorage.getItem('github_pat') || '';
+        if (!pat) {
+            alert("Vui lòng nhập GitHub Personal Access Token (PAT) để commit trực tiếp lên GitHub!");
+            return;
+        }
+
+        const selectedFile = document.getElementById('cfgFileSelect').value;
+        const commitMsg = document.getElementById('cfgCommitMsg').value.trim() || `Cập nhật ${selectedFile} qua Tiện ích`;
+        const contentText = serializeConfig();
+
+        const repo = 'doducdungvn/doducdungvn.github.io';
+        const url = `https://api.github.com/repos/${repo}/contents/${selectedFile}`;
+
+        showNotification("Đang chuẩn bị gửi cấu hình lên GitHub...", "info");
+
+        try {
+            // 1. Fetch latest SHA to prevent out-of-date conflicts
+            const getRes = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${pat}`
+                }
+            });
+            let latestSha = currentFileSha;
+            if (getRes.ok) {
+                const getJson = await getRes.json();
+                latestSha = getJson.sha;
+            }
+
+            // 2. Prepare Base64 content with Unicode support
+            const base64Content = btoa(unescape(encodeURIComponent(contentText)));
+
+            // 3. Send PUT request
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${pat}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: commitMsg,
+                    content: base64Content,
+                    sha: latestSha,
+                    branch: 'main'
+                })
+            });
+
+            if (putRes.ok) {
+                const putJson = await putRes.json();
+                currentFileSha = putJson.content.sha;
+                showNotification(`Đã commit thành công tệp ${selectedFile} lên GitHub!`, "success");
+            } else {
+                const errJson = await putRes.json().catch(() => ({}));
+                console.error("GitHub Commit Error: ", errJson);
+                alert(`Lỗi commit lên GitHub: ${errJson.message || putRes.statusText}`);
+            }
+        } catch (err) {
+            console.error("Request error: ", err);
+            alert(`Lỗi kết nối mạng: ${err.message}`);
+        }
+    };
 
     // Chat Resizer Logic for Resizable Sidebar
     function initChatResizer() {
