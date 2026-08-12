@@ -567,6 +567,49 @@
             justify-content: center;
             gap: 6px;
         }
+        /* CRITICAL: zengSection footer/main/header must NOT be overridden by button rules */
+        body.theme-robo #zengSection footer {
+            display: flex !important;
+            background: #121212 !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-radius: 0 !important;
+            color: inherit !important;
+            font-weight: normal !important;
+            transform: none !important;
+            height: auto !important;
+            min-height: 72px !important;
+            flex-shrink: 0 !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 16px !important;
+            border-top: 1px solid rgba(255,255,255,0.1) !important;
+        }
+        body.theme-robo #zengSection main,
+        body.theme-robo #zengSection header,
+        body.theme-robo #zengSection aside {
+            display: flex !important;
+            background: unset !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-radius: 0 !important;
+            color: inherit !important;
+            font-weight: normal !important;
+            transform: none !important;
+        }
+        body.theme-robo #zengSection > div > div {
+            background: unset !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-radius: 0 !important;
+            color: inherit !important;
+            font-weight: normal !important;
+            transform: none !important;
+        }
+
         body.theme-robo button:hover,
         body.theme-robo .btn:hover {
             background: linear-gradient(135deg, #ffd700, #ffb300) !important;
@@ -3673,7 +3716,7 @@ input[type=range]:active::-webkit-slider-thumb {
                 
                 <div class="mt-3 sm:mt-5 text-center max-w-xs sm:max-w-md w-full px-4">
                     <h2 id="displayTitle" class="text-base sm:text-xl font-bold truncate text-white drop-shadow-md">Ch&#432;a c&#243; Media</h2>
-                    <p id="displayType" class="text-xs text-zeng-light mt-1 font-medium tracking-wide">H&#220;y ch&#7885;n nh&#7841;c &#273;&#7875; b&#7855;t &#273;&#7847;u ph&#225;t</p>
+                    <p id="displayType" class="text-xs text-zeng-light mt-1 font-medium tracking-wide">H&#227;y ch&#7885;n nh&#7841;c &#273;&#7875; b&#7855;t &#273;&#7847;u ph&#225;t</p>
                 </div>
                 
                 <!-- Custom Canvas Visualizer -->
@@ -3688,11 +3731,11 @@ input[type=range]:active::-webkit-slider-thumb {
         <!-- PLAYLIST (Right / Responsive toggle sheet on mobile) -->
         <aside id="playlistSidebar" class="hidden md:flex w-[320px] lg:w-[360px] bg-zeng-panel flex-col border-l border-white/5 shrink-0 z-10 shadow-xl transition-all duration-300 min-h-0">
             <div class="p-3 sm:p-4 border-b border-white/5 flex justify-between items-center bg-[#1e1e1e]">
-                <h3 class="font-bold text-sm sm:text-base text-white">Danh S&#225;ch Ph&#225;t</h3>
+                <h3 class="font-bold text-sm sm:text-base text-white">Danh Sách Phát</h3>
                 <div class="flex items-center gap-1.5 sm:gap-2">
-                    <span id="trackCount" class="text-[10px] sm:text-xs text-zeng-light font-bold bg-white/10 px-2 py-1 rounded-full">0 b&#220;i</span>
-                    <button id="btnFetchMore" class="bg-zeng-green hover:bg-green-600 text-black text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full transition" title="L&#7845;y th&#234;m nh&#7841;c th&#7883;nh h&#224;nh">L&#7845;y ti&#7871;p</button>
-                    <button id="btnClearAll" class="bg-red-600 hover:bg-red-700 text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full transition" title="X&#243;a to&#224;n b&#7899; danh s&#225;ch">X&#243;a h&#7871;t</button>
+                    <span id="trackCount" class="text-[10px] sm:text-xs text-zeng-light font-bold bg-white/10 px-2 py-1 rounded-full">0 bài</span>
+                    <button id="btnFetchMore" class="bg-zeng-green hover:bg-green-600 text-black text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full transition" title="Lấy thêm nhạc thịnh hành">Lấy tiếp</button>
+                    <button id="btnClearAll" class="bg-red-600 hover:bg-red-700 text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full transition" title="Xóa toàn bộ danh sách">Xóa hết</button>
                 </div>
             </div>
             
@@ -3700,7 +3743,7 @@ input[type=range]:active::-webkit-slider-thumb {
                 <!-- Drop Overlay -->
                 <div id="dropOverlay" class="absolute inset-0 bg-zeng-green/20 border-2 border-dashed border-zeng-green z-50 hidden flex-col items-center justify-center text-white backdrop-blur-sm pointer-events-none transition-all">
                     <i class="fas fa-cloud-download-alt text-5xl mb-3 drop-shadow-lg"></i>
-                    <p class="font-bold text-lg drop-shadow">Th&#7843; v&#220;o &#273;&#226;y</p>
+                    <p class="font-bold text-lg drop-shadow">Th&#7843; v&#224;o &#273;&#226;y</p>
                 </div>
                 
                 <ul id="playlist" class="p-2 space-y-1">
@@ -10756,7 +10799,7 @@ function setClass(el, cls) {
                     } else {
                         currentTrackIndex = -1;
                         if (DOM.displayTitle) DOM.displayTitle.textContent = "Kh&#244;ng c&#243; media kh&#7843; d&#7909;ng";
-                        if (DOM.displayType) DOM.displayType.textContent = "C&#225;c b&#220;i h&#225;t kh&#244;ng xem &#273;&#432;&#7853;c &#273;&#227; t&#7901; &#273;&#7897;ng b&#7883; lo&#7841;i b&#7887;";
+                        if (DOM.displayType) DOM.displayType.textContent = "C&#225;c b&#224;i h&#225;t kh&#244;ng xem &#273;&#432;&#7907;c &#273;&#227; t&#7921; &#273;&#7897;ng b&#7883; lo&#7841;i b&#7887;";
                     }
                 }
             };
