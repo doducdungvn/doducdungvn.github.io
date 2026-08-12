@@ -2176,7 +2176,7 @@ input[type=range]:active::-webkit-slider-thumb {
              ----------------------------------------------------------------------- -->
         <div id="utilitiesSection" class="main-section" style="display: none;">
             <div class="nav-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                <button class="back-btn" onclick="showSection(window.lastActiveSection || 'reportSection')">&#11013; Quay l&#7841;i B&#225;o c&#225;o</button>
+                <button class="back-btn" onclick="window.showSection(window.lastActiveSection || 'reportSection')">&#11013; Quay l&#7841;i B&#225;o c&#225;o</button>
             </div>
             <h3 style="text-align: center; margin-top: 10px; color: var(--primary-color); font-size: 22px;">&#128736; H&#7878; TH&#7888;NG TI&#7879;N &#205;CH</h3>
             <div class="utilities-grid">
@@ -5038,6 +5038,7 @@ input[type=range]:active::-webkit-slider-thumb {
             location.hash = targetHash;
         }
     }
+    window.showSection = showSection;
 
     // Router Listener for Hash Changes
     window.addEventListener('hashchange', () => {
