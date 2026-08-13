@@ -836,6 +836,7 @@
     let veBocData = new Map();
     let currentGeneratedImages = [];
     let currentReportType = 'detailed';
+    let bieu35DateRange = '';  // Ngày tháng của Biểu 35 (XSKT)
 
     window.manuallyAddedAgents = new Set();
 
@@ -1028,6 +1029,7 @@
         try {
             // Đọc và parse từng file tuần tự
             const allResults = [];
+            const allDateTexts = [];
             for (const file of files) {
                 const data = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -1037,9 +1039,13 @@
                 });
                 const wb = XLSX.read(data, { type: 'array' });
                 const ws = wb.Sheets[wb.SheetNames[0]];
-                const parsed = parseBieu35(ws);
+                const { data: parsed, dateText } = parseBieu35(ws);
                 allResults.push(...parsed);
+                if (dateText) allDateTexts.push(dateText);
             }
+
+            // Lưu ngày tháng của Biểu 35
+            bieu35DateRange = allDateTexts.length > 0 ? allDateTexts.join(', ') : '';
 
             // Merge: cộng dồn xskt theo mã đại lý
             const mergeMap = new Map();
@@ -1068,7 +1074,7 @@
 
     function parseBieu35(ws) {
         const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
-        if (rows.length < 5) return [];
+        if (rows.length < 5) return { data: [], dateText: '' };
         let xsktColIndex = -1, codeColIndex = -1, headerRowIndex = -1;
         for (let rIdx = 0; rIdx < Math.min(rows.length, 15); rIdx++) {
             const row = rows[rIdx];
@@ -1089,6 +1095,28 @@
         if (xsktColIndex === -1) { xsktColIndex = 8; headerRowIndex = 4; }
         if (codeColIndex === -1) { codeColIndex = 1; }
 
+        // --- Trích xuất ngày tháng từ các hàng header ---
+        let dateText = '';
+        const datePattern = /(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2,4}))?/g;
+        const tuDenPattern = /t[\u01b0u][\s]+(\d{1,2}[\/-]\d{1,2}(?:[\/-]\d{2,4})?)\s*[\u0111d][\u1ebf\u1ecde]n\s+(\d{1,2}[\/-]\d{1,2}(?:[\/-]\d{2,4})?)/i;
+        for (let rIdx = 0; rIdx < Math.min(rows.length, headerRowIndex + 1 || 10); rIdx++) {
+            for (const cell of rows[rIdx]) {
+                const cellStr = String(cell || '').trim();
+                if (!cellStr) continue;
+                // Tìm dạng "từ ... đến ..."
+                const tuDen = cellStr.match(tuDenPattern);
+                if (tuDen) { dateText = `Từ ${tuDen[1]} đến ${tuDen[2]}`; break; }
+                // Tìm các ngày rời rạc
+                const dates = cellStr.match(datePattern);
+                if (dates && dates.length >= 2) {
+                    dateText = `Từ ${dates[0]} đến ${dates[dates.length - 1]}`; break;
+                } else if (dates && dates.length === 1 && cellStr.length < 30) {
+                    dateText = `Ngày ${dates[0]}`;
+                }
+            }
+            if (dateText) break;
+        }
+
         const dataList = [];
         for (let i = headerRowIndex + 1; i < rows.length; i++) {
             const row = rows[i];
@@ -1099,7 +1127,7 @@
             if (upper.includes("TỔNG") || upper.includes("CỘNG") || upper.includes("CÔNG") || upper.includes("TOTAL")) continue;
             dataList.push({ code: code, xskt: parseFloat(row[xsktColIndex]) || 0 });
         }
-        return dataList;
+        return { data: dataList, dateText };
     }
 
     function renderGlobalDatePicker() {
@@ -1360,7 +1388,14 @@
         let displayGlobalDate = getFormattedDateRange(globalSelectedDates);
         let percent = totals.rev > 0 ? (totals.th / totals.rev * 100) : 0;
         let pString = `<span style="color:${percent<=50?'var(--success-color)':'var(--danger-color)'}">(${percent.toFixed(1)}%)</span>`;
-        DOM.summaryDate.innerHTML = `${displayGlobalDate}<br>Doanh số: <b style="color:var(--danger-color)">${formatNumberHiddenK(totals.rev)}</b> - Thưởng: <b style="color:var(--primary-dark)">${formatNumberHiddenK(totals.th)}</b> ${pString}`;
+
+        // Hiển thị ngày XSKT riêng nếu lệch với Biểu 31
+        let xsktDateLine = '';
+        if (hasXSKT && bieu35DateRange && bieu35DateRange !== displayGlobalDate) {
+            xsktDateLine = `<br><span style="font-size:12px; color:#e67e22; font-weight:600;">&#x1F4C5; XSKT: ${bieu35DateRange}</span>`;
+        }
+
+        DOM.summaryDate.innerHTML = `${displayGlobalDate}${xsktDateLine}<br>Doanh số: <b style="color:var(--danger-color)">${formatNumberHiddenK(totals.rev)}</b> - Thưởng: <b style="color:var(--primary-dark)">${formatNumberHiddenK(totals.th)}</b> ${pString}`;
     }
 
     window.viewAgentDetail = (code) => {
