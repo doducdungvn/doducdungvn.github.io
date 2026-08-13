@@ -420,8 +420,8 @@
                 <label for="excelFile1">Chọn file Biểu 31 (Lô tô) [Có thể chọn nhiều]:</label>
                 <input type="file" id="excelFile1" accept=".xls,.xlsx" multiple>
                 <div style="height: 10px;"></div>
-                <label for="excelFile2">Chọn file Biểu 35 (XSKT - Tùy chọn):</label>
-                <input type="file" id="excelFile2" accept=".xls,.xlsx">
+                <label for="excelFile2">Chọn file Biểu 35 (XSKT - Tùy chọn) [Có thể chọn nhiều file]:</label>
+                <input type="file" id="excelFile2" accept=".xls,.xlsx" multiple>
             </div>
 
             <div id="homeActionContainer" class="home-actions" style="margin-top: 20px; grid-template-columns: 1fr;">
@@ -1021,23 +1021,49 @@
         hideLoading();
     });
 
-    DOM.excelFile2.addEventListener('change', function(e) {
-        if (!e.target.files.length) return;
+    DOM.excelFile2.addEventListener('change', async function(e) {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
         showLoading();
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            try {
-                const data = new Uint8Array(ev.target.result);
-                const wb = XLSX.read(data, {type: "array"});
+        try {
+            // Đọc và parse từng file tuần tự
+            const allResults = [];
+            for (const file of files) {
+                const data = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = ev => resolve(new Uint8Array(ev.target.result));
+                    reader.onerror = () => reject(new Error('Không đọc được file: ' + file.name));
+                    reader.readAsArrayBuffer(file);
+                });
+                const wb = XLSX.read(data, { type: 'array' });
                 const ws = wb.Sheets[wb.SheetNames[0]];
-                excelData2 = parseBieu35(ws);
-                DOM.excelFile2.classList.add('loaded');
-                showNotification("Đã nạp file Biểu 35!", 'success');
-            } catch(err) {
-                showNotification("Lỗi đọc file: "+err.message, 'error');
-            } finally { hideLoading(); }
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
+                const parsed = parseBieu35(ws);
+                allResults.push(...parsed);
+            }
+
+            // Merge: cộng dồn xskt theo mã đại lý
+            const mergeMap = new Map();
+            for (const item of allResults) {
+                const key = item.code.toUpperCase().trim();
+                if (mergeMap.has(key)) {
+                    mergeMap.get(key).xskt += item.xskt;
+                } else {
+                    mergeMap.set(key, { code: item.code, xskt: item.xskt });
+                }
+            }
+            excelData2 = Array.from(mergeMap.values());
+
+            DOM.excelFile2.classList.add('loaded');
+            if (files.length > 1) {
+                showNotification(`Đã nạp và gộp ${files.length} file Biểu 35! (${excelData2.length} đại lý)`, 'success');
+            } else {
+                showNotification(`Đã nạp file Biểu 35! (${excelData2.length} đại lý)`, 'success');
+            }
+        } catch(err) {
+            showNotification('Lỗi đọc file Biểu 35: ' + err.message, 'error');
+        } finally {
+            hideLoading();
+        }
     });
 
     function parseBieu35(ws) {
