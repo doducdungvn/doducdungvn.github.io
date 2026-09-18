@@ -179,6 +179,12 @@
             <span class="font-semibold">Bộ Tiện Ích Mở Rộng</span>
             <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">MỚI</span>
           </button>
+
+          <button onclick="switchTab('farm')" id="tab-btn-farm" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-200">
+            <i class="fa-solid fa-wheat-awn text-base w-5 text-amber-400"></i>
+            <span class="flex-1 text-left font-semibold">Nông Trại Vui Vẻ</span>
+            <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse">HOT</span>
+          </button>
         </nav>
       </div>
 
@@ -329,11 +335,11 @@
 
             <!-- Mode Switcher Controls for YouTube Source -->
             <div id="ytModeControls" class="hidden flex items-center justify-center gap-1.5 mb-3 flex-wrap">
-              <button onclick="switchYtPlayerMode('audio')" class="text-[11px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-600/50 hover:bg-emerald-900 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
-                <i class="fa-solid fa-music"></i> 🎵 Audio Trực Tiếp
+              <button onclick="switchYtPlayerMode('audio')" id="btnModeAudio" class="text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:bg-slate-800 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                <i class="fa-solid fa-compact-disc text-amber-400"></i> Đĩa Than (Audio)
               </button>
-              <button onclick="switchYtPlayerMode('yt')" class="text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:bg-slate-800 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
-                <i class="fa-solid fa-film"></i> 🎥 Video Embed
+              <button onclick="switchYtPlayerMode('yt')" id="btnModeVideo" class="text-[11px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-600/50 hover:bg-emerald-900 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                <i class="fa-solid fa-film"></i> Xem Video
               </button>
               <a id="ytExternalLink" href="#" target="_blank" class="text-[11px] font-bold bg-red-950/80 text-red-400 border border-red-800/50 hover:bg-red-900 px-2.5 py-1 rounded-lg transition inline-flex items-center gap-1">
                 <i class="fab fa-youtube"></i> ↗ Mở YouTube
@@ -832,6 +838,184 @@
         </div>
       </section>
 
+      <!-- ======================================================= -->
+      <!-- TAB 6: NÔNG TRẠI VUI VẺ (HAPPY FARM PRO) -->
+      <!-- ======================================================= -->
+      <section id="tab-farm" class="tab-content hidden space-y-4 pb-20">
+        <!-- Farm Header Card with Farm Atmosphere -->
+        <div class="bg-gradient-to-r from-amber-950/40 via-emerald-950/30 to-slate-900 border border-amber-500/20 rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-md">
+          <div class="absolute -right-6 -bottom-8 opacity-10 text-9xl pointer-events-none select-none">🌾</div>
+          
+          <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 relative z-10">
+            <!-- Farmer Profile & Level -->
+            <div class="flex items-center space-x-3.5">
+              <div class="relative">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-400 p-0.5 shadow-lg shadow-amber-500/20 flex items-center justify-center">
+                  <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-2xl">
+                    🧑‍🌾
+                  </div>
+                </div>
+                <span id="farmLevelBadge" class="absolute -bottom-1 -right-1 px-1.5 py-0.5 bg-amber-500 text-slate-950 font-black text-[10px] rounded-md shadow">Lv.1</span>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <h2 class="text-base sm:text-lg font-black text-white tracking-wide">Nông Trại Vui Vẻ</h2>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Happy Farm</span>
+                </div>
+                <!-- EXP Bar -->
+                <div class="flex items-center space-x-2 mt-1">
+                  <div class="w-32 sm:w-44 h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                    <div id="farmExpBar" class="h-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-300" style="width: 25%"></div>
+                  </div>
+                  <span id="farmExpText" class="text-[11px] font-mono text-amber-200/80 font-bold">25/100 EXP</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Currency & Inventory Counters -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+              <!-- Gold Coins -->
+              <div class="bg-slate-900/90 border border-amber-500/30 px-3.5 py-2 rounded-2xl flex items-center space-x-2 shadow-inner">
+                <span class="text-lg">🪙</span>
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold leading-none">Xu Vàng</div>
+                  <div id="farmGoldText" class="text-sm font-black text-amber-300 leading-tight">150</div>
+                </div>
+              </div>
+
+              <!-- Fertilizer -->
+              <div class="bg-slate-900/90 border border-indigo-500/30 px-3.5 py-2 rounded-2xl flex items-center space-x-2 shadow-inner">
+                <span class="text-lg">⚡</span>
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold leading-none">Phân Bón</div>
+                  <div id="farmFertilizerText" class="text-sm font-black text-indigo-300 leading-tight">5</div>
+                </div>
+                <button onclick="buyFertilizerQuick()" title="Mua thêm 1 bình phân bón (50 xu)" class="ml-1 text-[10px] bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-300 px-2 py-1 rounded-lg border border-indigo-500/30 transition font-bold">+ Mua</button>
+              </div>
+
+              <!-- Barn Capacity -->
+              <div onclick="openBarnModal()" class="cursor-pointer bg-slate-900/90 border border-emerald-500/30 hover:border-emerald-500/60 px-3.5 py-2 rounded-2xl flex items-center space-x-2 shadow-inner transition">
+                <span class="text-lg">🧺</span>
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold leading-none">Nông Khố</div>
+                  <div id="farmBarnCount" class="text-sm font-black text-emerald-300 leading-tight">0 món</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Toolbar -->
+          <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-slate-800/80">
+            <button onclick="openSeedShopModal()" class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-seedling"></i>
+              <span>Cửa Hàng Hạt Giống</span>
+            </button>
+            <button onclick="openBarnModal()" class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-basket-shopping"></i>
+              <span>Nông Khố & Bán Hàng</span>
+            </button>
+            <button onclick="waterAllPlots()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-sky-300 font-bold text-xs rounded-xl border border-sky-500/30 transition flex items-center space-x-1.5" title="Tưới nước tất cả các ô đất chưa tưới (+20% tốc độ lớn)">
+              <i class="fa-solid fa-droplet text-sky-400"></i>
+              <span>Tưới Hết</span>
+            </button>
+            <button onclick="harvestAllReadyPlots()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-xs rounded-xl border border-emerald-500/30 transition flex items-center space-x-1.5" title="Thu hoạch toàn bộ cây đã chín">
+              <i class="fa-solid fa-hand-holding-dollar text-emerald-400"></i>
+              <span>Thu Hoạch Hết</span>
+            </button>
+            <button onclick="openLuckyWheelModal()" class="px-3.5 py-2 bg-gradient-to-r from-purple-600/80 to-pink-600/80 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl border border-purple-500/30 transition flex items-center space-x-1.5 shadow-sm">
+              <i class="fa-solid fa-dharmachakra"></i>
+              <span>Vòng Quay May Mắn</span>
+            </button>
+            <button onclick="openFarmBackupModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs rounded-xl border border-amber-500/30 transition flex items-center space-x-1.5 shadow-sm" title="Quản lý và sao lưu tài sản nông trại">
+              <i class="fa-solid fa-cloud-arrow-up text-amber-400"></i>
+              <span>Sao Lưu / Khôi Phục</span>
+            </button>
+            <!-- AUTO FARM PRO BUTTON -->
+            <button onclick="toggleFarmAutoMode()" id="btnFarmAuto" class="px-3.5 py-2 bg-gradient-to-r from-amber-600 via-purple-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg border border-amber-400/50 transition flex items-center space-x-1.5 animate-pulse">
+              <i class="fa-solid fa-robot text-yellow-300"></i>
+              <span id="btnFarmAutoText">🤖 Auto Nông Trại</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- AUTO FARM STATUS BANNER -->
+        <div id="farmAutoStatusBanner" class="hidden bg-gradient-to-r from-indigo-950/90 via-slate-900/90 to-purple-950/90 border border-indigo-500/40 rounded-2xl p-3 px-4 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs backdrop-blur-md">
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="font-extrabold text-emerald-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-robot"></i> BOT AUTO ĐANG CHẠY
+            </span>
+            <span id="farmAutoActionLog" class="text-slate-300 font-mono text-[11px] bg-slate-950/70 px-2.5 py-1 rounded-lg border border-slate-800">
+              Đang chuẩn bị chu trình chăm sóc nông trại...
+            </span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="farmAutoStats" class="text-amber-300 font-mono text-[11px] font-bold">
+              🌾 0 thu hoạch | 🪙 +0 xu | 🌱 0 đã gieo
+            </span>
+            <button onclick="stopFarmAutoMode()" class="px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg transition text-[11px] flex items-center gap-1 shadow">
+              <i class="fa-solid fa-stop"></i> Dừng Auto
+            </button>
+          </div>
+        </div>
+
+        <!-- View Mode Switcher Header -->
+        <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+          <div class="flex items-center space-x-2">
+            <span class="text-sm font-bold text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-amber-400"></i>
+              Khu Vườn Nông Trại (12 Mảnh Ruộng)
+            </span>
+            <span id="farmPlotsStatus" class="text-xs text-slate-400 font-mono"></span>
+          </div>
+
+          <!-- Mode Toggle Buttons -->
+          <div class="bg-slate-900 p-1 rounded-2xl border border-slate-800 flex items-center space-x-1 text-xs">
+            <button onclick="setFarmViewMode('canvas')" id="btnViewModeCanvas" class="px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-sm">
+              <i class="fa-solid fa-gamepad text-amber-400"></i>
+              <span>Mảnh Ruộng 2.5D (Canvas)</span>
+            </button>
+            <button onclick="setFarmViewMode('grid')" id="btnViewModeGrid" class="px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-slate-200">
+              <i class="fa-solid fa-table-cells-large"></i>
+              <span>Thẻ Lưới</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. VIVID 2.5D ISOMETRIC HTML5 CANVAS VIEW -->
+        <div id="farmCanvasViewWrapper" class="relative w-full bg-slate-950 border-2 border-amber-900/40 rounded-3xl overflow-hidden shadow-2xl">
+          <!-- Canvas Top Quick Bar -->
+          <div class="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
+            <div class="bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-500/30 text-[11px] font-bold text-amber-300 flex items-center gap-2 pointer-events-auto shadow-md">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>🌾 Ruộng Nông Trại 2.5D</span>
+            </div>
+
+            <div class="flex items-center gap-2 pointer-events-auto">
+              <button onclick="toggleFarmWeather()" id="btnFarmWeather" class="px-3 py-1.5 bg-slate-950/80 hover:bg-slate-900 text-amber-300 text-xs font-bold rounded-2xl border border-amber-500/30 backdrop-blur-md transition flex items-center gap-1.5 shadow-md">
+                <span id="farmWeatherIcon">☀️</span>
+                <span id="farmWeatherText">Nắng Ấm</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- HTML5 Canvas -->
+          <canvas id="farmIsometricCanvas" class="w-full block select-none cursor-pointer" style="min-height: 480px; max-height: 560px;"></canvas>
+
+          <!-- Interactive Bottom Hint Bar -->
+          <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-slate-950/90 backdrop-blur-md border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-bold text-amber-200 shadow-2xl flex items-center gap-2 pointer-events-none">
+            <span class="text-amber-400">💡 Mẹo:</span> Bấm trực tiếp vào từng luống đất trên ruộng để Gieo Hạt, Tưới Nước, Bón Phân hoặc Thu Hoạch!
+          </div>
+        </div>
+
+        <!-- 2. TRADITIONAL CARD GRID VIEW -->
+        <div id="farmGridViewWrapper" class="hidden bg-slate-900/60 border border-slate-800 rounded-3xl p-3 sm:p-5">
+          <div id="farmPlotsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <!-- Rendered dynamically by JavaScript -->
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -858,6 +1042,10 @@
     <button onclick="switchTab('tools')" id="mob-tab-tools" class="flex flex-col items-center text-slate-400">
       <i class="fa-solid fa-screwdriver-wrench text-base"></i>
       <span class="mt-0.5">Tiện Ích</span>
+    </button>
+    <button onclick="switchTab('farm')" id="mob-tab-farm" class="flex flex-col items-center text-slate-400">
+      <i class="fa-solid fa-wheat-awn text-base text-amber-400"></i>
+      <span class="mt-0.5">Nông Trại</span>
     </button>
   </div>
 
@@ -1007,6 +1195,239 @@
   </div>
 
   <!-- ======================================================= -->
+  <!-- MODAL: SEED SHOP (CỬA HÀNG HẠT GIỐNG) -->
+  <!-- ======================================================= -->
+  <div id="seedShopModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col p-5 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-black text-sm sm:text-base text-white flex items-center gap-2">
+          <span class="text-xl">🛒</span> Cửa Hàng Hạt Giống Nông Trại
+        </h3>
+        <button onclick="closeSeedShopModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="flex items-center justify-between text-xs bg-slate-950/80 p-3 rounded-2xl border border-slate-800">
+        <div class="flex items-center space-x-3">
+          <span class="text-amber-400 font-bold">Số dư: <span id="shopGoldDisplay" class="font-black font-mono">150</span> Xu 🪙</span>
+          <span class="text-slate-400">|</span>
+          <span class="text-indigo-400 font-bold">Cấp: <span id="shopLevelDisplay" class="font-black font-mono">1</span> 🧑‍🌾</span>
+        </div>
+        <div id="shopTargetPlotInfo" class="text-emerald-400 font-semibold text-[11px]"></div>
+      </div>
+
+      <!-- Crops Grid -->
+      <div id="shopCropsGrid" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pr-1">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 pt-3 text-xs">
+        <div class="flex items-center space-x-2">
+          <button onclick="buyFertilizerPack(5)" class="px-3 py-1.5 bg-indigo-950 hover:bg-indigo-900 text-indigo-300 font-bold rounded-xl border border-indigo-500/30 transition flex items-center gap-1.5">
+            <span>⚡ Mua 5 Phân Bón</span>
+            <span class="text-[10px] text-amber-400 font-mono">(220 Xu)</span>
+          </button>
+        </div>
+        <button onclick="closeSeedShopModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: BARN & MARKET (NÔNG KHỐ & BÁN NÔNG SẢN) -->
+  <!-- ======================================================= -->
+  <div id="farmBarnModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col p-5 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-black text-sm sm:text-base text-white flex items-center gap-2">
+          <span class="text-xl">🧺</span> Nông Khố - Kho Nông Sản Đã Thu Hoạch
+        </h3>
+        <button onclick="closeBarnModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="flex items-center justify-between text-xs bg-slate-950/80 p-3 rounded-2xl border border-slate-800">
+        <span class="text-slate-300">Tổng sản phẩm: <b id="barnTotalItemsCount" class="text-emerald-400">0</b></span>
+        <span class="text-amber-400 font-bold">Ước tính giá trị: <b id="barnTotalEstimatedValue" class="text-amber-300 font-mono">0</b> Xu 🪙</span>
+      </div>
+
+      <!-- Items List -->
+      <div id="barnItemsList" class="flex-1 overflow-y-auto space-y-2 pr-1 max-h-72">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="flex items-center justify-between border-t border-slate-800 pt-3 text-xs">
+        <button onclick="closeBarnModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl">Đóng</button>
+        <button onclick="sellAllBarnItems()" id="btnSellAllBarn" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center gap-2">
+          <span>Bán Tất Cả Nông Sản</span>
+          <span class="text-xs bg-slate-950/20 px-2 py-0.5 rounded-lg">💰</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: LUCKY WHEEL (VÒNG QUAY MAY MẮN) -->
+  <!-- ======================================================= -->
+  <div id="farmLuckyWheelModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl w-full max-w-sm p-5 space-y-4 text-center relative overflow-hidden">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <span class="text-lg">🎡</span> Vòng Quay Thần Tài May Mắn
+        </h3>
+        <button onclick="closeLuckyWheelModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <!-- Wheel Graphic Canvas -->
+      <div class="relative py-2 flex items-center justify-center">
+        <!-- Arrow pointer -->
+        <div class="absolute -top-1 z-20 text-amber-400 text-2xl filter drop-shadow">▼</div>
+        <canvas id="luckyWheelCanvas" width="260" height="260" class="rounded-full shadow-2xl border-4 border-amber-500/50 transition-transform duration-[4000ms] ease-out"></canvas>
+      </div>
+
+      <div id="wheelResultBanner" class="min-h-[28px] text-xs font-bold text-amber-300">
+        Nhấn QUAY để nhận quà ngẫu nhiên!
+      </div>
+
+      <div class="flex items-center justify-center gap-2 border-t border-slate-800 pt-3">
+        <button onclick="spinLuckyWheel()" id="btnSpinWheel" class="w-full py-3 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-95 text-white font-black text-sm rounded-2xl shadow-xl transition transform active:scale-95">
+          QUAY NGAY 🎁 (Miễn Phí)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: AUTO FARM PASSCODE (MẬT MÃ KÍCH HOẠT 6986) -->
+  <!-- ======================================================= -->
+  <div id="farmAutoModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4 text-center relative overflow-hidden">
+      <!-- Glow background -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 via-purple-600 to-indigo-600 flex items-center justify-center text-3xl mx-auto shadow-xl shadow-amber-500/20 border border-amber-400/30">
+        🤖
+      </div>
+      
+      <div>
+        <h3 class="text-base font-black text-white">Chế Độ Auto Nông Trại Vui Vẻ</h3>
+        <p class="text-xs text-slate-400 mt-1">Bot tự động 100%: Thu hoạch cây chín, Bán nông sản đổi Xu, Mở rộng đất, Gieo hạt cao cấp & Tưới nước liên tục.</p>
+      </div>
+
+      <div class="space-y-2 text-left bg-slate-950/80 p-3.5 rounded-2xl border border-slate-800">
+        <label for="farmAutoPasswordInput" class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+          <i class="fa-solid fa-key text-amber-400"></i> Nhập Mật Mã Kích Hoạt:
+        </label>
+        <input type="password" id="farmAutoPasswordInput" maxlength="10" placeholder="••••" 
+          class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl text-white font-mono text-center tracking-[0.4em] text-xl focus:outline-none transition"
+          onkeydown="if(event.key==='Enter') submitFarmAutoPassword()">
+        <p id="farmAutoPassError" class="text-[11px] text-rose-400 font-bold text-center hidden"></p>
+        <p class="text-[10px] text-slate-500 text-center italic mt-1">Chức năng yêu cầu mã bảo mật để kích hoạt</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button onclick="closeFarmAutoModal()" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition">
+          Hủy Bỏ
+        </button>
+        <button onclick="submitFarmAutoPassword()" class="py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black rounded-xl text-xs shadow-lg transition transform active:scale-95">
+          🚀 Kích Hoạt Auto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: FARM DATA BACKUP & RESTORE (SAO LƯU / KHÔI PHỤC) -->
+  <!-- ======================================================= -->
+  <div id="farmBackupModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl shadow-2xl w-full max-w-lg p-6 space-y-4 relative overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-black text-sm sm:text-base text-white flex items-center gap-2">
+          <span class="text-xl">💾</span> Quản Lý Dữ Liệu & Sao Lưu Nông Trại
+        </h3>
+        <button onclick="closeFarmBackupModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-3.5 pr-1 text-xs">
+        <!-- Auto-save Status Card -->
+        <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-2xl p-3.5 space-y-1.5 text-emerald-300">
+          <div class="font-bold flex items-center gap-2 text-white">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            Tự Động Lưu 100% Vào Trình Duyệt
+          </div>
+          <p class="text-[11px] text-emerald-200/90 leading-relaxed">
+            Mọi tiến độ, Cấp độ (Level), Xu Vàng, Phân bón, Nông Khố và 12 mảnh ruộng luôn được lưu tự động liên tục. Khi bạn đóng trình duyệt và mở lại, toàn bộ tài sản vẫn còn nguyên vẹn.
+          </p>
+        </div>
+
+        <!-- URL Origin Reminder Card -->
+        <div class="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-3 space-y-1 text-[11px] text-amber-200/90">
+          <div class="font-bold text-amber-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Lưu ý quan trọng về địa chỉ truy cập:
+          </div>
+          <p>
+            Trình duyệt lưu dữ liệu riêng biệt theo từng tên miền. Hãy luôn mở game bằng cùng một địa chỉ: 
+            <code id="currentOriginLabel" class="bg-slate-950 px-1.5 py-0.5 rounded text-amber-400 font-mono font-bold">http://localhost/index_clean.html</code>
+            (tránh mở lẫn lộn giữa <code class="text-slate-400">localhost</code>, <code class="text-slate-400">127.0.0.1</code> hoặc <code class="text-slate-400">file:///</code>).
+          </p>
+        </div>
+
+        <!-- Export & Import File Section -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-3">
+          <h4 class="font-bold text-white flex items-center gap-1.5">
+            <i class="fa-solid fa-file-export text-sky-400"></i> Xuất / Nhập File Lưu (.JSON)
+          </h4>
+          <p class="text-[11px] text-slate-400">
+            Tải file lưu về máy tính/điện thoại để chuyển sang trình duyệt khác hoặc làm bản sao lưu an toàn:
+          </p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="exportFarmDataJSON()" class="py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-download"></i> Tải File Lưu (.json)
+            </button>
+            <label class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-1.5 cursor-pointer text-center">
+              <i class="fa-solid fa-upload text-emerald-400"></i> Nhập File Lưu
+              <input type="file" accept=".json" onchange="importFarmDataJSON(event)" class="hidden">
+            </label>
+          </div>
+        </div>
+
+        <!-- Cloud Text Code Section -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
+          <h4 class="font-bold text-white flex items-center gap-1.5">
+            <i class="fa-solid fa-key text-yellow-400"></i> Mã Sao Lưu Dạng Chữ (Text Code)
+          </h4>
+          <p class="text-[11px] text-slate-400">Sao chép mã chuỗi này để gửi qua tin nhắn hoặc dán sang thiết bị khác:</p>
+          <div class="flex gap-2">
+            <input type="text" id="farmDataCodeInput" placeholder="Bấm 'Copy Mã' hoặc dán mã vào đây..." 
+              class="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-[11px] focus:outline-none focus:border-amber-400">
+            <button onclick="generateAndCopyFarmCode()" class="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition">
+              Copy Mã
+            </button>
+            <button onclick="applyFarmDataCode()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition">
+              Nạp Mã
+            </button>
+          </div>
+        </div>
+
+        <!-- Danger Zone: Reset Farm -->
+        <div class="border-t border-slate-800/80 pt-2.5 flex items-center justify-between">
+          <span class="text-[11px] text-slate-500">Muốn chơi lại từ đầu?</span>
+          <button onclick="resetFarmDataDefault()" class="px-3 py-1.5 bg-rose-950/50 hover:bg-rose-900 text-rose-300 font-bold rounded-xl border border-rose-800/40 text-[11px] transition">
+            <i class="fa-solid fa-rotate-left mr-1"></i> Đặt Lại Nông Trại
+          </button>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 flex justify-end">
+        <button onclick="closeFarmBackupModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
   <!-- TOAST NOTIFICATION CONTAINER -->
   <!-- ======================================================= -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
@@ -1102,7 +1523,7 @@
       });
 
       // Update mobile bottom nav colors
-      ['music', 'chat', 'epub', 'calculator', 'tools'].forEach(t => {
+      ['music', 'chat', 'epub', 'calculator', 'tools', 'farm'].forEach(t => {
         const mobBtn = document.getElementById(`mob-tab-${t}`);
         if (mobBtn) {
           if (t === tabId) {
@@ -1116,7 +1537,13 @@
       });
 
       const targetTab = document.getElementById(`tab-${tabId}`);
-      if (targetTab) targetTab.classList.remove('hidden');
+      if (targetTab) {
+        targetTab.classList.remove('hidden');
+        if (tabId === 'farm') {
+          if (typeof renderFarm === 'function') renderFarm();
+          if (typeof startIsometricCanvasLoop === 'function') startIsometricCanvasLoop();
+        }
+      }
 
       const targetBtn = document.getElementById(`tab-btn-${tabId}`);
       if (targetBtn) {
@@ -1421,25 +1848,32 @@
 
     async function fetchPipedParallel(endpointQuery) {
       const SEARCH_ENDPOINTS = [
-        "https://yewtu.be/api/v1/search?q=",
-        "https://invidious.flokinet.to/api/v1/search?q=",
-        "https://pipedapi.palvelu.org/search?q=",
-        "https://pipedapi.drgns.space/search?q=",
-        "https://api.piped.video/search?q="
+        "https://invidious.f5.si/api/v1/search?q=",
+        "https://invidious.projectsegfau.lt/api/v1/search?q=",
+        "https://invidious.slipfox.xyz/api/v1/search?q=",
+        "https://invidious.protokolla.fi/api/v1/search?q="
       ];
 
-      const promises = SEARCH_ENDPOINTS.map(url => {
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), 3500);
-        return fetch(url + endpointQuery, { signal: controller.signal })
-          .then(res => res.ok ? res.json() : Promise.reject())
-          .then(data => {
+      for (const endpoint of SEARCH_ENDPOINTS) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4500);
+          const res = await fetch(endpoint + endpointQuery, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
             let items = Array.isArray(data) ? data : (data && data.items ? data.items : []);
-            if (items.length > 0) return items;
-            throw new Error();
-          });
-      });
-      return await Promise.any(promises);
+            // Filter only video items
+            items = items.filter(it => it.type === 'video' || (!it.type && (it.videoId || it.url)));
+            if (items.length > 0) {
+              return items;
+            }
+          }
+        } catch (e) {
+          console.warn("Thử máy chủ tìm kiếm kế tiếp sau khi lỗi từ:", endpoint);
+        }
+      }
+      throw new Error("Không thể kết nối máy chủ tìm kiếm");
     }
 
     async function searchYouTube(query) {
@@ -1454,18 +1888,39 @@
       kwLabel.textContent = query;
       grid.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-slate-400"><i class="fa-solid fa-spinner animate-spin text-lg mr-2 text-emerald-400"></i> Đang tìm kiếm trên máy chủ YouTube...</div>`;
 
-      // Match YouTube Direct Links
+      // Match YouTube Direct Links or Raw 11-char Video ID (Direct Machine IP - No Proxy Needed)
       const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
       const match = query.match(ytRegex);
-      if (match && match[1]) {
+      const isRawVideoId = !match && /^[a-zA-Z0-9_-]{11}$/.test(query);
+      const directVideoId = match ? match[1] : (isRawVideoId ? query : null);
+
+      if (directVideoId) {
+        grid.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-emerald-400"><i class="fa-solid fa-circle-notch animate-spin mr-2"></i> Đang tải thông tin video trực tiếp từ máy của bạn...</div>`;
+        try {
+          const oembedRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${directVideoId}&format=json`);
+          if (oembedRes.ok) {
+            const info = await oembedRes.json();
+            addYouTubeTrackToPlaylist({
+              videoId: directVideoId,
+              title: info.title || `YouTube Video (${directVideoId})`,
+              author: info.author_name || 'YouTube',
+              thumb: `https://img.youtube.com/vi/${directVideoId}/mqdefault.jpg`
+            });
+            panel.classList.add('hidden');
+            showToast(`Đã thêm: ${info.title}`, "success");
+            return;
+          }
+        } catch(oeErr) {}
+
+        // Fallback if oembed network blocked
         addYouTubeTrackToPlaylist({
-          videoId: match[1],
-          title: `YouTube Video (${match[1]})`,
+          videoId: directVideoId,
+          title: `YouTube Video (${directVideoId})`,
           author: 'YouTube',
-          thumb: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
+          thumb: `https://img.youtube.com/vi/${directVideoId}/mqdefault.jpg`
         });
         panel.classList.add('hidden');
-        showToast("Đã thêm bài hát từ link YouTube vào danh sách!", "success");
+        showToast("Đã thêm bài hát vào danh sách phát!", "success");
         return;
       }
 
@@ -1492,7 +1947,7 @@
 
         const title = item.title || 'YouTube Music';
         const author = item.author || item.uploaderName || 'YouTube';
-        const thumb = item.thumbnail || `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+        const thumb = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 
         const card = document.createElement('div');
         card.className = 'bg-slate-900 hover:bg-slate-800 transition p-2.5 rounded-2xl cursor-pointer border border-slate-800 flex items-center space-x-3';
@@ -1791,36 +2246,55 @@
         document.getElementById('vinylCover').style.backgroundImage = `url('${thumbUrl}')`;
         document.getElementById('mini-player-thumb').src = thumbUrl;
 
-        document.getElementById('ytPlayerContainer').classList.remove('hidden');
+        const ytContainer = document.getElementById('ytPlayerContainer');
+        ytContainer.classList.remove('hidden');
+        ytContainer.style.position = '';
+        ytContainer.style.left = '';
+        ytContainer.style.top = '';
+        ytContainer.style.width = '';
+        ytContainer.style.height = '';
+        ytContainer.style.opacity = '';
+        ytContainer.style.pointerEvents = '';
+        ytContainer.className = 'w-full aspect-video rounded-2xl overflow-hidden mb-3 bg-black border border-slate-800 relative shadow-2xl';
+
         document.getElementById('vinylContainer').classList.add('hidden');
         document.getElementById('ytModeControls').classList.remove('hidden');
         document.getElementById('ytExternalLink').href = `https://www.youtube.com/watch?v=${track.videoId}`;
 
-        if (ytPlayer && ytReady) {
+        // Direct Iframe embed with youtube-nocookie guarantees instant playback without origin rejection!
+        ytContainer.innerHTML = `
+          <iframe id="ytIframeEmbed" 
+            src="https://www.youtube-nocookie.com/embed/${track.videoId}?autoplay=1&enablejsapi=1&playsinline=1&rel=0" 
+            class="w-full h-full border-0 rounded-2xl" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        `;
+
+        if (window.YT && window.YT.Player) {
           try {
-            ytPlayer.loadVideoById(track.videoId);
-            ytPlayer.setVolume(volVal);
-            ytPlayer.playVideo();
+            ytPlayer = new YT.Player('ytIframeEmbed', {
+              events: {
+                'onReady': () => {
+                  ytReady = true;
+                  try { ytPlayer.setVolume(volVal); } catch(e) {}
+                  try { ytPlayer.playVideo(); } catch(e) {}
+                },
+                'onStateChange': window.onYtStateChange,
+                'onError': window.onYtError
+              }
+            });
           } catch(e) {
-            console.warn("YouTube play error:", e);
+            console.warn("Gắn YT.Player dự phòng:", e);
           }
-        } else {
-          const checkReady = setInterval(() => {
-            if (ytPlayer && ytReady) {
-              clearInterval(checkReady);
-              try {
-                ytPlayer.loadVideoById(track.videoId);
-                ytPlayer.setVolume(volVal);
-                ytPlayer.playVideo();
-              } catch(e) {}
-            }
-          }, 300);
         }
+        startYtTimer();
       } else if (track.type === 'video') {
         activePlayerType = 'video';
         if (ytPlayer && ytReady) {
           try { ytPlayer.pauseVideo(); } catch(e) {}
         }
+        sendYtIframeCommand('pauseVideo');
         document.getElementById('ytPlayerContainer').classList.add('hidden');
         document.getElementById('vinylContainer').classList.add('hidden');
         document.getElementById('ytModeControls').classList.add('hidden');
@@ -1833,6 +2307,7 @@
         if (ytPlayer && ytReady) {
           try { ytPlayer.pauseVideo(); } catch(e) {}
         }
+        sendYtIframeCommand('pauseVideo');
         document.getElementById('ytPlayerContainer').classList.add('hidden');
         document.getElementById('vinylContainer').classList.remove('hidden');
         document.getElementById('ytModeControls').classList.add('hidden');
@@ -1854,15 +2329,88 @@
       renderMusicPlaylist();
     }
 
+    function sendYtIframeCommand(func, args = '') {
+      const iframe = document.getElementById('ytIframeEmbed');
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: func,
+          args: args
+        }), '*');
+      }
+    }
+
+    // Global PostMessage listener for YouTube Iframe events
+    window.addEventListener('message', (event) => {
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (!data) return;
+        if (data.event === 'onStateChange') {
+          if (data.info === 1) { // PLAYING
+            updateMusicPlayStateUI(true);
+          } else if (data.info === 2) { // PAUSED
+            updateMusicPlayStateUI(false);
+          } else if (data.info === 0) { // ENDED
+            stopYtTimer();
+            handleMusicEnded();
+          }
+        } else if (data.event === 'infoDelivery' && data.info) {
+          if (data.info.currentTime !== undefined && data.info.duration !== undefined) {
+            window.ytLastDuration = data.info.duration;
+            updateMusicTimeProgress(data.info.currentTime, data.info.duration);
+          }
+          if (data.info.playerState !== undefined) {
+            if (data.info.playerState === 1) updateMusicPlayStateUI(true);
+            else if (data.info.playerState === 2) updateMusicPlayStateUI(false);
+            else if (data.info.playerState === 0) {
+              stopYtTimer();
+              handleMusicEnded();
+            }
+          }
+        }
+      } catch(e) {}
+    });
+
     function switchYtPlayerMode(mode) {
       if (currentMusicIdx === -1 || musicTracks[currentMusicIdx].type !== 'youtube') return;
+      const ytBox = document.getElementById('ytPlayerContainer');
+      const vinylBox = document.getElementById('vinylContainer');
+      const btnAudio = document.getElementById('btnModeAudio');
+      const btnYt = document.getElementById('btnModeVideo');
+
       if (mode === 'audio') {
-        document.getElementById('ytPlayerContainer').classList.add('hidden');
-        document.getElementById('vinylContainer').classList.remove('hidden');
+        // Position offscreen so iframe continues playback smoothly without being throttled or paused
+        ytBox.style.position = 'fixed';
+        ytBox.style.left = '-9999px';
+        ytBox.style.top = '-9999px';
+        ytBox.style.width = '320px';
+        ytBox.style.height = '180px';
+        ytBox.style.opacity = '0';
+        ytBox.style.pointerEvents = 'none';
+        vinylBox.classList.remove('hidden');
+        if (btnAudio) {
+          btnAudio.className = 'text-[11px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-600/50 hover:bg-emerald-900 px-2.5 py-1 rounded-lg transition flex items-center gap-1';
+        }
+        if (btnYt) {
+          btnYt.className = 'text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:bg-slate-800 px-2.5 py-1 rounded-lg transition flex items-center gap-1';
+        }
         showToast("Đã chuyển sang chế độ Đĩa Than (âm thanh vẫn tiếp tục phát)", "info");
       } else if (mode === 'yt') {
-        document.getElementById('ytPlayerContainer').classList.remove('hidden');
-        document.getElementById('vinylContainer').classList.add('hidden');
+        ytBox.style.position = '';
+        ytBox.style.left = '';
+        ytBox.style.top = '';
+        ytBox.style.width = '';
+        ytBox.style.height = '';
+        ytBox.style.opacity = '';
+        ytBox.style.pointerEvents = '';
+        ytBox.className = 'w-full aspect-video rounded-2xl overflow-hidden mb-3 bg-black border border-slate-800 relative shadow-2xl';
+        vinylBox.classList.add('hidden');
+        if (btnYt) {
+          btnYt.className = 'text-[11px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-600/50 hover:bg-emerald-900 px-2.5 py-1 rounded-lg transition flex items-center gap-1';
+        }
+        if (btnAudio) {
+          btnAudio.className = 'text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:bg-slate-800 px-2.5 py-1 rounded-lg transition flex items-center gap-1';
+        }
         showToast("Đã mở giao diện Video YouTube", "info");
       }
     }
@@ -1881,15 +2429,20 @@
       } else if (activePlayerType === 'audio') {
         if (audioElement.paused) audioElement.play();
         else audioElement.pause();
-      } else if (activePlayerType === 'youtube' && ytPlayer && ytReady) {
-        try {
-          const state = ytPlayer.getPlayerState();
-          if (state === YT.PlayerState.PLAYING) {
-            ytPlayer.pauseVideo();
-          } else {
-            ytPlayer.playVideo();
+      } else if (activePlayerType === 'youtube') {
+        if (isMusicPlaying) {
+          sendYtIframeCommand('pauseVideo');
+          if (ytPlayer && ytReady && typeof ytPlayer.pauseVideo === 'function') {
+            try { ytPlayer.pauseVideo(); } catch(e) {}
           }
-        } catch(e) {}
+          updateMusicPlayStateUI(false);
+        } else {
+          sendYtIframeCommand('playVideo');
+          if (ytPlayer && ytReady && typeof ytPlayer.playVideo === 'function') {
+            try { ytPlayer.playVideo(); } catch(e) {}
+          }
+          updateMusicPlayStateUI(true);
+        }
       }
     }
 
@@ -1937,6 +2490,7 @@
           if (ytPlayer && ytReady) {
             try { ytPlayer.stopVideo(); } catch(e) {}
           }
+          sendYtIframeCommand('stopVideo');
           stopYtTimer();
           currentMusicIdx = -1;
           document.getElementById('playerTrackTitle').textContent = "Chưa chọn bài hát";
@@ -1954,6 +2508,7 @@
       if (ytPlayer && ytReady) {
         try { ytPlayer.stopVideo(); } catch(e) {}
       }
+      sendYtIframeCommand('stopVideo');
       stopYtTimer();
       musicTracks = [];
       savePlaylistToStorage();
@@ -1981,11 +2536,15 @@
         audioElement.currentTime = (val / 100) * audioElement.duration;
       } else if (activePlayerType === 'video' && videoElement.duration) {
         videoElement.currentTime = (val / 100) * videoElement.duration;
-      } else if (activePlayerType === 'youtube' && ytPlayer && ytReady) {
-        try {
-          const dur = ytPlayer.getDuration();
-          if (dur && dur > 0) ytPlayer.seekTo((val / 100) * dur, true);
-        } catch(e) {}
+      } else if (activePlayerType === 'youtube') {
+        const targetSec = (val / 100) * (window.ytLastDuration || 180);
+        sendYtIframeCommand('seekTo', [targetSec, true]);
+        if (ytPlayer && ytReady && typeof ytPlayer.seekTo === 'function') {
+          try {
+            const dur = ytPlayer.getDuration();
+            if (dur && dur > 0) ytPlayer.seekTo((val / 100) * dur, true);
+          } catch(e) {}
+        }
       }
     }
 
@@ -2001,6 +2560,7 @@
       const vol = Math.max(0, Math.min(1, volNum / 100));
       audioElement.volume = vol;
       videoElement.volume = vol;
+      sendYtIframeCommand('setVolume', [volNum]);
       if (ytPlayer && ytReady && ytPlayer.setVolume) {
         try { ytPlayer.setVolume(volNum); } catch(e) {}
       }
@@ -2014,11 +2574,16 @@
       audioElement.muted = !audioElement.muted;
       videoElement.muted = !videoElement.muted;
       const isMuted = audioElement.muted;
-      if (ytPlayer && ytReady) {
-        try {
-          if (isMuted) ytPlayer.mute();
-          else ytPlayer.unMute();
-        } catch(e) {}
+      if (isMuted) {
+        sendYtIframeCommand('mute');
+        if (ytPlayer && ytReady) {
+          try { ytPlayer.mute(); } catch(e) {}
+        }
+      } else {
+        sendYtIframeCommand('unMute');
+        if (ytPlayer && ytReady) {
+          try { ytPlayer.unMute(); } catch(e) {}
+        }
       }
       const icon = isMuted ? '<i class="fa-solid fa-volume-xmark text-rose-400"></i>' : '<i class="fa-solid fa-volume-high"></i>';
       const btnMute = document.getElementById('btnMusicMute');
@@ -3060,12 +3625,1978 @@
       showToast("Đã xóa sổ ghi chú", "info");
     }
 
+    // ----------------------------------------------------
+    // 7. NÔNG TRẠI VUI VẺ (HAPPY FARM PRO) GAME ENGINE
+    // ----------------------------------------------------
+    let farmAudioCtx = null;
+    function getFarmAudioContext() {
+      if (!farmAudioCtx) {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtxClass) farmAudioCtx = new AudioCtxClass();
+      }
+      if (farmAudioCtx && farmAudioCtx.state === 'suspended') {
+        farmAudioCtx.resume();
+      }
+      return farmAudioCtx;
+    }
+
+    function playFarmSound(type) {
+      try {
+        const ctx = getFarmAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === 'plant') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.exponentialRampToValueAtTime(320, now + 0.12);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'water') {
+          [440, 660, 880].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + i * 0.05);
+            gain.gain.setValueAtTime(0.15, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.1);
+          });
+        } else if (type === 'fertilize') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.06);
+            gain.gain.setValueAtTime(0.2, now + i * 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.06);
+            osc.stop(now + i * 0.06 + 0.2);
+          });
+        } else if (type === 'harvest') {
+          [659.25, 783.99, 1046.5, 1318.5].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + i * 0.04);
+            gain.gain.setValueAtTime(0.25, now + i * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.04);
+            osc.stop(now + i * 0.04 + 0.25);
+          });
+        } else if (type === 'sell') {
+          [987.77, 1318.51, 1567.98, 1975.53].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + i * 0.07);
+            gain.gain.setValueAtTime(0.2, now + i * 0.07);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.07);
+            osc.stop(now + i * 0.07 + 0.18);
+          });
+        } else if (type === 'levelup') {
+          [440, 554.37, 659.25, 880].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.1);
+            gain.gain.setValueAtTime(0.3, now + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.1);
+            osc.stop(now + i * 0.1 + 0.35);
+          });
+        }
+      } catch(e) {}
+    }
+
+    const FARM_CROPS = [
+      { id: 'carrot', name: 'Cà Rốt', emoji: '🥕', growTime: 15, cost: 10, sellPrice: 25, exp: 15, minLevel: 1 },
+      { id: 'radish', name: 'Củ Cải Trắng', emoji: '🥬', growTime: 30, cost: 25, sellPrice: 60, exp: 30, minLevel: 1 },
+      { id: 'tomato', name: 'Cà Chua Bi', emoji: '🍅', growTime: 60, cost: 60, sellPrice: 140, exp: 60, minLevel: 2 },
+      { id: 'strawberry', name: 'Dâu Tây Ngọt', emoji: '🍓', growTime: 120, cost: 120, sellPrice: 290, exp: 120, minLevel: 3 },
+      { id: 'corn', name: 'Bắp Ngô Vàng', emoji: '🌽', growTime: 240, cost: 250, sellPrice: 600, exp: 250, minLevel: 4 },
+      { id: 'sunflower', name: 'Hoa Hướng Dương', emoji: '🌻', growTime: 420, cost: 450, sellPrice: 1100, exp: 450, minLevel: 5 },
+      { id: 'watermelon', name: 'Dưa Hấu Khổng Lồ', emoji: '🍉', growTime: 720, cost: 800, sellPrice: 2000, exp: 800, minLevel: 6 },
+      { id: 'golden_wheat', name: 'Lúa Vàng Hoàng Gia', emoji: '🌾', growTime: 1200, cost: 1500, sellPrice: 4000, exp: 1600, minLevel: 8 },
+      { id: 'money_tree', name: 'Cây Kim Tiền Thần Tài', emoji: '💰', growTime: 1800, cost: 3000, sellPrice: 9000, exp: 3500, minLevel: 10 }
+    ];
+
+    const PLOT_UNLOCK_CONDITIONS = [
+      { plotId: 0, level: 1, cost: 0 },
+      { plotId: 1, level: 1, cost: 0 },
+      { plotId: 2, level: 1, cost: 0 },
+      { plotId: 3, level: 1, cost: 0 },
+      { plotId: 4, level: 1, cost: 0 },
+      { plotId: 5, level: 1, cost: 0 },
+      { plotId: 6, level: 2, cost: 200 },
+      { plotId: 7, level: 3, cost: 500 },
+      { plotId: 8, level: 4, cost: 1000 },
+      { plotId: 9, level: 5, cost: 1800 },
+      { plotId: 10, level: 6, cost: 3000 },
+      { plotId: 11, level: 8, cost: 5000 }
+    ];
+
+    let farmData = null;
+    let selectedSeedShopPlotIdx = null;
+
+    function initFarmData() {
+      const saved = localStorage.getItem('zeng_farm_data_v2');
+      if (saved) {
+        try {
+          farmData = JSON.parse(saved);
+        } catch(e) {}
+      }
+
+      if (!farmData) {
+        farmData = {
+          level: 1,
+          exp: 0,
+          gold: 200,
+          fertilizer: 5,
+          barn: {},
+          plots: []
+        };
+      }
+
+      if (!farmData.plots || farmData.plots.length !== 12) {
+        farmData.plots = [];
+        for (let i = 0; i < 12; i++) {
+          const isUnlocked = i < 6 || (farmData.level >= PLOT_UNLOCK_CONDITIONS[i].level);
+          farmData.plots.push({
+            id: i,
+            status: isUnlocked ? 'empty' : 'locked',
+            cropId: null,
+            plantTime: 0,
+            growDuration: 0,
+            isWatered: false
+          });
+        }
+      }
+
+      saveFarmData(false);
+      renderFarm();
+    }
+
+    function saveFarmData(shouldRender = true) {
+      if (!farmData) return;
+      localStorage.setItem('zeng_farm_data_v2', JSON.stringify(farmData));
+      updateFarmHeaderStats();
+      if (shouldRender) renderFarmPlots();
+    }
+
+    function updateFarmHeaderStats() {
+      if (!farmData) return;
+      const goldEl = document.getElementById('farmGoldText');
+      const fertEl = document.getElementById('farmFertilizerText');
+      const barnCountEl = document.getElementById('farmBarnCount');
+      const lvlBadge = document.getElementById('farmLevelBadge');
+      const expBar = document.getElementById('farmExpBar');
+      const expText = document.getElementById('farmExpText');
+
+      if (goldEl) goldEl.textContent = (farmData.gold || 0).toLocaleString('vi-VN');
+      if (fertEl) fertEl.textContent = farmData.fertilizer;
+      
+      let totalBarn = 0;
+      if (farmData.barn) {
+        for (const k in farmData.barn) totalBarn += (farmData.barn[k] || 0);
+      }
+      if (barnCountEl) barnCountEl.textContent = `${totalBarn} món`;
+      if (lvlBadge) lvlBadge.textContent = `Lv.${farmData.level}`;
+
+      const neededExp = farmData.level * 120;
+      const pct = Math.min(100, Math.round(((farmData.exp || 0) / neededExp) * 100));
+      if (expBar) expBar.style.width = `${pct}%`;
+      if (expText) expText.textContent = `${farmData.exp || 0}/${neededExp} EXP (${pct}%)`;
+
+      const shopGold = document.getElementById('shopGoldDisplay');
+      const shopLvl = document.getElementById('shopLevelDisplay');
+      if (shopGold) shopGold.textContent = (farmData.gold || 0).toLocaleString('vi-VN');
+      if (shopLvl) shopLvl.textContent = farmData.level;
+    }
+
+    function renderFarm() {
+      updateFarmHeaderStats();
+      renderFarmPlots();
+    }
+
+    function renderFarmPlots() {
+      const grid = document.getElementById('farmPlotsGrid');
+      if (!grid || !farmData || !farmData.plots) return;
+      grid.innerHTML = '';
+
+      let growingCount = 0;
+      let matureCount = 0;
+
+      farmData.plots.forEach((plot, idx) => {
+        const crop = plot.cropId ? FARM_CROPS.find(c => c.id === plot.cropId) : null;
+        let progressPct = 0;
+        let timeLeftSec = 0;
+
+        if (plot.status === 'growing' && crop) {
+          const now = Date.now();
+          const elapsed = (now - plot.plantTime) / 1000;
+          const totalDuration = plot.growDuration;
+          if (elapsed >= totalDuration) {
+            plot.status = 'mature';
+            matureCount++;
+          } else {
+            growingCount++;
+            progressPct = Math.min(99, Math.round((elapsed / totalDuration) * 100));
+            timeLeftSec = Math.max(1, Math.ceil(totalDuration - elapsed));
+          }
+        } else if (plot.status === 'mature') {
+          matureCount++;
+          progressPct = 100;
+        }
+
+        const card = document.createElement('div');
+        
+        if (plot.status === 'locked') {
+          const condition = PLOT_UNLOCK_CONDITIONS[idx];
+          card.className = 'bg-slate-950/60 border-2 border-dashed border-slate-800 rounded-3xl p-4 flex flex-col items-center justify-center text-center space-y-2 min-h-[170px] transition group hover:border-slate-700';
+          card.innerHTML = `
+            <div class="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-500 text-lg group-hover:scale-110 transition">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-300">Mảnh đất #${idx + 1}</div>
+            <div class="text-[11px] text-slate-500 leading-tight">Yêu cầu Cấp ${condition.level}</div>
+            <button onclick="unlockPlot(${idx})" class="mt-1 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-[11px] font-bold rounded-xl border border-amber-500/30 transition flex items-center gap-1">
+              <span>Mở sớm: ${condition.cost} Xu</span> 🪙
+            </button>
+          `;
+        } else if (plot.status === 'empty') {
+          card.className = 'bg-gradient-to-b from-amber-950/30 via-stone-900/60 to-slate-950 border-2 border-dashed border-amber-900/50 hover:border-emerald-500/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center space-y-2.5 min-h-[170px] transition cursor-pointer group shadow-sm';
+          card.onclick = (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+            openSeedShopModal(idx);
+          };
+          card.innerHTML = `
+            <div class="w-12 h-12 rounded-2xl bg-amber-900/20 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:rotate-6 transition">
+              🌱
+            </div>
+            <div>
+              <div class="text-xs font-bold text-amber-200">Mảnh đất #${idx + 1}</div>
+              <div class="text-[11px] text-slate-400">Đất tươi tốt, sẵn sàng gieo</div>
+            </div>
+            <button onclick="openSeedShopModal(${idx})" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-xl shadow transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plus text-[10px]"></i> Gieo Hạt
+            </button>
+          `;
+        } else if (plot.status === 'growing' && crop) {
+          let phaseEmoji = '🌱';
+          let phaseText = 'Mầm non';
+          if (progressPct >= 70) {
+            phaseEmoji = '🌸';
+            phaseText = 'Nở hoa rộ';
+          } else if (progressPct >= 30) {
+            phaseEmoji = '🌿';
+            phaseText = 'Cây non phát triển';
+          }
+
+          const formatTime = (s) => {
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return `${m > 0 ? m + 'm ' : ''}${sec}s`;
+          };
+
+          card.className = 'bg-gradient-to-b from-amber-950/40 via-stone-900/80 to-slate-950 border border-emerald-500/40 rounded-3xl p-3.5 flex flex-col justify-between min-h-[170px] shadow-lg relative overflow-hidden';
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-amber-400/90 font-mono">Ô #${idx + 1}</span>
+              ${plot.isWatered 
+                ? '<span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 flex items-center gap-1">💧 Đã tưới</span>' 
+                : '<span class="text-[9px] text-slate-500 font-medium">Chưa tưới nước</span>'}
+            </div>
+
+            <div class="text-center py-1">
+              <div class="text-3xl animate-pulse inline-block filter drop-shadow">${phaseEmoji}</div>
+              <div class="text-xs font-black text-white mt-1">${crop.name}</div>
+              <div class="text-[10px] text-emerald-400 font-semibold">${phaseText} • ${formatTime(timeLeftSec)}</div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: ${progressPct}%"></div>
+              </div>
+
+              <div class="flex items-center gap-1 pt-1">
+                ${!plot.isWatered ? `
+                  <button onclick="waterPlot(${idx})" title="Tưới nước giúp giảm 25% thời gian lớn" class="flex-1 py-1 bg-sky-950/80 hover:bg-sky-900 text-sky-300 text-[10px] font-bold rounded-lg border border-sky-500/30 transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-droplet text-sky-400"></i> Tưới
+                  </button>
+                ` : ''}
+                <button onclick="fertilizePlot(${idx})" title="Bón 1 bình phân để chín ngay tức thì!" class="flex-1 py-1 bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 text-[10px] font-bold rounded-lg border border-indigo-500/30 transition flex items-center justify-center gap-1">
+                  <i class="fa-solid fa-bolt text-indigo-400"></i> Bón Phân
+                </button>
+                <button onclick="clearPlot(${idx})" title="Nhổ bỏ cây này" class="p-1 px-2 bg-slate-900 hover:bg-rose-950 text-slate-500 hover:text-rose-400 text-[10px] rounded-lg transition">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        } else if (plot.status === 'mature' && crop) {
+          card.className = 'bg-gradient-to-b from-amber-900/60 via-yellow-950/50 to-slate-950 border-2 border-amber-400 rounded-3xl p-3.5 flex flex-col justify-between min-h-[170px] shadow-2xl shadow-amber-500/20 ring-2 ring-amber-400/40 relative overflow-hidden animate-pulse';
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-amber-300 font-mono">Ô #${idx + 1}</span>
+              <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-500 text-slate-950 shadow">CHÍN RỘ ✨</span>
+            </div>
+
+            <div class="text-center py-1 cursor-pointer" onclick="harvestPlot(${idx})">
+              <div class="text-4xl animate-bounce inline-block filter drop-shadow-lg">${crop.emoji}</div>
+              <div class="text-xs font-black text-amber-200 mt-1">${crop.name}</div>
+              <div class="text-[10px] text-yellow-300 font-bold font-mono">+${crop.exp} EXP ⭐</div>
+            </div>
+
+            <button onclick="harvestPlot(${idx})" class="w-full py-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs font-black rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-basket-shopping"></i> Thu Hoạch Ngay
+            </button>
+          `;
+        }
+
+        grid.appendChild(card);
+      });
+
+      const statusEl = document.getElementById('farmPlotsStatus');
+      if (statusEl) {
+        statusEl.textContent = `(${growingCount} cây đang lớn, ${matureCount} đã chín)`;
+      }
+    }
+
+    function plantCrop(cropId, targetPlotIdx = null, plantAll = false) {
+      const crop = FARM_CROPS.find(c => c.id === cropId);
+      if (!crop) return;
+
+      if (farmData.level < crop.minLevel) {
+        showToast(`Cần đạt Cấp độ ${crop.minLevel} để mở khóa hạt giống ${crop.name}!`, "warning");
+        return;
+      }
+
+      if (plantAll) {
+        const emptyPlots = farmData.plots.filter(p => p.status === 'empty');
+        if (emptyPlots.length === 0) {
+          showToast("Không có mảnh đất trống nào để gieo hạt!", "warning");
+          return;
+        }
+        const totalCost = emptyPlots.length * crop.cost;
+        if (farmData.gold < totalCost) {
+          const maxCanAfford = Math.floor(farmData.gold / crop.cost);
+          if (maxCanAfford <= 0) {
+            showToast("Bạn không đủ Xu để gieo hạt giống này!", "error");
+            return;
+          }
+          let planted = 0;
+          for (const p of emptyPlots) {
+            if (farmData.gold >= crop.cost) {
+              farmData.gold -= crop.cost;
+              p.status = 'growing';
+              p.cropId = crop.id;
+              p.plantTime = Date.now();
+              p.growDuration = crop.growTime;
+              p.isWatered = false;
+              planted++;
+            }
+          }
+          playFarmSound('plant');
+          closeSeedShopModal();
+          saveFarmData();
+          showToast(`Đã gieo ${planted} ô hạt giống ${crop.name}!`, "success");
+          return;
+        }
+
+        emptyPlots.forEach(p => {
+          farmData.gold -= crop.cost;
+          p.status = 'growing';
+          p.cropId = crop.id;
+          p.plantTime = Date.now();
+          p.growDuration = crop.growTime;
+          p.isWatered = false;
+        });
+        playFarmSound('plant');
+        closeSeedShopModal();
+        saveFarmData();
+        showToast(`Đã gieo đồng loạt ${emptyPlots.length} ô ${crop.name}!`, "success");
+        return;
+      }
+
+      let plot = null;
+      if (targetPlotIdx !== null && targetPlotIdx >= 0 && targetPlotIdx < 12) {
+        plot = farmData.plots[targetPlotIdx];
+        if (plot.status !== 'empty') plot = null;
+      }
+      if (!plot) {
+        plot = farmData.plots.find(p => p.status === 'empty');
+      }
+
+      if (!plot) {
+        showToast("Không có ô đất trống nào để gieo!", "warning");
+        return;
+      }
+
+      if (farmData.gold < crop.cost) {
+        showToast(`Không đủ Xu! Cần ${crop.cost} Xu để mua hạt giống ${crop.name}.`, "error");
+        return;
+      }
+
+      farmData.gold -= crop.cost;
+      plot.status = 'growing';
+      plot.cropId = crop.id;
+      plot.plantTime = Date.now();
+      plot.growDuration = crop.growTime;
+      plot.isWatered = false;
+
+      playFarmSound('plant');
+      closeSeedShopModal();
+      saveFarmData();
+      showToast(`Đã gieo hạt giống ${crop.name} thành công!`, "success");
+    }
+
+    function waterPlot(idx) {
+      const plot = farmData.plots[idx];
+      if (!plot || plot.status !== 'growing' || plot.isWatered) return;
+      plot.isWatered = true;
+      const now = Date.now();
+      const elapsed = (now - plot.plantTime) / 1000;
+      const remaining = plot.growDuration - elapsed;
+      if (remaining > 0) {
+        plot.growDuration = elapsed + (remaining * 0.75);
+      }
+      playFarmSound('water');
+      saveFarmData();
+      showToast("💧 Đã tưới nước! Thời gian sinh trưởng rút ngắn 25%.", "success");
+    }
+
+    function waterAllPlots() {
+      let count = 0;
+      const now = Date.now();
+      farmData.plots.forEach(plot => {
+        if (plot.status === 'growing' && !plot.isWatered) {
+          plot.isWatered = true;
+          const elapsed = (now - plot.plantTime) / 1000;
+          const remaining = plot.growDuration - elapsed;
+          if (remaining > 0) {
+            plot.growDuration = elapsed + (remaining * 0.75);
+          }
+          count++;
+        }
+      });
+      if (count > 0) {
+        playFarmSound('water');
+        saveFarmData();
+        showToast(`💧 Đã tưới nước cho tất cả ${count} ô đất đang lớn!`, "success");
+      } else {
+        showToast("Tất cả các ô đất đang lớn đều đã được tưới nước!", "info");
+      }
+    }
+
+    function fertilizePlot(idx) {
+      const plot = farmData.plots[idx];
+      if (!plot || plot.status !== 'growing') return;
+
+      if (farmData.fertilizer <= 0) {
+        showToast("Hết phân bón! Bạn có thể mua thêm bằng Xu vàng.", "warning");
+        return;
+      }
+
+      farmData.fertilizer--;
+      plot.plantTime = Date.now() - (plot.growDuration * 1000 + 1000);
+      plot.status = 'mature';
+
+      playFarmSound('fertilize');
+      saveFarmData();
+      showToast("⚡ Phép màu phân bón thần tốc! Cây đã chín rực rỡ.", "success");
+    }
+
+    function harvestPlot(idx) {
+      const plot = farmData.plots[idx];
+      if (!plot || plot.status !== 'mature') return;
+
+      const crop = FARM_CROPS.find(c => c.id === plot.cropId);
+      if (!crop) return;
+
+      if (!farmData.barn) farmData.barn = {};
+      farmData.barn[crop.id] = (farmData.barn[crop.id] || 0) + 1;
+
+      addFarmExp(crop.exp);
+
+      plot.status = 'empty';
+      plot.cropId = null;
+      plot.plantTime = 0;
+      plot.growDuration = 0;
+      plot.isWatered = false;
+
+      playFarmSound('harvest');
+      saveFarmData();
+      showToast(`🧺 Đã thu hoạch 1 ${crop.name}! (+${crop.exp} EXP)`, "success");
+    }
+
+    function harvestAllReadyPlots() {
+      let count = 0;
+      let totalExp = 0;
+      farmData.plots.forEach(plot => {
+        if (plot.status === 'mature') {
+          const crop = FARM_CROPS.find(c => c.id === plot.cropId);
+          if (crop) {
+            if (!farmData.barn) farmData.barn = {};
+            farmData.barn[crop.id] = (farmData.barn[crop.id] || 0) + 1;
+            totalExp += crop.exp;
+            plot.status = 'empty';
+            plot.cropId = null;
+            plot.plantTime = 0;
+            plot.growDuration = 0;
+            plot.isWatered = false;
+            count++;
+          }
+        }
+      });
+
+      if (count > 0) {
+        addFarmExp(totalExp);
+        playFarmSound('harvest');
+        saveFarmData();
+        showToast(`🧺 Bội thu! Đã thu hoạch ${count} ô nông sản (+${totalExp} EXP)`, "success");
+      } else {
+        showToast("Chưa có cây nào chín để thu hoạch!", "info");
+      }
+    }
+
+    function addFarmExp(amount) {
+      farmData.exp = (farmData.exp || 0) + amount;
+      let neededExp = farmData.level * 120;
+      let leveledUp = false;
+
+      while (farmData.exp >= neededExp) {
+        farmData.exp -= neededExp;
+        farmData.level++;
+        leveledUp = true;
+        neededExp = farmData.level * 120;
+
+        farmData.plots.forEach((p, i) => {
+          if (p.status === 'locked' && farmData.level >= PLOT_UNLOCK_CONDITIONS[i].level) {
+            p.status = 'empty';
+          }
+        });
+
+        const bonusGold = farmData.level * 100;
+        const bonusFert = 2;
+        farmData.gold += bonusGold;
+        farmData.fertilizer += bonusFert;
+      }
+
+      if (leveledUp) {
+        playFarmSound('levelup');
+        showToast(`🎉 CHÚC MỪNG! Lên Cấp ${farmData.level} 🧑‍🌾! Thưởng: +${farmData.level * 100} Xu & +2 Phân Bón!`, "success", 5000);
+      }
+    }
+
+    function unlockPlot(idx) {
+      const condition = PLOT_UNLOCK_CONDITIONS[idx];
+      if (farmData.gold < condition.cost) {
+        showToast(`Không đủ Xu! Cần ${condition.cost} Xu để mở khóa ô đất này.`, "error");
+        return;
+      }
+      farmData.gold -= condition.cost;
+      farmData.plots[idx].status = 'empty';
+      playFarmSound('plant');
+      saveFarmData();
+      showToast(`Đã mở khóa Mảnh đất #${idx + 1}!`, "success");
+    }
+
+    function clearPlot(idx) {
+      if (confirm("Bạn có chắc chắn muốn nhổ bỏ cây này không?")) {
+        farmData.plots[idx].status = 'empty';
+        farmData.plots[idx].cropId = null;
+        farmData.plots[idx].plantTime = 0;
+        farmData.plots[idx].growDuration = 0;
+        farmData.plots[idx].isWatered = false;
+        saveFarmData();
+        showToast("Đã dọn dẹp lại mảnh đất", "info");
+      }
+    }
+
+    function buyFertilizerQuick() {
+      if (farmData.gold < 50) {
+        showToast("Không đủ Xu! Mỗi bình phân bón giá 50 Xu.", "error");
+        return;
+      }
+      farmData.gold -= 50;
+      farmData.fertilizer += 1;
+      playFarmSound('fertilize');
+      saveFarmData();
+      showToast("Đã mua 1 bình phân bón thần tốc ⚡ (-50 Xu)", "success");
+    }
+
+    function buyFertilizerPack(qty = 5) {
+      const cost = 220;
+      if (farmData.gold < cost) {
+        showToast("Không đủ Xu để mua gói phân bón!", "error");
+        return;
+      }
+      farmData.gold -= cost;
+      farmData.fertilizer += qty;
+      playFarmSound('fertilize');
+      saveFarmData();
+      showToast(`Đã mua gói ${qty} bình phân bón thần tốc ⚡ (-${cost} Xu)`, "success");
+    }
+
+    function openSeedShopModal(targetPlotIdx = null) {
+      selectedSeedShopPlotIdx = targetPlotIdx;
+      const modal = document.getElementById('seedShopModal');
+      const targetInfo = document.getElementById('shopTargetPlotInfo');
+      const grid = document.getElementById('shopCropsGrid');
+
+      if (targetPlotIdx !== null && targetPlotIdx >= 0) {
+        targetInfo.textContent = `🎯 Đang chọn mảnh đất #${targetPlotIdx + 1}`;
+      } else {
+        targetInfo.textContent = `🌱 Gieo vào ô trống đầu tiên`;
+      }
+
+      grid.innerHTML = '';
+      FARM_CROPS.forEach(crop => {
+        const isUnlocked = farmData.level >= crop.minLevel;
+
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-2xl border transition flex flex-col justify-between ${
+          isUnlocked 
+            ? 'bg-slate-900/90 border-slate-800 hover:border-emerald-500/50' 
+            : 'bg-slate-950/80 border-slate-800/40 opacity-50'
+        }`;
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-3xl">${crop.emoji}</span>
+              ${isUnlocked 
+                ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">Lv.${crop.minLevel}</span>`
+                : `<span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30"><i class="fa-solid fa-lock"></i> Cấp ${crop.minLevel}</span>`
+              }
+            </div>
+            <h4 class="font-bold text-white text-xs mt-2">${crop.name}</h4>
+            <div class="text-[11px] text-slate-400 space-y-0.5 mt-1">
+              <div class="flex justify-between"><span>Thời gian:</span> <b class="text-slate-200 font-mono">${crop.growTime}s</b></div>
+              <div class="flex justify-between"><span>Giá mua:</span> <b class="text-amber-400 font-mono">${crop.cost} Xu</b></div>
+              <div class="flex justify-between"><span>Giá bán:</span> <b class="text-yellow-300 font-mono">${crop.sellPrice} Xu</b></div>
+              <div class="flex justify-between"><span>Kinh nghiệm:</span> <b class="text-emerald-400 font-mono">+${crop.exp} EXP</b></div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 mt-3 pt-2 border-t border-slate-800">
+            ${isUnlocked ? `
+              <button onclick="plantCrop('${crop.id}', ${selectedSeedShopPlotIdx}, false)" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] rounded-xl shadow transition">
+                Gieo 1 Ô
+              </button>
+              <button onclick="plantCrop('${crop.id}', null, true)" title="Gieo đầy tất cả các ô đất trống" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold text-[11px] rounded-xl border border-slate-700 transition">
+                Gieo Hết
+              </button>
+            ` : `
+              <div class="w-full py-1.5 text-center text-slate-500 text-[11px] font-medium">Chưa mở khóa</div>
+            `}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      updateFarmHeaderStats();
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeSeedShopModal() {
+      const modal = document.getElementById('seedShopModal');
+      if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function openBarnModal() {
+      const modal = document.getElementById('farmBarnModal');
+      const list = document.getElementById('barnItemsList');
+      const totalItemsEl = document.getElementById('barnTotalItemsCount');
+      const totalValEl = document.getElementById('barnTotalEstimatedValue');
+
+      list.innerHTML = '';
+      let totalCount = 0;
+      let totalValue = 0;
+
+      FARM_CROPS.forEach(crop => {
+        const qty = (farmData.barn && farmData.barn[crop.id]) || 0;
+        if (qty > 0) {
+          totalCount += qty;
+          const val = qty * crop.sellPrice;
+          totalValue += val;
+
+          const itemRow = document.createElement('div');
+          itemRow.className = 'bg-slate-950 p-3 rounded-2xl border border-slate-800 flex items-center justify-between text-xs';
+          itemRow.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <span class="text-3xl">${crop.emoji}</span>
+              <div>
+                <h4 class="font-bold text-white">${crop.name}</h4>
+                <div class="text-[11px] text-slate-400">Số lượng: <b class="text-emerald-400 font-mono">${qty}</b> • Giá: <span class="text-amber-300 font-mono">${crop.sellPrice} Xu/củ</span></div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-amber-300 font-black font-mono mr-2">${val.toLocaleString('vi-VN')} Xu</span>
+              <button onclick="sellSingleBarnCrop('${crop.id}', 1)" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold transition">Bán 1</button>
+              <button onclick="sellSingleBarnCrop('${crop.id}', ${qty})" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-xl font-bold border border-amber-500/30 transition">Bán hết</button>
+            </div>
+          `;
+          list.appendChild(itemRow);
+        }
+      });
+
+      if (totalCount === 0) {
+        list.innerHTML = `
+          <div class="text-center py-10 text-slate-500 text-xs">
+            <span class="text-4xl block mb-2 opacity-50">🧺</span>
+            Kho nông sản hiện đang trống!<br>Hãy trồng và thu hoạch cây để tích trữ và bán lấy Xu.
+          </div>
+        `;
+      }
+
+      if (totalItemsEl) totalItemsEl.textContent = totalCount;
+      if (totalValEl) totalValEl.textContent = totalValue.toLocaleString('vi-VN');
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeBarnModal() {
+      const modal = document.getElementById('farmBarnModal');
+      if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function sellSingleBarnCrop(cropId, count) {
+      const crop = FARM_CROPS.find(c => c.id === cropId);
+      if (!crop || !farmData.barn || !farmData.barn[cropId]) return;
+
+      const avail = farmData.barn[cropId];
+      const actualCount = Math.min(avail, count);
+      if (actualCount <= 0) return;
+
+      const earnedGold = actualCount * crop.sellPrice;
+      farmData.barn[cropId] -= actualCount;
+      if (farmData.barn[cropId] <= 0) delete farmData.barn[cropId];
+
+      farmData.gold += earnedGold;
+      playFarmSound('sell');
+      saveFarmData();
+      openBarnModal();
+      showToast(`💰 Đã bán ${actualCount} ${crop.name} nhận được +${earnedGold.toLocaleString('vi-VN')} Xu!`, "success");
+    }
+
+    function sellAllBarnItems() {
+      let totalEarned = 0;
+      let totalItems = 0;
+      if (farmData.barn) {
+        for (const cropId in farmData.barn) {
+          const count = farmData.barn[cropId];
+          const crop = FARM_CROPS.find(c => c.id === cropId);
+          if (crop && count > 0) {
+            totalEarned += count * crop.sellPrice;
+            totalItems += count;
+          }
+        }
+      }
+
+      if (totalEarned <= 0) {
+        showToast("Kho không có nông sản nào để bán!", "info");
+        return;
+      }
+
+      farmData.barn = {};
+      farmData.gold += totalEarned;
+      playFarmSound('sell');
+      saveFarmData();
+      openBarnModal();
+      showToast(`🎉 Bội thu! Đã bán tất cả ${totalItems} nông sản nhận được +${totalEarned.toLocaleString('vi-VN')} Xu Vàng!`, "success");
+    }
+
+    // Lucky Wheel Controller
+    const WHEEL_PRIZES = [
+      { text: "50 Xu 🪙", type: "gold", val: 50, color: "#f59e0b" },
+      { text: "1 Phân Bón ⚡", type: "fert", val: 1, color: "#6366f1" },
+      { text: "100 Xu 🪙", type: "gold", val: 100, color: "#10b981" },
+      { text: "2 Phân Bón ⚡", type: "fert", val: 2, color: "#8b5cf6" },
+      { text: "200 Xu 🪙", type: "gold", val: 200, color: "#ec4899" },
+      { text: "Hạt Dưa Hấu 🍉", type: "gold", val: 300, color: "#14b8a6" },
+      { text: "500 Xu 🪙", type: "gold", val: 500, color: "#eab308" },
+      { text: "5 Phân Bón ⚡", type: "fert", val: 5, color: "#3b82f6" }
+    ];
+    let isWheelSpinning = false;
+    let wheelCurrentDeg = 0;
+
+    function drawLuckyWheel() {
+      const canvas = document.getElementById('luckyWheelCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const numSlices = WHEEL_PRIZES.length;
+      const arc = (2 * Math.PI) / numSlices;
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radius = cx - 8;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      WHEEL_PRIZES.forEach((prize, i) => {
+        const angle = i * arc;
+        ctx.beginPath();
+        ctx.fillStyle = prize.color;
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, angle, angle + arc);
+        ctx.lineTo(cx, cy);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 11px sans-serif";
+        ctx.shadowColor = "rgba(0,0,0,0.6)";
+        ctx.shadowBlur = 4;
+        ctx.fillText(prize.text, radius - 15, 4);
+        ctx.restore();
+      });
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+      ctx.fillStyle = "#1e293b";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#f59e0b";
+      ctx.stroke();
+
+      ctx.fillStyle = "#fbbf24";
+      ctx.font = "bold 14px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("⭐", cx, cy + 5);
+    }
+
+    function openLuckyWheelModal() {
+      const modal = document.getElementById('farmLuckyWheelModal');
+      drawLuckyWheel();
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeLuckyWheelModal() {
+      if (isWheelSpinning) return;
+      const modal = document.getElementById('farmLuckyWheelModal');
+      if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function spinLuckyWheel() {
+      if (isWheelSpinning) return;
+      isWheelSpinning = true;
+      const canvas = document.getElementById('luckyWheelCanvas');
+      const btn = document.getElementById('btnSpinWheel');
+      const banner = document.getElementById('wheelResultBanner');
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+      banner.textContent = "Đang quay...";
+
+      const numSlices = WHEEL_PRIZES.length;
+      const sliceDeg = 360 / numSlices;
+      const prizeIdx = Math.floor(Math.random() * numSlices);
+      const prize = WHEEL_PRIZES[prizeIdx];
+
+      const targetDeg = (360 * 5) + (360 - (prizeIdx * sliceDeg) - (sliceDeg / 2) - 90);
+      wheelCurrentDeg += targetDeg;
+
+      canvas.style.transform = `rotate(${wheelCurrentDeg}deg)`;
+
+      let clickCount = 0;
+      const clickTimer = setInterval(() => {
+        playFarmSound('plant');
+        clickCount++;
+        if (clickCount > 15) clearInterval(clickTimer);
+      }, 250);
+
+      setTimeout(() => {
+        clearInterval(clickTimer);
+        isWheelSpinning = false;
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+
+        if (prize.type === 'gold') {
+          farmData.gold += prize.val;
+          banner.innerHTML = `🎉 Bạn nhận được: <b class="text-amber-400">+${prize.val} Xu Vàng!</b>`;
+          playFarmSound('sell');
+        } else if (prize.type === 'fert') {
+          farmData.fertilizer += prize.val;
+          banner.innerHTML = `⚡ Bạn nhận được: <b class="text-indigo-400">+${prize.val} Bình Phân Bón!</b>`;
+          playFarmSound('fertilize');
+        }
+
+        saveFarmData();
+        showToast(`Vòng quay may mắn: ${prize.text}!`, "success");
+      }, 4100);
+    }
+
+    // ====================================================
+    // FARM DATA BACKUP, EXPORT & RESTORE ENGINE
+    // ====================================================
+    function openFarmBackupModal() {
+      const modal = document.getElementById('farmBackupModal');
+      const originLbl = document.getElementById('currentOriginLabel');
+      if (originLbl) originLbl.textContent = window.location.href;
+      const codeInput = document.getElementById('farmDataCodeInput');
+      if (codeInput && farmData) {
+        try {
+          codeInput.value = btoa(unescape(encodeURIComponent(JSON.stringify(farmData))));
+        } catch(e) {}
+      }
+      if (modal) modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeFarmBackupModal() {
+      const modal = document.getElementById('farmBackupModal');
+      if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function exportFarmDataJSON() {
+      if (!farmData) return;
+      const jsonStr = JSON.stringify(farmData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `HappyFarm_Save_Lv${farmData.level}_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("💾 Đã tải file lưu nông trại về máy thành công!", "success");
+    }
+
+    function importFarmDataJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (imported && typeof imported.level === 'number' && Array.isArray(imported.plots)) {
+            farmData = imported;
+            saveFarmData(true);
+            updateFarmHeaderStats();
+            closeFarmBackupModal();
+            showToast(`🎉 Khôi phục nông trại thành công! Cấp độ: Lv.${farmData.level}, Xu: ${farmData.gold.toLocaleString('vi-VN')}`, "success", 4000);
+          } else {
+            showToast("File lưu không hợp lệ hoặc sai cấu trúc Nông Trại!", "error");
+          }
+        } catch(err) {
+          showToast("Lỗi đọc file JSON: " + err.message, "error");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function generateAndCopyFarmCode() {
+      if (!farmData) return;
+      try {
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(farmData))));
+        const input = document.getElementById('farmDataCodeInput');
+        if (input) input.value = code;
+        navigator.clipboard.writeText(code).then(() => {
+          showToast("📋 Đã sao chép mã lưu nông trại vào bộ nhớ tạm!", "success");
+        }).catch(() => {
+          if (input) { input.select(); document.execCommand('copy'); }
+          showToast("📋 Đã sao chép mã lưu!", "info");
+        });
+      } catch(e) {
+        showToast("Không tạo được mã lưu", "error");
+      }
+    }
+
+    function applyFarmDataCode() {
+      const input = document.getElementById('farmDataCodeInput');
+      const code = input ? input.value.trim() : '';
+      if (!code) {
+        showToast("Vui lòng dán mã sao lưu vào ô trống!", "warning");
+        return;
+      }
+      try {
+        const decoded = decodeURIComponent(escape(atob(code)));
+        const imported = JSON.parse(decoded);
+        if (imported && typeof imported.level === 'number' && Array.isArray(imported.plots)) {
+          farmData = imported;
+          saveFarmData(true);
+          updateFarmHeaderStats();
+          closeFarmBackupModal();
+          showToast(`🎉 Đã nạp mã sao lưu thành công! Level: ${farmData.level}, Xu: ${farmData.gold.toLocaleString('vi-VN')}`, "success", 4000);
+        } else {
+          showToast("Mã sao lưu không hợp lệ!", "error");
+        }
+      } catch(e) {
+        showToast("Mã sao lưu bị lỗi hoặc không đúng định dạng!", "error");
+      }
+    }
+
+    function resetFarmDataDefault() {
+      if (confirm("⚠️ Bạn có chắc chắn muốn XÓA HẾT và CHƠI LẠI TỪ ĐẦU không?\nToàn bộ Cấp độ, Xu Vàng và cây trồng sẽ được đặt lại về Level 1!")) {
+        localStorage.removeItem('zeng_farm_data_v2');
+        farmData = null;
+        initFarmData();
+        closeFarmBackupModal();
+        showToast("Đã đặt lại Nông Trại về trạng thái ban đầu!", "info");
+      }
+    }
+
+    // ====================================================
+    // HTML5 2.5D ISOMETRIC FARM CANVAS RENDERING ENGINE
+    // ====================================================
+    let currentFarmViewMode = 'canvas';
+    let farmWeather = 'sunny';
+    let farmCanvasAnimId = null;
+    let hoveredPlotIdx = -1;
+    let canvasPlotBounds = [];
+    let floatingFarmParticles = [];
+    let farmButterflies = [];
+
+    function setFarmViewMode(mode) {
+      currentFarmViewMode = mode;
+      const canvasWrap = document.getElementById('farmCanvasViewWrapper');
+      const gridWrap = document.getElementById('farmGridViewWrapper');
+      const btnCanvas = document.getElementById('btnViewModeCanvas');
+      const btnGrid = document.getElementById('btnViewModeGrid');
+
+      if (mode === 'canvas') {
+        if (canvasWrap) canvasWrap.classList.remove('hidden');
+        if (gridWrap) gridWrap.classList.add('hidden');
+        if (btnCanvas) {
+          btnCanvas.className = 'px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-sm';
+        }
+        if (btnGrid) {
+          btnGrid.className = 'px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-slate-200';
+        }
+        startIsometricCanvasLoop();
+      } else {
+        if (canvasWrap) canvasWrap.classList.add('hidden');
+        if (gridWrap) gridWrap.classList.remove('hidden');
+        if (btnGrid) {
+          btnGrid.className = 'px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-sm';
+        }
+        if (btnCanvas) {
+          btnCanvas.className = 'px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-slate-200';
+        }
+        renderFarmPlots();
+      }
+    }
+
+    function toggleFarmWeather() {
+      farmWeather = (farmWeather === 'rain') ? 'sunny' : 'rain';
+      const icon = document.getElementById('farmWeatherIcon');
+      const text = document.getElementById('farmWeatherText');
+      if (icon && text) {
+        if (farmWeather === 'rain') {
+          icon.textContent = '🌧️';
+          text.textContent = 'Mưa Rào';
+          showToast("🌧️ Cơn mưa rào tưới mát cả khu nông trại!", "info");
+          waterAllPlots();
+        } else {
+          icon.textContent = '☀️';
+          text.textContent = 'Nắng Ấm';
+          showToast("☀️ Nắng ấm chiếu rọi khắp ruộng đồng!", "success");
+        }
+      }
+    }
+
+    function initFarmButterflies() {
+      farmButterflies = [
+        { x: 120, y: 150, color: '#f59e0b', size: 9, speed: 0.8, angle: 0, wing: 0 },
+        { x: 340, y: 220, color: '#38bdf8', size: 8, speed: 0.9, angle: 1.2, wing: 0.3 },
+        { x: 500, y: 180, color: '#ec4899', size: 10, speed: 0.7, angle: 2.5, wing: 0.6 },
+        { x: 260, y: 320, color: '#a855f7', size: 8, speed: 0.85, angle: 4.0, wing: 0.9 }
+      ];
+    }
+
+    function spawnHarvestTextParticle(x, y, text, color = '#fbbf24') {
+      floatingFarmParticles.push({
+        x: x + (Math.random() * 20 - 10),
+        y: y - 10,
+        text: text,
+        color: color,
+        alpha: 1.0,
+        vy: -1.2,
+        life: 50
+      });
+    }
+
+    function initIsometricCanvas() {
+      const canvas = document.getElementById('farmIsometricCanvas');
+      if (!canvas) return;
+
+      initFarmButterflies();
+
+      const updateCanvasSize = () => {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const displayWidth = Math.max(340, Math.floor(rect.width || canvas.parentElement.clientWidth || 800));
+        const displayHeight = Math.max(480, Math.min(560, Math.floor(displayWidth * 0.58)));
+
+        canvas.width = Math.floor(displayWidth * dpr);
+        canvas.height = Math.floor(displayHeight * dpr);
+        canvas.style.height = `${displayHeight}px`;
+
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+      };
+
+      updateCanvasSize();
+      window.addEventListener('resize', updateCanvasSize);
+
+      const getCanvasPos = (evt) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top
+        };
+      };
+
+      canvas.addEventListener('mousemove', (e) => {
+        const pos = getCanvasPos(e);
+        let found = -1;
+        for (let i = canvasPlotBounds.length - 1; i >= 0; i--) {
+          const b = canvasPlotBounds[i];
+          const dx = Math.abs(pos.x - b.xc);
+          const dy = Math.abs(pos.y - b.yc);
+          if ((dx / (b.w * 0.5)) + (dy / (b.h * 0.5)) <= 1.0) {
+            found = b.idx;
+            break;
+          }
+        }
+        hoveredPlotIdx = found;
+        canvas.style.cursor = (found !== -1) ? 'pointer' : 'default';
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        hoveredPlotIdx = -1;
+      });
+
+      canvas.addEventListener('click', (e) => {
+        const pos = getCanvasPos(e);
+        for (let i = canvasPlotBounds.length - 1; i >= 0; i--) {
+          const b = canvasPlotBounds[i];
+          const dx = Math.abs(pos.x - b.xc);
+          const dy = Math.abs(pos.y - b.yc);
+          if ((dx / (b.w * 0.5)) + (dy / (b.h * 0.5)) <= 1.0) {
+            handleCanvasPlotClick(b.idx, b.xc, b.yc);
+            break;
+          }
+        }
+      });
+
+      startIsometricCanvasLoop();
+    }
+
+    function handleCanvasPlotClick(idx, xc, yc) {
+      if (!farmData || !farmData.plots[idx]) return;
+      const plot = farmData.plots[idx];
+
+      if (plot.status === 'locked') {
+        const condition = PLOT_UNLOCK_CONDITIONS[idx];
+        if (farmData.level >= condition.level) {
+          unlockPlot(idx);
+        } else if (confirm(`Mảnh đất #${idx + 1} yêu cầu Cấp độ ${condition.level}. Bạn có muốn mở khóa sớm với giá ${condition.cost} Xu không?`)) {
+          unlockPlot(idx);
+        }
+        return;
+      }
+
+      if (plot.status === 'empty') {
+        openSeedShopModal(idx);
+        return;
+      }
+
+      if (plot.status === 'growing') {
+        if (!plot.isWatered) {
+          waterPlot(idx);
+          spawnHarvestTextParticle(xc, yc, '💧 -25% thời gian', '#38bdf8');
+        } else {
+          if (confirm("Mảnh đất này đã được tưới nước. Bạn có muốn dùng 1 bình Phân Bón để cây CHÍN NGAY không?")) {
+            fertilizePlot(idx);
+            spawnHarvestTextParticle(xc, yc, '⚡ Đã Chín!', '#818cf8');
+          }
+        }
+        return;
+      }
+
+      if (plot.status === 'mature') {
+        const crop = FARM_CROPS.find(c => c.id === plot.cropId);
+        harvestPlot(idx);
+        if (crop) {
+          spawnHarvestTextParticle(xc, yc - 15, `+${crop.name} 🧺`, '#10b981');
+          spawnHarvestTextParticle(xc, yc, `+${crop.exp} EXP ⭐`, '#fbbf24');
+        }
+      }
+    }
+
+    function startIsometricCanvasLoop() {
+      if (farmCanvasAnimId) cancelAnimationFrame(farmCanvasAnimId);
+
+      const canvas = document.getElementById('farmIsometricCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const renderFrame = (timestamp) => {
+        const farmTab = document.getElementById('tab-farm');
+        if (!farmTab || farmTab.classList.contains('hidden') || currentFarmViewMode !== 'canvas') {
+          return;
+        }
+
+        drawIsometricFarmScene(ctx, canvas, timestamp || performance.now());
+        farmCanvasAnimId = requestAnimationFrame(renderFrame);
+      };
+
+      farmCanvasAnimId = requestAnimationFrame(renderFrame);
+    }
+
+    function drawIsometricFarmScene(ctx, canvas, time) {
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+
+      ctx.save();
+      ctx.clearRect(0, 0, w, h);
+
+      // 1. SKY BACKGROUND
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.48);
+      if (farmWeather === 'rain') {
+        skyGrad.addColorStop(0, '#334155');
+        skyGrad.addColorStop(0.6, '#475569');
+        skyGrad.addColorStop(1, '#1e293b');
+      } else {
+        skyGrad.addColorStop(0, '#0284c7');
+        skyGrad.addColorStop(0.5, '#38bdf8');
+        skyGrad.addColorStop(1, '#bae6fd');
+      }
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h * 0.48);
+
+      // 2. SUN
+      if (farmWeather === 'sunny') {
+        const sunX = w * 0.85;
+        const sunY = h * 0.12;
+        const sunRadius = 24;
+
+        const sunHalo = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 50);
+        sunHalo.addColorStop(0, 'rgba(253, 224, 71, 0.6)');
+        sunHalo.addColorStop(1, 'rgba(253, 224, 71, 0)');
+        ctx.fillStyle = sunHalo;
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, 50, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 3. CLOUDS
+      const drawCloud = (cx, cy, scale = 1) => {
+        ctx.fillStyle = (farmWeather === 'rain') ? 'rgba(148, 163, 184, 0.85)' : 'rgba(255, 255, 255, 0.85)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 18 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 20 * scale, cy - 8 * scale, 22 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 44 * scale, cy, 16 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 22 * scale, cy + 6 * scale, 16 * scale, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      const cloud1X = ((time * 0.015 + 40) % (w + 160)) - 80;
+      const cloud2X = ((time * 0.008 + 260) % (w + 160)) - 80;
+      drawCloud(cloud1X, h * 0.09, 1.1);
+      drawCloud(cloud2X, h * 0.16, 0.85);
+
+      // 4. MEADOW
+      const meadowGrad = ctx.createLinearGradient(0, h * 0.35, 0, h);
+      meadowGrad.addColorStop(0, '#15803d');
+      meadowGrad.addColorStop(0.3, '#166534');
+      meadowGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = meadowGrad;
+
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.42);
+      ctx.quadraticCurveTo(w * 0.25, h * 0.36, w * 0.5, h * 0.4);
+      ctx.quadraticCurveTo(w * 0.75, h * 0.44, w, h * 0.38);
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fill();
+
+      // Flowers on meadow
+      ctx.fillStyle = 'rgba(253, 230, 138, 0.4)';
+      for (let i = 0; i < 16; i++) {
+        const gx = ((i * 137.5) % w);
+        const gy = h * 0.44 + ((i * 83.1) % (h * 0.5));
+        ctx.beginPath();
+        ctx.arc(gx, gy, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 5. WINDMILL (Cối xay gió)
+      const wmx = w * 0.1;
+      const wmy = h * 0.36;
+      ctx.fillStyle = '#78350f';
+      ctx.beginPath();
+      ctx.moveTo(wmx - 12, wmy + 36);
+      ctx.lineTo(wmx - 8, wmy);
+      ctx.lineTo(wmx + 8, wmy);
+      ctx.lineTo(wmx + 12, wmy + 36);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#991b1b';
+      ctx.beginPath();
+      ctx.moveTo(wmx - 10, wmy);
+      ctx.lineTo(wmx, wmy - 12);
+      ctx.lineTo(wmx + 10, wmy);
+      ctx.closePath();
+      ctx.fill();
+      const bladeAngle = (time * 0.002) % (Math.PI * 2);
+      ctx.save();
+      ctx.translate(wmx, wmy);
+      ctx.rotate(bladeAngle);
+      ctx.strokeStyle = '#fef3c7';
+      ctx.lineWidth = 2.5;
+      for (let b = 0; b < 4; b++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, 24);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(254, 243, 199, 0.7)';
+        ctx.fillRect(-2, 10, 8, 12);
+      }
+      ctx.restore();
+
+      // 6. SCARECROW (Bù nhìn rơm)
+      const scx = w * 0.9;
+      const scy = h * 0.45;
+      ctx.strokeStyle = '#92400e';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(scx, scy - 30);
+      ctx.lineTo(scx, scy + 15);
+      ctx.moveTo(scx - 14, scy - 15);
+      ctx.lineTo(scx + 14, scy - 15);
+      ctx.stroke();
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(scx - 6, scy - 20, 12, 14);
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath();
+      ctx.arc(scx, scy - 24, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#854d0e';
+      ctx.beginPath();
+      ctx.moveTo(scx - 12, scy - 24);
+      ctx.lineTo(scx, scy - 36);
+      ctx.lineTo(scx + 12, scy - 24);
+      ctx.closePath();
+      ctx.fill();
+
+      // 7. WOODEN FENCE
+      const fenceY = h * 0.44;
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.18, fenceY);
+      ctx.lineTo(w * 0.82, fenceY);
+      ctx.moveTo(w * 0.18, fenceY + 6);
+      ctx.lineTo(w * 0.82, fenceY + 6);
+      ctx.stroke();
+      for (let p = w * 0.18; p <= w * 0.82; p += 28) {
+        ctx.fillStyle = '#92400e';
+        ctx.fillRect(p - 2, fenceY - 8, 4, 20);
+      }
+
+      // 8. 12 ISOMETRIC PLOTS (3 rows x 4 cols)
+      canvasPlotBounds = [];
+      const numRows = 3;
+      const numCols = 4;
+      const tileW = Math.min(135, Math.max(76, w / 6.2));
+      const tileH = tileW * 0.52;
+      const depth = Math.max(9, Math.floor(tileW * 0.11));
+      const originX = w * 0.5;
+      const originY = h * 0.42;
+
+      for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
+          const idx = r * numCols + c;
+          const plot = (farmData && farmData.plots) ? farmData.plots[idx] : null;
+          if (!plot) continue;
+
+          const xc = originX + (c - r) * (tileW * 0.53);
+          const yc = originY + (c + r) * (tileH * 0.56);
+
+          canvasPlotBounds.push({ idx, xc, yc, w: tileW, h: tileH });
+
+          const isHovered = (hoveredPlotIdx === idx);
+          const liftY = isHovered ? -5 : 0;
+          const py = yc + liftY;
+
+          const topV = { x: xc, y: py - tileH * 0.5 };
+          const rightV = { x: xc + tileW * 0.5, y: py };
+          const bottomV = { x: xc, y: py + tileH * 0.5 };
+          const leftV = { x: xc - tileW * 0.5, y: py };
+
+          // Soil Base Shadow
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+          ctx.beginPath();
+          ctx.moveTo(xc, yc - tileH * 0.5 + 8);
+          ctx.lineTo(xc + tileW * 0.5 + 4, yc + 8);
+          ctx.lineTo(xc, yc + tileH * 0.5 + 12);
+          ctx.lineTo(xc - tileW * 0.5 - 4, yc + 8);
+          ctx.closePath();
+          ctx.fill();
+
+          // 3D Left Face Extrusion
+          ctx.fillStyle = (plot.status === 'locked') ? '#334155' : (plot.isWatered ? '#26170d' : '#452614');
+          ctx.beginPath();
+          ctx.moveTo(leftV.x, leftV.y);
+          ctx.lineTo(bottomV.x, bottomV.y);
+          ctx.lineTo(bottomV.x, bottomV.y + depth);
+          ctx.lineTo(leftV.x, leftV.y + depth);
+          ctx.closePath();
+          ctx.fill();
+
+          // 3D Right Face Extrusion
+          ctx.fillStyle = (plot.status === 'locked') ? '#475569' : (plot.isWatered ? '#382012' : '#5c331a');
+          ctx.beginPath();
+          ctx.moveTo(bottomV.x, bottomV.y);
+          ctx.lineTo(rightV.x, rightV.y);
+          ctx.lineTo(rightV.x, rightV.y + depth);
+          ctx.lineTo(bottomV.x, bottomV.y + depth);
+          ctx.closePath();
+          ctx.fill();
+
+          // Top Face
+          let topColor = '#784323';
+          if (plot.status === 'locked') {
+            topColor = '#64748b';
+          } else if (plot.isWatered) {
+            topColor = '#432616';
+          }
+
+          ctx.fillStyle = topColor;
+          ctx.beginPath();
+          ctx.moveTo(topV.x, topV.y);
+          ctx.lineTo(rightV.x, rightV.y);
+          ctx.lineTo(bottomV.x, bottomV.y);
+          ctx.lineTo(leftV.x, leftV.y);
+          ctx.closePath();
+          ctx.fill();
+
+          // Furrows
+          if (plot.status !== 'locked') {
+            ctx.strokeStyle = plot.isWatered ? 'rgba(25, 12, 6, 0.6)' : 'rgba(60, 30, 10, 0.4)';
+            ctx.lineWidth = 1.8;
+            [-0.2, 0, 0.2].forEach(offsetPct => {
+              const sx = leftV.x + (rightV.x - leftV.x) * (0.5 + offsetPct * 0.7);
+              const sy = topV.y + (bottomV.y - topV.y) * (0.5 + offsetPct);
+              ctx.beginPath();
+              ctx.moveTo(sx - tileW * 0.2, sy - tileH * 0.15);
+              ctx.lineTo(sx + tileW * 0.2, sy + tileH * 0.15);
+              ctx.stroke();
+            });
+          }
+
+          // Top Face Highlight Border
+          if (isHovered) {
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#f59e0b';
+            ctx.shadowBlur = 10;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+          } else {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+
+          drawPlotContents(ctx, plot, idx, xc, py, tileW, tileH, time);
+        }
+      }
+
+      // 9. BUTTERFLIES
+      farmButterflies.forEach((b) => {
+        b.angle += b.speed * 0.03;
+        b.x += Math.cos(b.angle) * b.speed * 1.5;
+        b.y += Math.sin(b.angle * 1.3) * b.speed * 1.2;
+        if (b.x < 30) b.x = w - 40;
+        if (b.x > w - 30) b.x = 40;
+        if (b.y < h * 0.2) b.y = h * 0.7;
+        if (b.y > h * 0.85) b.y = h * 0.25;
+
+        b.wing = (b.wing + 0.18) % (Math.PI * 2);
+        const wingScale = Math.abs(Math.sin(b.wing));
+
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.fillStyle = b.color;
+        ctx.beginPath();
+        ctx.ellipse(-b.size * 0.6 * wingScale, 0, b.size * wingScale, b.size * 0.6, 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(b.size * 0.6 * wingScale, 0, b.size * wingScale, b.size * 0.6, -0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-1, -b.size * 0.5, 2, b.size);
+        ctx.restore();
+      });
+
+      // 10. RAIN WEATHER
+      if (farmWeather === 'rain') {
+        ctx.strokeStyle = 'rgba(186, 230, 253, 0.6)';
+        ctx.lineWidth = 1.2;
+        for (let ri = 0; ri < 45; ri++) {
+          const rx = ((time * 0.6 + ri * 67) % w);
+          const ry = ((time * 0.9 + ri * 89) % h);
+          ctx.beginPath();
+          ctx.moveTo(rx, ry);
+          ctx.lineTo(rx - 4, ry + 12);
+          ctx.stroke();
+        }
+      }
+
+      // 11. FLOATING HARVEST PARTICLES
+      for (let fi = floatingFarmParticles.length - 1; fi >= 0; fi--) {
+        const p = floatingFarmParticles[fi];
+        p.y += p.vy;
+        p.alpha -= 0.02;
+        p.life--;
+
+        ctx.save();
+        ctx.font = 'bold 13px Plus Jakarta Sans, sans-serif';
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 6;
+        ctx.textAlign = 'center';
+        ctx.fillText(p.text, p.x, p.y);
+        ctx.restore();
+
+        if (p.life <= 0 || p.alpha <= 0) {
+          floatingFarmParticles.splice(fi, 1);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function drawPlotContents(ctx, plot, idx, xc, py, tileW, tileH, time) {
+      if (plot.status === 'locked') {
+        const condition = PLOT_UNLOCK_CONDITIONS[idx];
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 15px sans-serif';
+        ctx.fillText('🔒', xc, py + 2);
+        ctx.font = 'bold 10px Plus Jakarta Sans, sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`Cấp ${condition.level}`, xc, py + 16);
+        ctx.restore();
+        return;
+      }
+
+      if (plot.status === 'empty') {
+        ctx.save();
+        ctx.textAlign = 'center';
+        const isHovered = (hoveredPlotIdx === idx);
+        if (isHovered) {
+          ctx.font = 'bold 16px sans-serif';
+          ctx.fillText('🌱', xc, py - 4);
+          ctx.fillStyle = '#fef08a';
+          ctx.font = 'bold 10px Plus Jakarta Sans, sans-serif';
+          ctx.fillText('+ Gieo Hạt', xc, py + 12);
+        } else {
+          ctx.fillStyle = 'rgba(254, 240, 138, 0.4)';
+          ctx.font = '12px sans-serif';
+          ctx.fillText('🌱', xc, py + 4);
+        }
+        ctx.restore();
+        return;
+      }
+
+      const crop = FARM_CROPS.find(c => c.id === plot.cropId);
+      if (!crop) return;
+
+      const now = Date.now();
+      const elapsed = (now - plot.plantTime) / 1000;
+      const totalDuration = plot.growDuration;
+      let progress = Math.min(1.0, elapsed / totalDuration);
+      if (progress >= 1.0) {
+        plot.status = 'mature';
+      }
+
+      ctx.fillStyle = 'rgba(20, 10, 5, 0.4)';
+      ctx.beginPath();
+      ctx.ellipse(xc, py + 2, 14, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const sway = Math.sin(time / 280 + idx * 1.6) * 0.08;
+
+      ctx.save();
+      ctx.translate(xc, py);
+      ctx.rotate(sway);
+
+      if (plot.status === 'growing') {
+        if (progress < 0.35) {
+          ctx.font = '22px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🌱', 0, -4);
+        } else if (progress < 0.7) {
+          ctx.font = '26px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🌿', 0, -6);
+        } else {
+          ctx.font = '28px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🌸', 0, -8);
+        }
+      } else if (plot.status === 'mature') {
+        const pulse = 1 + Math.sin(time / 200) * 0.08;
+        ctx.scale(pulse, pulse);
+
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.25)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 18, 9, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        const sparkPhase = (time / 400 + idx) % 1;
+        ctx.fillStyle = '#fde047';
+        ctx.font = '9px sans-serif';
+        ctx.fillText('✨', -14 + Math.sin(time / 250) * 4, -20 - sparkPhase * 16);
+
+        ctx.font = '32px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(crop.emoji, 0, -8);
+      }
+
+      ctx.restore();
+
+      // FLOATING PILL STATUS
+      ctx.save();
+      ctx.translate(xc, py - tileH * 0.65);
+
+      if (plot.status === 'growing') {
+        const timeLeft = Math.max(1, Math.ceil(totalDuration - elapsed));
+        const formatTime = (s) => (s > 60 ? `${Math.floor(s / 60)}m${s % 60}s` : `${s}s`);
+
+        const pillW = 46;
+        const pillH = 14;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.strokeStyle = plot.isWatered ? '#38bdf8' : '#334155';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(-pillW / 2, -pillH / 2, pillW, pillH, 7);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#10b981';
+        const progW = (pillW - 4) * progress;
+        ctx.fillRect(-pillW / 2 + 2, -pillH / 2 + 2, progW, pillH - 4);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9px Plus Jakarta Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(formatTime(timeLeft), 0, 3);
+      } else if (plot.status === 'mature') {
+        const bounceY = Math.sin(time / 180) * 2;
+        const pillW = 68;
+        const pillH = 16;
+        ctx.fillStyle = '#f59e0b';
+        ctx.shadowColor = '#fbbf24';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.roundRect(-pillW / 2, -pillH / 2 + bounceY, pillW, pillH, 8);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '900 9px Plus Jakarta Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🧺 THU HOẠCH', 0, 3 + bounceY);
+      }
+
+      ctx.restore();
+    }
+
+    // ----------------------------------------------------
+    // AUTO FARM ENGINE (FULL AUTOMATION - PASSCODE: 6986)
+    // ----------------------------------------------------
+    let isFarmAutoRunning = false;
+    let farmAutoInterval = null;
+    let farmAutoStats = {
+      harvests: 0,
+      goldEarned: 0,
+      planted: 0,
+      watered: 0
+    };
+
+    function toggleFarmAutoMode() {
+      if (isFarmAutoRunning) {
+        stopFarmAutoMode();
+      } else {
+        openFarmAutoModal();
+      }
+    }
+
+    function openFarmAutoModal() {
+      const modal = document.getElementById('farmAutoModal');
+      const input = document.getElementById('farmAutoPasswordInput');
+      const err = document.getElementById('farmAutoPassError');
+      if (err) { err.textContent = ''; err.classList.add('hidden'); }
+      if (input) { input.value = ''; }
+      if (modal) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        setTimeout(() => { if (input) input.focus(); }, 150);
+      }
+    }
+
+    function closeFarmAutoModal() {
+      const modal = document.getElementById('farmAutoModal');
+      if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function submitFarmAutoPassword() {
+      const input = document.getElementById('farmAutoPasswordInput');
+      const err = document.getElementById('farmAutoPassError');
+      const pass = input ? input.value.trim() : '';
+
+      if (pass === '6986') {
+        closeFarmAutoModal();
+        startFarmAutoMode();
+      } else {
+        if (err) {
+          err.textContent = '❌ Mật khẩu không chính xác! Vui lòng thử lại.';
+          err.classList.remove('hidden');
+        }
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+    }
+
+    function startFarmAutoMode() {
+      if (isFarmAutoRunning) return;
+      isFarmAutoRunning = true;
+
+      const btn = document.getElementById('btnFarmAuto');
+      const btnText = document.getElementById('btnFarmAutoText');
+      const banner = document.getElementById('farmAutoStatusBanner');
+
+      if (btn) {
+        btn.className = 'px-3.5 py-2 bg-gradient-to-r from-rose-600 via-red-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-extrabold text-xs rounded-xl shadow-lg border border-rose-400/50 transition flex items-center space-x-1.5 animate-pulse';
+      }
+      if (btnText) {
+        btnText.textContent = '🛑 Dừng Auto Farm';
+      }
+      if (banner) {
+        banner.classList.remove('hidden');
+      }
+
+      showToast('🤖 Đã BẬT Chế Độ Auto Nông Trại Vui Vẻ! Bot đang tự động làm việc.', 'success', 4000);
+
+      // Execute first step immediately, then repeat every 1.5s
+      runFarmAutoStep();
+      if (farmAutoInterval) clearInterval(farmAutoInterval);
+      farmAutoInterval = setInterval(runFarmAutoStep, 1500);
+    }
+
+    function stopFarmAutoMode() {
+      if (!isFarmAutoRunning) return;
+      isFarmAutoRunning = false;
+      if (farmAutoInterval) {
+        clearInterval(farmAutoInterval);
+        farmAutoInterval = null;
+      }
+
+      const btn = document.getElementById('btnFarmAuto');
+      const btnText = document.getElementById('btnFarmAutoText');
+      const banner = document.getElementById('farmAutoStatusBanner');
+
+      if (btn) {
+        btn.className = 'px-3.5 py-2 bg-gradient-to-r from-amber-600 via-purple-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg border border-amber-400/50 transition flex items-center space-x-1.5 animate-pulse';
+      }
+      if (btnText) {
+        btnText.textContent = '🤖 Auto Nông Trại';
+      }
+      if (banner) {
+        banner.classList.add('hidden');
+      }
+
+      showToast('Đã dừng chế độ Auto Nông Trại. Bạn có thể tự tay chăm sóc nông trại!', 'info');
+    }
+
+    function runFarmAutoStep() {
+      if (!isFarmAutoRunning || !farmData || !farmData.plots) return;
+      const actionsDone = [];
+
+      // 1. AUTO HARVEST MATURE CROPS
+      let harvestedCount = 0;
+      let expGained = 0;
+      farmData.plots.forEach((plot, i) => {
+        if (plot.status === 'mature') {
+          const crop = FARM_CROPS.find(c => c.id === plot.cropId);
+          if (crop) {
+            if (!farmData.barn) farmData.barn = {};
+            farmData.barn[crop.id] = (farmData.barn[crop.id] || 0) + 1;
+            expGained += crop.exp;
+            harvestedCount++;
+            farmAutoStats.harvests++;
+            if (typeof spawnHarvestTextParticle === 'function') {
+              const b = canvasPlotBounds.find(cb => cb.idx === i);
+              if (b) spawnHarvestTextParticle(b.xc, b.yc - 10, `+1 ${crop.emoji} (${crop.exp} EXP)`, '#10b981');
+            }
+          }
+          plot.status = 'empty';
+          plot.cropId = null;
+          plot.plantTime = 0;
+          plot.growDuration = 0;
+          plot.isWatered = false;
+        }
+      });
+      if (harvestedCount > 0) {
+        addFarmExp(expGained);
+        playFarmSound('harvest');
+        actionsDone.push(`Đã gặt ${harvestedCount} nông sản (+${expGained} EXP)`);
+      }
+
+      // 2. AUTO SELL BARN CROPS (Accumulate Gold)
+      let totalBarnSold = 0;
+      let totalGoldEarned = 0;
+      if (farmData.barn) {
+        for (const cropId in farmData.barn) {
+          const qty = farmData.barn[cropId];
+          const crop = FARM_CROPS.find(c => c.id === cropId);
+          if (crop && qty > 0) {
+            totalBarnSold += qty;
+            totalGoldEarned += qty * crop.sellPrice;
+            delete farmData.barn[cropId];
+          }
+        }
+      }
+      if (totalBarnSold > 0) {
+        farmData.gold += totalGoldEarned;
+        farmAutoStats.goldEarned += totalGoldEarned;
+        playFarmSound('sell');
+        actionsDone.push(`Đã bán ${totalBarnSold} nông sản (+${totalGoldEarned.toLocaleString('vi-VN')} Xu)`);
+      }
+
+      // 3. AUTO UNLOCK LOCKED PLOTS (If player level and gold suffice)
+      let unlockedCount = 0;
+      farmData.plots.forEach((plot, i) => {
+        if (plot.status === 'locked') {
+          const cond = PLOT_UNLOCK_CONDITIONS[i];
+          if (farmData.level >= cond.level && farmData.gold >= cond.cost) {
+            farmData.gold -= cond.cost;
+            plot.status = 'empty';
+            unlockedCount++;
+            actionsDone.push(`Mở khóa ô đất #${i + 1}`);
+          }
+        }
+      });
+
+      // 4. AUTO PLANT BEST AVAILABLE CROPS ON EMPTY PLOTS
+      const emptyPlots = farmData.plots.filter(p => p.status === 'empty');
+      if (emptyPlots.length > 0) {
+        const availableCrops = FARM_CROPS.filter(c => c.minLevel <= farmData.level);
+        availableCrops.sort((a, b) => (b.minLevel - a.minLevel) || (b.sellPrice - a.sellPrice));
+
+        let plantedThisStep = 0;
+        for (const plot of emptyPlots) {
+          const bestAffordableCrop = availableCrops.find(c => c.cost <= farmData.gold);
+          if (bestAffordableCrop) {
+            farmData.gold -= bestAffordableCrop.cost;
+            plot.status = 'growing';
+            plot.cropId = bestAffordableCrop.id;
+            plot.plantTime = Date.now();
+            plot.growDuration = bestAffordableCrop.growTime;
+            plot.isWatered = false;
+            farmAutoStats.planted++;
+            plantedThisStep++;
+          } else {
+            break;
+          }
+        }
+        if (plantedThisStep > 0) {
+          playFarmSound('plant');
+          actionsDone.push(`Đã gieo ${plantedThisStep} hạt giống mới`);
+        }
+      }
+
+      // 5. AUTO WATER ALL GROWING PLOTS (+25% Growth Speed)
+      let wateredCount = 0;
+      const now = Date.now();
+      farmData.plots.forEach((plot) => {
+        if (plot.status === 'growing' && !plot.isWatered) {
+          plot.isWatered = true;
+          const elapsed = (now - plot.plantTime) / 1000;
+          const remaining = plot.growDuration - elapsed;
+          if (remaining > 0) {
+            plot.growDuration = elapsed + (remaining * 0.75);
+          }
+          wateredCount++;
+          farmAutoStats.watered++;
+        }
+      });
+      if (wateredCount > 0) {
+        playFarmSound('water');
+        actionsDone.push(`Tưới nước ${wateredCount} ô`);
+      }
+
+      // 6. REFRESH DATA AND BANNER UI
+      saveFarmData(true);
+      const logEl = document.getElementById('farmAutoActionLog');
+      const statsEl = document.getElementById('farmAutoStats');
+      if (logEl) {
+        if (actionsDone.length > 0) {
+          logEl.textContent = actionsDone.join(' • ');
+        } else {
+          logEl.textContent = 'Đang theo dõi mùa màng và đợi cây lớn...';
+        }
+      }
+      if (statsEl) {
+        statsEl.textContent = `🌾 ${farmAutoStats.harvests} thu hoạch | 🪙 +${farmAutoStats.goldEarned.toLocaleString('vi-VN')} xu | 🌱 ${farmAutoStats.planted} đã gieo | 💧 ${farmAutoStats.watered} đã tưới`;
+      }
+    }
+
+    function farmHeartbeatTick() {
+      if (!farmData) return;
+      const farmTab = document.getElementById('tab-farm');
+      if (farmTab && !farmTab.classList.contains('hidden')) {
+        if (currentFarmViewMode === 'grid') {
+          renderFarmPlots();
+        }
+      }
+    }
+    setInterval(farmHeartbeatTick, 1000);
 
     // ----------------------------------------------------
     // INITIALIZATION ON DOM READY
     // ----------------------------------------------------
     document.addEventListener('DOMContentLoaded', () => {
       initMqttConnection();
+      initFarmData();
+      initIsometricCanvas();
       if (!musicTracks || musicTracks.length === 0) {
         musicTracks = PRESET_TRENDING_TRACKS.map(t => ({
           id: Date.now() + Math.random(),
