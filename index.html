@@ -341,6 +341,9 @@
               <button onclick="switchYtPlayerMode('yt')" id="btnModeVideo" class="text-[11px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-600/50 hover:bg-emerald-900 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
                 <i class="fa-solid fa-film"></i> Xem Video
               </button>
+              <button onclick="toggleBlackScreenMode()" id="btnBlackScreen" class="text-[11px] font-bold bg-slate-900 text-purple-300 border border-purple-800/40 hover:bg-slate-800 px-2.5 py-1 rounded-lg transition flex items-center gap-1" title="Tắt màn hình (Màn hình đen OLED tiết kiệm pin, nghe nhạc xuyên đêm)">
+                <i class="fa-solid fa-moon text-purple-400"></i> 🌙 Tắt Màn Hình
+              </button>
               <a id="ytExternalLink" href="#" target="_blank" class="text-[11px] font-bold bg-red-950/80 text-red-400 border border-red-800/50 hover:bg-red-900 px-2.5 py-1 rounded-lg transition inline-flex items-center gap-1">
                 <i class="fab fa-youtube"></i> ↗ Mở YouTube
               </a>
@@ -1002,10 +1005,7 @@
           <!-- HTML5 Canvas -->
           <canvas id="farmIsometricCanvas" class="w-full block select-none cursor-pointer" style="min-height: 480px; max-height: 560px;"></canvas>
 
-          <!-- Interactive Bottom Hint Bar -->
-          <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-slate-950/90 backdrop-blur-md border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-bold text-amber-200 shadow-2xl flex items-center gap-2 pointer-events-none">
-            <span class="text-amber-400">💡 Mẹo:</span> Bấm trực tiếp vào từng luống đất trên ruộng để Gieo Hạt, Tưới Nước, Bón Phân hoặc Thu Hoạch!
-          </div>
+
         </div>
 
         <!-- 2. TRADITIONAL CARD GRID VIEW -->
@@ -1424,6 +1424,30 @@
           Đóng
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- FULLSCREEN OLED PURE BLACK SCREEN-OFF OVERLAY -->
+  <!-- ======================================================= -->
+  <div id="oledScreenOffOverlay" class="fixed inset-0 bg-black z-[9999] hidden flex flex-col items-center justify-between p-6 select-none cursor-pointer text-slate-700" onclick="toggleBlackScreenMode()">
+    <!-- Top Dim Header -->
+    <div class="w-full flex justify-between items-center text-[10px] text-zinc-700 font-mono">
+      <span>🌙 CHẾ ĐỘ MÀN HÌNH TẮT (OLED / TIẾT KIỆM PIN)</span>
+      <span>CHẠM BẤT KỲ ĐÂU ĐỂ MỞ LẠI</span>
+    </div>
+
+    <!-- Center Dim Info -->
+    <div class="text-center space-y-2 opacity-30 hover:opacity-80 transition duration-500">
+      <div class="text-4xl">🎵</div>
+      <div id="oledOverlayTrackTitle" class="text-xs font-bold text-zinc-400 truncate max-w-xs">Đang phát nhạc...</div>
+      <div id="oledOverlayTrackArtist" class="text-[10px] text-zinc-600">Zeng Music Pro</div>
+      <div class="text-[10px] text-zinc-700 font-mono mt-4">Điểm ảnh OLED tắt 100% • Âm thanh tiếp tục phát</div>
+    </div>
+
+    <!-- Bottom Action Note -->
+    <div class="text-[10px] text-zinc-800 font-mono flex items-center gap-2">
+      <i class="fa-solid fa-hand-pointer animate-pulse"></i> Chạm 1 lần để đánh thức màn hình
     </div>
   </div>
 
@@ -2325,8 +2349,77 @@
       document.getElementById('playerTrackArtist').textContent = track.artist || 'YouTube Music';
       document.getElementById('mini-player-artist').textContent = track.artist || 'YouTube Music';
 
+      const oledTitle = document.getElementById('oledOverlayTrackTitle');
+      const oledArtist = document.getElementById('oledOverlayTrackArtist');
+      if (oledTitle) oledTitle.textContent = track.name;
+      if (oledArtist) oledArtist.textContent = track.artist || 'YouTube Music';
+
+      updateMediaSession(track);
       updateMusicPlayStateUI(true);
       renderMusicPlaylist();
+    }
+
+    let isBlackScreenActive = false;
+    let wakeLockSentinel = null;
+
+    async function toggleBlackScreenMode() {
+      const overlay = document.getElementById('oledScreenOffOverlay');
+      if (!overlay) return;
+
+      isBlackScreenActive = !isBlackScreenActive;
+      if (isBlackScreenActive) {
+        overlay.classList.remove('hidden');
+        try {
+          if (document.documentElement.requestFullscreen) {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch(e) {}
+        try {
+          if ('wakeLock' in navigator) {
+            wakeLockSentinel = await navigator.wakeLock.request('screen');
+          }
+        } catch(e) {}
+        showToast("🌙 Đã bật chế độ Màn hình tắt OLED! Chạm bất kỳ đâu để bật lại.", "info", 3500);
+      } else {
+        overlay.classList.add('hidden');
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+        } catch(e) {}
+        if (wakeLockSentinel) {
+          try { await wakeLockSentinel.release(); } catch(e) {}
+          wakeLockSentinel = null;
+        }
+      }
+    }
+
+    function updateMediaSession(track) {
+      if (!('mediaSession' in navigator) || !track) return;
+      try {
+        const thumbUrl = track.thumb || (track.videoId ? `https://img.youtube.com/vi/${track.videoId}/hqdefault.jpg` : '');
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: track.name || 'Bài hát',
+          artist: track.artist || 'Zeng Music Pro',
+          album: 'Zeng Space 2026',
+          artwork: thumbUrl ? [
+            { src: thumbUrl, sizes: '96x96', type: 'image/jpeg' },
+            { src: thumbUrl, sizes: '128x128', type: 'image/jpeg' },
+            { src: thumbUrl, sizes: '192x192', type: 'image/jpeg' },
+            { src: thumbUrl, sizes: '512x512', type: 'image/jpeg' }
+          ] : []
+        });
+
+        navigator.mediaSession.setActionHandler('play', () => toggleMusicPlay());
+        navigator.mediaSession.setActionHandler('pause', () => toggleMusicPlay());
+        navigator.mediaSession.setActionHandler('previoustrack', () => playPrevMusic());
+        navigator.mediaSession.setActionHandler('nexttrack', () => playNextMusic());
+        navigator.mediaSession.setActionHandler('seekto', (details) => {
+          if (details.seekTime !== undefined && window.ytLastDuration) {
+            seekMusic((details.seekTime / window.ytLastDuration) * 100);
+          }
+        });
+      } catch(e) {}
     }
 
     function sendYtIframeCommand(func, args = '') {
@@ -2460,6 +2553,12 @@
         if (playIcon) playIcon.className = 'fa-solid fa-play ml-0.5';
         if (miniIcon) miniIcon.className = 'fa-solid fa-play ml-0.5';
         if (vinyl) vinyl.classList.add('paused');
+      }
+
+      if ('mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        } catch(e) {}
       }
     }
 
@@ -4875,163 +4974,685 @@
       ctx.save();
       ctx.clearRect(0, 0, w, h);
 
-      // 1. SKY BACKGROUND
-      const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.48);
+      // 1. SKY GRADIENT
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.46);
       if (farmWeather === 'rain') {
-        skyGrad.addColorStop(0, '#334155');
-        skyGrad.addColorStop(0.6, '#475569');
-        skyGrad.addColorStop(1, '#1e293b');
+        skyGrad.addColorStop(0, '#1e293b');
+        skyGrad.addColorStop(0.5, '#334155');
+        skyGrad.addColorStop(1, '#475569');
       } else {
         skyGrad.addColorStop(0, '#0284c7');
-        skyGrad.addColorStop(0.5, '#38bdf8');
-        skyGrad.addColorStop(1, '#bae6fd');
+        skyGrad.addColorStop(0.45, '#38bdf8');
+        skyGrad.addColorStop(0.8, '#7dd3fc');
+        skyGrad.addColorStop(1, '#fed7aa'); // warm golden peach horizon
       }
       ctx.fillStyle = skyGrad;
-      ctx.fillRect(0, 0, w, h * 0.48);
+      ctx.fillRect(0, 0, w, h * 0.46);
 
-      // 2. SUN
+      // 2. SUN & GOD RAYS (When sunny)
       if (farmWeather === 'sunny') {
-        const sunX = w * 0.85;
+        const sunX = w * 0.84;
         const sunY = h * 0.12;
         const sunRadius = 24;
 
-        const sunHalo = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 50);
-        sunHalo.addColorStop(0, 'rgba(253, 224, 71, 0.6)');
-        sunHalo.addColorStop(1, 'rgba(253, 224, 71, 0)');
-        ctx.fillStyle = sunHalo;
+        // God Rays (Rotating soft light shafts)
+        ctx.save();
+        ctx.translate(sunX, sunY);
+        const rayAngle = time * 0.0002;
+        ctx.rotate(rayAngle);
+        const numRays = 8;
+        for (let i = 0; i < numRays; i++) {
+          const a1 = (i * 2 * Math.PI) / numRays;
+          const a2 = a1 + 0.14;
+          const rLen = Math.max(w, h) * 0.85;
+          const rayGrad = ctx.createRadialGradient(0, 0, sunRadius, 0, 0, rLen);
+          rayGrad.addColorStop(0, 'rgba(254, 240, 138, 0.18)');
+          rayGrad.addColorStop(0.6, 'rgba(254, 240, 138, 0.05)');
+          rayGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
+          ctx.fillStyle = rayGrad;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(a1) * rLen, Math.sin(a1) * rLen);
+          ctx.lineTo(Math.cos(a2) * rLen, Math.sin(a2) * rLen);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // Multi-tier Sun Halo
+        const sunGlow = ctx.createRadialGradient(sunX, sunY, 8, sunX, sunY, 70);
+        sunGlow.addColorStop(0, 'rgba(254, 240, 138, 0.9)');
+        sunGlow.addColorStop(0.3, 'rgba(251, 191, 36, 0.45)');
+        sunGlow.addColorStop(0.7, 'rgba(245, 158, 11, 0.12)');
+        sunGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = sunGlow;
         ctx.beginPath();
-        ctx.arc(sunX, sunY, 50, 0, Math.PI * 2);
+        ctx.arc(sunX, sunY, 70, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#fde047';
+        // Sun Disc
+        const sunDisc = ctx.createRadialGradient(sunX - 4, sunY - 4, 2, sunX, sunY, sunRadius);
+        sunDisc.addColorStop(0, '#ffffff');
+        sunDisc.addColorStop(0.5, '#fef08a');
+        sunDisc.addColorStop(1, '#f59e0b');
+        ctx.fillStyle = sunDisc;
         ctx.beginPath();
         ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 3. CLOUDS
-      const drawCloud = (cx, cy, scale = 1) => {
-        ctx.fillStyle = (farmWeather === 'rain') ? 'rgba(148, 163, 184, 0.85)' : 'rgba(255, 255, 255, 0.85)';
+      // 3. BIRDS IN SKY (Flock of 3 graceful flying birds)
+      if (farmWeather === 'sunny') {
+        ctx.strokeStyle = 'rgba(30, 41, 59, 0.55)';
+        ctx.lineWidth = 1.8;
+        ctx.lineCap = 'round';
+        for (let bIdx = 0; bIdx < 3; bIdx++) {
+          const birdBaseX = (w + 120 - ((time * 0.025 + bIdx * 50) % (w + 240)));
+          const birdBaseY = h * 0.08 + bIdx * 14 + Math.sin(time * 0.002 + bIdx) * 6;
+          const wingFlap = Math.sin(time * 0.008 + bIdx * 1.5) * 5;
+          ctx.beginPath();
+          ctx.moveTo(birdBaseX - 8, birdBaseY - wingFlap);
+          ctx.quadraticCurveTo(birdBaseX - 4, birdBaseY, birdBaseX, birdBaseY + 2);
+          ctx.quadraticCurveTo(birdBaseX + 4, birdBaseY, birdBaseX + 8, birdBaseY - wingFlap);
+          ctx.stroke();
+        }
+      }
+
+      // 4. PARALLAX CLOUDS
+      const drawCloud = (cx, cy, scale = 1, opacity = 0.88) => {
+        ctx.save();
+        ctx.fillStyle = (farmWeather === 'rain') 
+          ? `rgba(100, 116, 139, ${opacity})` 
+          : `rgba(255, 255, 255, ${opacity})`;
         ctx.beginPath();
         ctx.arc(cx, cy, 18 * scale, 0, Math.PI * 2);
-        ctx.arc(cx + 20 * scale, cy - 8 * scale, 22 * scale, 0, Math.PI * 2);
-        ctx.arc(cx + 44 * scale, cy, 16 * scale, 0, Math.PI * 2);
-        ctx.arc(cx + 22 * scale, cy + 6 * scale, 16 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 20 * scale, cy - 10 * scale, 24 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 46 * scale, cy - 4 * scale, 19 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 64 * scale, cy + 2 * scale, 15 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 32 * scale, cy + 8 * scale, 18 * scale, 0, Math.PI * 2);
         ctx.fill();
+
+        // Cloud subtle bottom shadow for 3D fluffiness
+        ctx.fillStyle = (farmWeather === 'rain') 
+          ? 'rgba(71, 85, 105, 0.35)' 
+          : 'rgba(203, 213, 225, 0.35)';
+        ctx.beginPath();
+        ctx.arc(cx + 20 * scale, cy + 4 * scale, 20 * scale, 0, Math.PI);
+        ctx.arc(cx + 46 * scale, cy + 4 * scale, 16 * scale, 0, Math.PI);
+        ctx.fill();
+        ctx.restore();
       };
-      const cloud1X = ((time * 0.015 + 40) % (w + 160)) - 80;
-      const cloud2X = ((time * 0.008 + 260) % (w + 160)) - 80;
-      drawCloud(cloud1X, h * 0.09, 1.1);
-      drawCloud(cloud2X, h * 0.16, 0.85);
+      const cloud1X = ((time * 0.012 + 60) % (w + 220)) - 110;
+      const cloud2X = ((time * 0.007 + 340) % (w + 220)) - 110;
+      const cloud3X = ((time * 0.016 + 180) % (w + 220)) - 110;
+      drawCloud(cloud1X, h * 0.08, 1.15, 0.9);
+      drawCloud(cloud2X, h * 0.15, 0.85, 0.75);
+      drawCloud(cloud3X, h * 0.12, 0.65, 0.6);
 
-      // 4. MEADOW
-      const meadowGrad = ctx.createLinearGradient(0, h * 0.35, 0, h);
-      meadowGrad.addColorStop(0, '#15803d');
-      meadowGrad.addColorStop(0.3, '#166534');
-      meadowGrad.addColorStop(1, '#0f172a');
-      ctx.fillStyle = meadowGrad;
-
+      // 5. DISTANT MOUNTAINS & ROLLING HILLS (Multi-layer Depth)
+      // Layer A: Distant bluish misty mountains
+      ctx.fillStyle = (farmWeather === 'rain') ? '#334155' : '#0d9488';
+      ctx.globalAlpha = 0.35;
       ctx.beginPath();
       ctx.moveTo(0, h * 0.42);
-      ctx.quadraticCurveTo(w * 0.25, h * 0.36, w * 0.5, h * 0.4);
-      ctx.quadraticCurveTo(w * 0.75, h * 0.44, w, h * 0.38);
+      ctx.lineTo(w * 0.15, h * 0.34);
+      ctx.lineTo(w * 0.35, h * 0.39);
+      ctx.lineTo(w * 0.55, h * 0.32);
+      ctx.lineTo(w * 0.8, h * 0.38);
+      ctx.lineTo(w, h * 0.35);
+      ctx.lineTo(w, h * 0.46);
+      ctx.lineTo(0, h * 0.46);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1.0;
+
+      // Layer B: Mid-ground rolling green hills
+      const hillGrad1 = ctx.createLinearGradient(0, h * 0.32, 0, h * 0.45);
+      hillGrad1.addColorStop(0, '#047857');
+      hillGrad1.addColorStop(1, '#065f46');
+      ctx.fillStyle = hillGrad1;
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.4);
+      ctx.quadraticCurveTo(w * 0.3, h * 0.32, w * 0.65, h * 0.38);
+      ctx.quadraticCurveTo(w * 0.85, h * 0.42, w, h * 0.37);
+      ctx.lineTo(w, h * 0.48);
+      ctx.lineTo(0, h * 0.48);
+      ctx.closePath();
+      ctx.fill();
+
+      // Layer C: Lush foreground meadow
+      const meadowGrad = ctx.createLinearGradient(0, h * 0.36, 0, h);
+      if (farmWeather === 'rain') {
+        meadowGrad.addColorStop(0, '#1e3a29');
+        meadowGrad.addColorStop(0.3, '#14532d');
+        meadowGrad.addColorStop(1, '#0f172a');
+      } else {
+        meadowGrad.addColorStop(0, '#10b981');
+        meadowGrad.addColorStop(0.18, '#15803d');
+        meadowGrad.addColorStop(0.5, '#166534');
+        meadowGrad.addColorStop(1, '#14532d');
+      }
+      ctx.fillStyle = meadowGrad;
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.42);
+      ctx.quadraticCurveTo(w * 0.22, h * 0.36, w * 0.5, h * 0.39);
+      ctx.quadraticCurveTo(w * 0.78, h * 0.43, w, h * 0.37);
       ctx.lineTo(w, h);
       ctx.lineTo(0, h);
       ctx.closePath();
       ctx.fill();
 
-      // Flowers on meadow
-      ctx.fillStyle = 'rgba(253, 230, 138, 0.4)';
-      for (let i = 0; i < 16; i++) {
-        const gx = ((i * 137.5) % w);
-        const gy = h * 0.44 + ((i * 83.1) % (h * 0.5));
+      // 6. MEANDERING RIVER / STREAM (Left side with animated ripples & lily pads)
+      const riverGrad = ctx.createLinearGradient(0, h * 0.36, w * 0.18, h * 0.7);
+      riverGrad.addColorStop(0, '#0284c7');
+      riverGrad.addColorStop(0.5, '#38bdf8');
+      riverGrad.addColorStop(1, '#0ea5e9');
+      ctx.fillStyle = riverGrad;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.05, h * 0.37);
+      ctx.bezierCurveTo(w * 0.09, h * 0.45, w * 0.02, h * 0.58, w * 0.08, h * 0.72);
+      ctx.lineTo(w * 0.14, h * 0.74);
+      ctx.bezierCurveTo(w * 0.09, h * 0.58, w * 0.16, h * 0.46, w * 0.1, h * 0.37);
+      ctx.closePath();
+      ctx.fill();
+
+      // River bank pebbles
+      ctx.fillStyle = '#64748b';
+      const pebbleOffsets = [[0.06, 0.42, 3], [0.11, 0.49, 2.5], [0.05, 0.54, 3.2], [0.13, 0.62, 2.8], [0.07, 0.67, 3.5]];
+      pebbleOffsets.forEach(([px, py, pr]) => {
+        ctx.beginPath();
+        ctx.arc(w * px, h * py, pr, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // River animated water highlights
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.lineWidth = 1.2;
+      for (let rwl = 0; rwl < 3; rwl++) {
+        const ry = h * (0.43 + rwl * 0.09) + Math.sin(time * 0.003 + rwl) * 3;
+        const rx = w * (0.07 + rwl * 0.015);
+        ctx.beginPath();
+        ctx.moveTo(rx - 6, ry);
+        ctx.lineTo(rx + 6, ry + 1);
+        ctx.stroke();
+      }
+
+      // Water Lily Pad with pink flower
+      const lilyX = w * 0.08;
+      const lilyY = h * 0.51;
+      ctx.fillStyle = '#15803d';
+      ctx.beginPath();
+      ctx.ellipse(lilyX, lilyY, 7, 4, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🪷', lilyX, lilyY - 2);
+
+      // 6b. DUCKS SWIMMING IN THE RIVER (Đàn vịt bơi lội)
+      const duckLoop = (time * 0.012) % (h * 0.28);
+      const duckY = h * 0.42 + duckLoop;
+      const duckX = w * 0.08 + Math.sin(time * 0.003) * 6;
+      const duckBob = Math.sin(time * 0.006) * 1.5;
+
+      // Mother Duck water ripple
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(duckX, duckY + 3, 11, 4.5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Mother Duck
+      ctx.save();
+      ctx.translate(duckX, duckY + duckBob);
+      ctx.font = '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🦆', 0, 0);
+      ctx.restore();
+
+      // Baby Duckling paddling behind
+      const ducklingX = duckX - 4 + Math.sin(time * 0.004) * 3;
+      const ducklingY = duckY - 14;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(ducklingX, ducklingY + 2, 6, 2.5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(ducklingX, ducklingY + duckBob);
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐥', 0, 0);
+      ctx.restore();
+
+      // 7. RUSTIC RED BARN & FARMHOUSE (Distant right knoll)
+      const barnX = w * 0.28;
+      const barnY = h * 0.34;
+      // Barn base
+      ctx.fillStyle = '#991b1b';
+      ctx.fillRect(barnX - 18, barnY - 14, 36, 22);
+      // Barn roof (Gambrel)
+      ctx.fillStyle = '#7f1d1d';
+      ctx.beginPath();
+      ctx.moveTo(barnX - 22, barnY - 14);
+      ctx.lineTo(barnX - 12, barnY - 26);
+      ctx.lineTo(barnX + 12, barnY - 26);
+      ctx.lineTo(barnX + 22, barnY - 14);
+      ctx.closePath();
+      ctx.fill();
+      // Barn white trim door with cross
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(barnX - 6, barnY - 2, 12, 10);
+      ctx.strokeStyle = '#b91c1c';
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(barnX - 6, barnY - 2, 12, 10);
+      ctx.beginPath();
+      ctx.moveTo(barnX - 6, barnY - 2);
+      ctx.lineTo(barnX + 6, barnY + 8);
+      ctx.moveTo(barnX + 6, barnY - 2);
+      ctx.lineTo(barnX - 6, barnY + 8);
+      ctx.stroke();
+      // Silo beside barn
+      const siloX = barnX + 24;
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(siloX - 5, barnY - 20, 10, 28);
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.arc(siloX, barnY - 20, 5, Math.PI, 0);
+      ctx.fill();
+      // Chimney with animated smoke puffs
+      const chimX = barnX - 10;
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(chimX - 2, barnY - 30, 4, 6);
+      for (let sm = 0; sm < 3; sm++) {
+        const smPhase = ((time * 0.015 + sm * 18) % 45);
+        const smX = chimX + Math.sin(time * 0.003 + sm) * 4;
+        const smY = barnY - 32 - smPhase;
+        const smR = 2.5 + smPhase * 0.12;
+        const smAlpha = Math.max(0, 0.45 - smPhase * 0.01);
+        ctx.fillStyle = `rgba(241, 245, 249, ${smAlpha})`;
+        ctx.beginPath();
+        ctx.arc(smX, smY, smR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 8. ANIMATED WINDMILL (Cối xay gió trên đồi cao)
+      const wmx = w * 0.05;
+      const wmy = h * 0.33;
+      // Stone Tower
+      const wmGrad = ctx.createLinearGradient(wmx - 14, 0, wmx + 14, 0);
+      wmGrad.addColorStop(0, '#78350f');
+      wmGrad.addColorStop(0.5, '#a16207');
+      wmGrad.addColorStop(1, '#5c2b09');
+      ctx.fillStyle = wmGrad;
+      ctx.beginPath();
+      ctx.moveTo(wmx - 14, wmy + 38);
+      ctx.lineTo(wmx - 9, wmy);
+      ctx.lineTo(wmx + 9, wmy);
+      ctx.lineTo(wmx + 14, wmy + 38);
+      ctx.closePath();
+      ctx.fill();
+      // Tower door & window
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(wmx - 3, wmy + 24, 6, 12);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(wmx - 3, wmy + 8, 6, 6);
+      // Windmill Cone Roof
+      ctx.fillStyle = '#991b1b';
+      ctx.beginPath();
+      ctx.moveTo(wmx - 12, wmy);
+      ctx.lineTo(wmx, wmy - 14);
+      ctx.lineTo(wmx + 12, wmy);
+      ctx.closePath();
+      ctx.fill();
+      // Windmill Blades
+      const bladeAngle = (time * 0.0022) % (Math.PI * 2);
+      ctx.save();
+      ctx.translate(wmx, wmy);
+      ctx.rotate(bladeAngle);
+      for (let b = 0; b < 4; b++) {
+        ctx.rotate(Math.PI / 2);
+        // Spar
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, 28);
+        ctx.stroke();
+        // Canvas Sail
+        ctx.fillStyle = 'rgba(254, 243, 199, 0.85)';
+        ctx.strokeStyle = '#b45309';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.rect(1, 8, 9, 17);
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+      // Windmill Hub cap
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(wmx, wmy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 9. ORCHARD & PINE TREES (Cây xanh & Vườn cây ăn quả)
+      const drawOrchardTree = (tx, ty, scale = 1, hasApples = true) => {
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.beginPath();
+        ctx.ellipse(tx, ty + 2, 14 * scale, 5 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Trunk
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(tx - 3 * scale, ty - 18 * scale, 6 * scale, 20 * scale);
+        // Canopy
+        ctx.fillStyle = '#15803d';
+        ctx.beginPath();
+        ctx.arc(tx, ty - 26 * scale, 16 * scale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#16a34a';
+        ctx.beginPath();
+        ctx.arc(tx - 4 * scale, ty - 29 * scale, 12 * scale, 0, Math.PI * 2);
+        ctx.fill();
+        // Apples
+        if (hasApples) {
+          ctx.fillStyle = '#ef4444';
+          [[-6, -26], [4, -22], [-2, -34], [6, -30]].forEach(([ox, oy]) => {
+            ctx.beginPath();
+            ctx.arc(tx + ox * scale, ty + oy * scale, 2.4 * scale, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+      };
+
+      const drawPineTree = (px, py, scale = 1) => {
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(px - 2 * scale, py - 6 * scale, 4 * scale, 8 * scale);
+        ctx.fillStyle = '#064e3b';
+        // 3 Tiers of pine foliage
+        for (let t = 0; t < 3; t++) {
+          const tierY = py - (8 + t * 9) * scale;
+          const tierW = (13 - t * 3) * scale;
+          ctx.beginPath();
+          ctx.moveTo(px - tierW, tierY);
+          ctx.lineTo(px, tierY - 11 * scale);
+          ctx.lineTo(px + tierW, tierY);
+          ctx.closePath();
+          ctx.fill();
+        }
+      };
+
+      drawPineTree(w * 0.19, h * 0.38, 0.95);
+      drawOrchardTree(w * 0.42, h * 0.37, 0.9, true);
+      drawOrchardTree(w * 0.48, h * 0.38, 0.75, false);
+      drawPineTree(w * 0.92, h * 0.38, 1.1);
+      drawOrchardTree(w * 0.96, h * 0.42, 0.85, true);
+
+      // 10. WOODEN PICKET FENCE
+      const fenceY = h * 0.435;
+      ctx.strokeStyle = '#854d0e';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.14, fenceY);
+      ctx.lineTo(w * 0.86, fenceY);
+      ctx.moveTo(w * 0.14, fenceY + 6);
+      ctx.lineTo(w * 0.86, fenceY + 6);
+      ctx.stroke();
+      for (let p = w * 0.15; p <= w * 0.85; p += 24) {
+        ctx.fillStyle = '#a16207';
+        ctx.beginPath();
+        ctx.moveTo(p - 3, fenceY + 12);
+        ctx.lineTo(p - 3, fenceY - 6);
+        ctx.lineTo(p, fenceY - 10);
+        ctx.lineTo(p + 3, fenceY - 6);
+        ctx.lineTo(p + 3, fenceY + 12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#713f12';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+
+      // 11. ANIMATED FARM ANIMALS (Bò, Chó, Lợn, Gà, Cừu, Thỏ)
+      // A. Chú Cừu Bông (Fluffy Sheep)
+      const sheepX = w * 0.18;
+      const sheepY = h * 0.42;
+      const sheepBob = Math.sin(time * 0.003) * 1.5;
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(sheepX, sheepY + 6, 12, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(sheepX, sheepY + sheepBob);
+      ctx.font = '26px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐑', 0, 0);
+      ctx.restore();
+
+      // B. Chú Lợn Hồng trong vũng bùn (Pink Mud Pig by the barn)
+      const pigX = w * 0.25;
+      const pigY = h * 0.44;
+      const pigWiggle = Math.sin(time * 0.008) * 1.5;
+      // Mud Puddle
+      ctx.fillStyle = '#3d1d0c';
+      ctx.beginPath();
+      ctx.ellipse(pigX, pigY + 6, 18, 8, 0.08, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#5c2d13';
+      ctx.beginPath();
+      ctx.ellipse(pigX - 3, pigY + 5, 13, 6, -0.1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(pigX, pigY + pigWiggle);
+      ctx.font = '24px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐖', 0, 0);
+      ctx.restore();
+
+      // C. Chú Chó Nông Trại Vui Vẻ (Faithful Farm Dog)
+      const dogX = w * 0.32;
+      const dogY = h * 0.435;
+      const dogTail = Math.sin(time * 0.018) * 0.12;
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.beginPath();
+      ctx.ellipse(dogX, dogY + 6, 11, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(dogX, dogY);
+      ctx.rotate(dogTail);
+      ctx.font = '24px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐕', 0, 0);
+      ctx.restore();
+      // Floating heart from happy puppy
+      const dogHeartPhase = (time * 0.0005) % 1;
+      const dogHeartAlpha = Math.sin(dogHeartPhase * Math.PI);
+      ctx.save();
+      ctx.globalAlpha = dogHeartAlpha;
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('❤️', dogX + 8, dogY - 16 - dogHeartPhase * 16);
+      ctx.restore();
+
+      // D. ĐỐNG RƠM VÀNG & CON GÀ TRỐNG ĐỨNG GÁY TRÊN ĐỈNH
+      const hsX = w * 0.375;
+      const hsY = h * 0.442;
+      const hsW = 20; // half-width
+      const hsH = 26; // height
+
+      // 1. Haystack Ground Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+      ctx.beginPath();
+      ctx.ellipse(hsX, hsY + 3, hsW + 5, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 2. Center Wooden Stake (Cọc rơm nhô lên đỉnh)
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(hsX, hsY - hsH - 8);
+      ctx.lineTo(hsX, hsY - hsH + 6);
+      ctx.stroke();
+
+      // 3. Haystack Dome Body (Đống rơm vàng truyền thống)
+      const hayGrad = ctx.createLinearGradient(hsX - hsW, hsY - hsH, hsX + hsW, hsY);
+      hayGrad.addColorStop(0, '#facc15');
+      hayGrad.addColorStop(0.4, '#eab308');
+      hayGrad.addColorStop(0.8, '#ca8a04');
+      hayGrad.addColorStop(1, '#854d0e');
+      ctx.fillStyle = hayGrad;
+
+      ctx.beginPath();
+      ctx.moveTo(hsX - hsW, hsY + 2);
+      ctx.quadraticCurveTo(hsX - hsW * 1.1, hsY - hsH * 0.5, hsX, hsY - hsH);
+      ctx.quadraticCurveTo(hsX + hsW * 1.1, hsY - hsH * 0.5, hsX + hsW, hsY + 2);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Straw Thatch Texture Lines (Các lớp sợi rơm vàng)
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 1.2;
+      for (let sl = 1; sl <= 4; sl++) {
+        const sy = hsY - hsH + sl * (hsH / 4.5);
+        const sw = hsW * (sl / 4.5);
+        ctx.beginPath();
+        ctx.arc(hsX, sy + 6, sw, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
+      }
+
+      // 5. Loose Straw Wisps (Cọng rơm tua rua quanh chân đống rơm)
+      ctx.strokeStyle = '#facc15';
+      ctx.lineWidth = 1.4;
+      for (let swi = -hsW; swi <= hsW; swi += 6) {
+        ctx.beginPath();
+        ctx.moveTo(hsX + swi, hsY);
+        ctx.lineTo(hsX + swi + (swi % 4 - 2) * 2, hsY + 4 + Math.abs(swi % 3));
+        ctx.stroke();
+      }
+
+      // 6. Proud Crowing Rooster on Top of the Haystack (Gà trống đứng gáy)
+      const roosterY = hsY - hsH - 6;
+      const crowCycle = (time * 0.0005) % 1; // loop every 2 seconds
+      const isCrowing = (crowCycle < 0.65);
+      const crowPuff = isCrowing ? (1 + Math.sin(time * 0.008) * 0.08) : 1;
+      const crowTilt = isCrowing ? -0.1 : 0; // head tilts up to crow
+
+      ctx.save();
+      ctx.translate(hsX, roosterY);
+      ctx.rotate(crowTilt);
+      ctx.scale(crowPuff, crowPuff);
+      ctx.font = '25px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐓', 0, 0);
+      ctx.restore();
+
+      // 7. Crowing Sound Effect: "Ò ó o o...! 🎶"
+      if (isCrowing) {
+        const soundPhase = (crowCycle / 0.65);
+        const soundY = roosterY - 18 - soundPhase * 14;
+        const soundAlpha = Math.sin(soundPhase * Math.PI);
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, soundAlpha);
+
+        // Sound text with dark outline for high contrast
+        ctx.font = '900 11px Plus Jakarta Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+        ctx.shadowBlur = 4;
+        ctx.fillStyle = '#fef08a';
+        ctx.fillText('Ò ó o o...! 🎶', hsX + 6, soundY);
+        ctx.restore();
+      }
+
+      // E. Gà Mái & Đàn Gà Con (Hen & Chicks scratching for seeds)
+      const henX = w * 0.425;
+      const henY = h * 0.438;
+      const henPeck = (Math.sin(time * 0.007) > 0.3) ? 1.5 : 0;
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(henX, henY + 4, 9, 3.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(henX, henY + henPeck);
+      ctx.font = '21px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐔', 0, 0);
+      ctx.restore();
+
+      // 2 Chicks pecking behind Hen
+      [0, 1].forEach((ci) => {
+        const cx = henX + 14 + ci * 12;
+        const cy = henY + Math.sin(time * 0.009 + ci) * 1.5;
+        const chickPeck = (Math.sin(time * 0.012 + ci * 2) > 0.4) ? 2 : 0;
+        ctx.save();
+        ctx.translate(cx, cy + chickPeck);
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🐥', 0, 0);
+        ctx.restore();
+      });
+
+      // F. Chú Thỏ Trắng trong vườn cây (Bunny in orchard)
+      const bunnyX = w * 0.77;
+      const bunnyY = h * 0.435;
+      const bunnyHop = Math.abs(Math.sin(time * 0.005)) * 2.5;
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(bunnyX, bunnyY + 4, 9, 3.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(bunnyX, bunnyY - bunnyHop);
+      ctx.font = '20px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐇', 0, 0);
+      ctx.restore();
+
+      // G. Đàn Bò Sữa gặm cỏ trên đồi (Dairy Mother Cow & Baby Calf)
+      const cowX = w * 0.84;
+      const cowY = h * 0.43;
+      const cowChew = Math.sin(time * 0.005) * 1.2;
+      ctx.fillStyle = 'rgba(0,0,0,0.22)';
+      ctx.beginPath();
+      ctx.ellipse(cowX, cowY + 7, 16, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(cowX, cowY + cowChew);
+      ctx.font = '32px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐄', 0, 0);
+      ctx.restore();
+
+      // Baby Calf resting beside mother
+      const calfX = w * 0.905;
+      const calfY = h * 0.445;
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(calfX, calfY + 5, 11, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.translate(calfX, calfY);
+      ctx.font = '22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🐂', 0, 0);
+      ctx.restore();
+
+      // Meadow wild flower dots
+      ctx.fillStyle = 'rgba(254, 240, 138, 0.6)';
+      for (let i = 0; i < 24; i++) {
+        const gx = ((i * 127.3) % (w * 0.88)) + w * 0.06;
+        const gy = h * 0.45 + ((i * 79.1) % (h * 0.48));
         ctx.beginPath();
         ctx.arc(gx, gy, 1.8, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 5. WINDMILL (Cối xay gió)
-      const wmx = w * 0.1;
-      const wmy = h * 0.36;
-      ctx.fillStyle = '#78350f';
-      ctx.beginPath();
-      ctx.moveTo(wmx - 12, wmy + 36);
-      ctx.lineTo(wmx - 8, wmy);
-      ctx.lineTo(wmx + 8, wmy);
-      ctx.lineTo(wmx + 12, wmy + 36);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#991b1b';
-      ctx.beginPath();
-      ctx.moveTo(wmx - 10, wmy);
-      ctx.lineTo(wmx, wmy - 12);
-      ctx.lineTo(wmx + 10, wmy);
-      ctx.closePath();
-      ctx.fill();
-      const bladeAngle = (time * 0.002) % (Math.PI * 2);
-      ctx.save();
-      ctx.translate(wmx, wmy);
-      ctx.rotate(bladeAngle);
-      ctx.strokeStyle = '#fef3c7';
-      ctx.lineWidth = 2.5;
-      for (let b = 0; b < 4; b++) {
-        ctx.rotate(Math.PI / 2);
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, 24);
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(254, 243, 199, 0.7)';
-        ctx.fillRect(-2, 10, 8, 12);
-      }
-      ctx.restore();
-
-      // 6. SCARECROW (Bù nhìn rơm)
-      const scx = w * 0.9;
-      const scy = h * 0.45;
-      ctx.strokeStyle = '#92400e';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(scx, scy - 30);
-      ctx.lineTo(scx, scy + 15);
-      ctx.moveTo(scx - 14, scy - 15);
-      ctx.lineTo(scx + 14, scy - 15);
-      ctx.stroke();
-      ctx.fillStyle = '#ea580c';
-      ctx.fillRect(scx - 6, scy - 20, 12, 14);
-      ctx.fillStyle = '#fef08a';
-      ctx.beginPath();
-      ctx.arc(scx, scy - 24, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#854d0e';
-      ctx.beginPath();
-      ctx.moveTo(scx - 12, scy - 24);
-      ctx.lineTo(scx, scy - 36);
-      ctx.lineTo(scx + 12, scy - 24);
-      ctx.closePath();
-      ctx.fill();
-
-      // 7. WOODEN FENCE
-      const fenceY = h * 0.44;
-      ctx.strokeStyle = '#78350f';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(w * 0.18, fenceY);
-      ctx.lineTo(w * 0.82, fenceY);
-      ctx.moveTo(w * 0.18, fenceY + 6);
-      ctx.lineTo(w * 0.82, fenceY + 6);
-      ctx.stroke();
-      for (let p = w * 0.18; p <= w * 0.82; p += 28) {
-        ctx.fillStyle = '#92400e';
-        ctx.fillRect(p - 2, fenceY - 8, 4, 20);
-      }
-
-      // 8. 12 ISOMETRIC PLOTS (3 rows x 4 cols)
+      // 12. THE 12 ISOMETRIC FERTILE SOIL PLOTS (3 rows x 4 cols)
       canvasPlotBounds = [];
       const numRows = 3;
       const numCols = 4;
       const tileW = Math.min(135, Math.max(76, w / 6.2));
       const tileH = tileW * 0.52;
-      const depth = Math.max(9, Math.floor(tileW * 0.11));
+      const depth = Math.max(10, Math.floor(tileW * 0.12));
       const originX = w * 0.5;
       const originY = h * 0.42;
 
@@ -5047,7 +5668,7 @@
           canvasPlotBounds.push({ idx, xc, yc, w: tileW, h: tileH });
 
           const isHovered = (hoveredPlotIdx === idx);
-          const liftY = isHovered ? -5 : 0;
+          const liftY = isHovered ? -6 : 0;
           const py = yc + liftY;
 
           const topV = { x: xc, y: py - tileH * 0.5 };
@@ -5055,18 +5676,24 @@
           const bottomV = { x: xc, y: py + tileH * 0.5 };
           const leftV = { x: xc - tileW * 0.5, y: py };
 
-          // Soil Base Shadow
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+          // A. Soft Ambient Cast Shadow under plot
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.32)';
           ctx.beginPath();
-          ctx.moveTo(xc, yc - tileH * 0.5 + 8);
-          ctx.lineTo(xc + tileW * 0.5 + 4, yc + 8);
-          ctx.lineTo(xc, yc + tileH * 0.5 + 12);
-          ctx.lineTo(xc - tileW * 0.5 - 4, yc + 8);
+          ctx.moveTo(xc, yc - tileH * 0.5 + depth + 4);
+          ctx.lineTo(xc + tileW * 0.5 + 6, yc + depth + 4);
+          ctx.lineTo(xc, yc + tileH * 0.5 + depth + 8);
+          ctx.lineTo(xc - tileW * 0.5 - 6, yc + depth + 4);
           ctx.closePath();
           ctx.fill();
 
-          // 3D Left Face Extrusion
-          ctx.fillStyle = (plot.status === 'locked') ? '#334155' : (plot.isWatered ? '#26170d' : '#452614');
+          // B. 3D Left Face Extrusion (Wooden Planter Wall or Stone)
+          if (plot.status === 'locked') {
+            ctx.fillStyle = '#334155';
+          } else if (plot.isWatered) {
+            ctx.fillStyle = '#26140b';
+          } else {
+            ctx.fillStyle = '#451a03'; // Rich dark timber
+          }
           ctx.beginPath();
           ctx.moveTo(leftV.x, leftV.y);
           ctx.lineTo(bottomV.x, bottomV.y);
@@ -5075,8 +5702,22 @@
           ctx.closePath();
           ctx.fill();
 
-          // 3D Right Face Extrusion
-          ctx.fillStyle = (plot.status === 'locked') ? '#475569' : (plot.isWatered ? '#382012' : '#5c331a');
+          // Left face wood plank separation line
+          ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(leftV.x, leftV.y + depth * 0.5);
+          ctx.lineTo(bottomV.x, bottomV.y + depth * 0.5);
+          ctx.stroke();
+
+          // C. 3D Right Face Extrusion (Sunlit Wooden Planter Wall)
+          if (plot.status === 'locked') {
+            ctx.fillStyle = '#475569';
+          } else if (plot.isWatered) {
+            ctx.fillStyle = '#381e10';
+          } else {
+            ctx.fillStyle = '#78350f'; // Sunlit timber
+          }
           ctx.beginPath();
           ctx.moveTo(bottomV.x, bottomV.y);
           ctx.lineTo(rightV.x, rightV.y);
@@ -5085,56 +5726,178 @@
           ctx.closePath();
           ctx.fill();
 
-          // Top Face
-          let topColor = '#784323';
-          if (plot.status === 'locked') {
-            topColor = '#64748b';
-          } else if (plot.isWatered) {
-            topColor = '#432616';
+          // Right face wood plank separation line
+          ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(bottomV.x, bottomV.y + depth * 0.5);
+          ctx.lineTo(rightV.x, rightV.y + depth * 0.5);
+          ctx.stroke();
+
+          // Corner bracket rivets / nails on timber box
+          if (plot.status !== 'locked') {
+            ctx.fillStyle = '#fbbf24';
+            [bottomV, leftV, rightV].forEach((v, vi) => {
+              ctx.beginPath();
+              ctx.arc(v.x + (vi === 1 ? 3 : vi === 2 ? -3 : 0), v.y + depth * 0.5, 1.4, 0, Math.PI * 2);
+              ctx.fill();
+            });
           }
 
-          ctx.fillStyle = topColor;
+          // D. Top Wooden Rim Frame (Outer Raised Bed Border)
           ctx.beginPath();
           ctx.moveTo(topV.x, topV.y);
           ctx.lineTo(rightV.x, rightV.y);
           ctx.lineTo(bottomV.x, bottomV.y);
           ctx.lineTo(leftV.x, leftV.y);
           ctx.closePath();
+          ctx.fillStyle = (plot.status === 'locked') ? '#64748b' : '#92400e';
           ctx.fill();
 
-          // Furrows
-          if (plot.status !== 'locked') {
-            ctx.strokeStyle = plot.isWatered ? 'rgba(25, 12, 6, 0.6)' : 'rgba(60, 30, 10, 0.4)';
-            ctx.lineWidth = 1.8;
-            [-0.2, 0, 0.2].forEach(offsetPct => {
-              const sx = leftV.x + (rightV.x - leftV.x) * (0.5 + offsetPct * 0.7);
-              const sy = topV.y + (bottomV.y - topV.y) * (0.5 + offsetPct);
+          // E. Inner Recessed Tilled Soil Bed (Lòng luống đất)
+          const rimMargin = 4;
+          const inTop = { x: topV.x, y: topV.y + rimMargin * 0.52 };
+          const inRight = { x: rightV.x - rimMargin, y: rightV.y };
+          const inBottom = { x: bottomV.x, y: bottomV.y - rimMargin * 0.52 };
+          const inLeft = { x: leftV.x + rimMargin, y: leftV.y };
+
+          ctx.beginPath();
+          ctx.moveTo(inTop.x, inTop.y);
+          ctx.lineTo(inRight.x, inRight.y);
+          ctx.lineTo(inBottom.x, inBottom.y);
+          ctx.lineTo(inLeft.x, inLeft.y);
+          ctx.closePath();
+
+          // Soil Base Texture
+          if (plot.status === 'locked') {
+            const stoneGrad = ctx.createLinearGradient(inLeft.x, inTop.y, inRight.x, inBottom.y);
+            stoneGrad.addColorStop(0, '#475569');
+            stoneGrad.addColorStop(1, '#334155');
+            ctx.fillStyle = stoneGrad;
+            ctx.fill();
+            // Moss creeping on locked stone
+            ctx.fillStyle = 'rgba(21, 128, 61, 0.4)';
+            ctx.beginPath();
+            ctx.arc(inLeft.x + 8, inLeft.y, 6, 0, Math.PI * 2);
+            ctx.arc(inBottom.x, inBottom.y - 4, 7, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Fertile compost soil gradient
+            const soilGrad = ctx.createLinearGradient(inTop.x, inTop.y, inBottom.x, inBottom.y);
+            if (plot.isWatered) {
+              soilGrad.addColorStop(0, '#1c0d06'); // Deep wet obsidian loam
+              soilGrad.addColorStop(0.5, '#2b1408');
+              soilGrad.addColorStop(1, '#150904');
+            } else {
+              soilGrad.addColorStop(0, '#5c2d13'); // Warm fertile earth
+              soilGrad.addColorStop(0.5, '#45210c');
+              soilGrad.addColorStop(1, '#2d1406');
+            }
+            ctx.fillStyle = soilGrad;
+            ctx.fill();
+
+            // Tilled Furrows / Ridges (Các luống cày song song)
+            const furrowOffsets = [-0.35, -0.15, 0.05, 0.25];
+            furrowOffsets.forEach((fo) => {
+              const fx1 = inLeft.x + (inRight.x - inLeft.x) * (0.5 + fo * 0.65) - tileW * 0.22;
+              const fy1 = inTop.y + (inBottom.y - inTop.y) * (0.5 + fo) - tileH * 0.16;
+              const fx2 = fx1 + tileW * 0.44;
+              const fy2 = fy1 + tileH * 0.32;
+
+              // Furrow Shadow Groove
+              ctx.strokeStyle = plot.isWatered ? 'rgba(10, 4, 1, 0.75)' : 'rgba(35, 15, 5, 0.6)';
+              ctx.lineWidth = 2.2;
               ctx.beginPath();
-              ctx.moveTo(sx - tileW * 0.2, sy - tileH * 0.15);
-              ctx.lineTo(sx + tileW * 0.2, sy + tileH * 0.15);
+              ctx.moveTo(fx1, fy1);
+              ctx.lineTo(fx2, fy2);
+              ctx.stroke();
+
+              // Furrow Ridge Highlight (Crest of tilled earth)
+              ctx.strokeStyle = plot.isWatered ? 'rgba(74, 38, 18, 0.45)' : 'rgba(146, 64, 14, 0.35)';
+              ctx.lineWidth = 1.0;
+              ctx.beginPath();
+              ctx.moveTo(fx1 - 0.5, fy1 - 1);
+              ctx.lineTo(fx2 - 0.5, fy2 - 1);
               ctx.stroke();
             });
+
+            // Soil Speckles / Organic clods
+            ctx.fillStyle = plot.isWatered ? 'rgba(0,0,0,0.5)' : 'rgba(161, 98, 7, 0.25)';
+            for (let sp = 0; sp < 6; sp++) {
+              const spx = inLeft.x + ((sp * 31.7) % (tileW * 0.75));
+              const spy = inTop.y + ((sp * 19.3) % (tileH * 0.75));
+              ctx.fillRect(spx, spy, 1.5, 1.2);
+            }
+
+            // Watered Glossy Sheen & Dew Sparkles
+            if (plot.isWatered) {
+              // Diagonal glossy reflection
+              const sheenGrad = ctx.createLinearGradient(inLeft.x + 8, inTop.y + 4, inRight.x - 8, inBottom.y - 4);
+              sheenGrad.addColorStop(0, 'rgba(56, 189, 248, 0)');
+              sheenGrad.addColorStop(0.5, 'rgba(186, 230, 253, 0.22)');
+              sheenGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+              ctx.fillStyle = sheenGrad;
+              ctx.beginPath();
+              ctx.moveTo(inTop.x, inTop.y);
+              ctx.lineTo(inRight.x, inRight.y);
+              ctx.lineTo(inBottom.x, inBottom.y);
+              ctx.lineTo(inLeft.x, inLeft.y);
+              ctx.closePath();
+              ctx.fill();
+
+              // Twinkling water dew glints
+              const dewGlint = Math.sin(time * 0.005 + idx * 1.8);
+              if (dewGlint > 0.4) {
+                const glintAlpha = (dewGlint - 0.4) / 0.6;
+                ctx.fillStyle = `rgba(255, 255, 255, ${glintAlpha})`;
+                const gx = xc + Math.sin(idx * 4.2) * (tileW * 0.22);
+                const gy = py + Math.cos(idx * 2.7) * (tileH * 0.2);
+                // 4-pointed sparkle
+                ctx.beginPath();
+                ctx.arc(gx, gy, 1.8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = `rgba(186, 230, 253, ${glintAlpha})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(gx - 3.5, gy); ctx.lineTo(gx + 3.5, gy);
+                ctx.moveTo(gx, gy - 3.5); ctx.lineTo(gx, gy + 3.5);
+                ctx.stroke();
+              }
+            }
           }
 
-          // Top Face Highlight Border
+          // F. Highlight Border on Hover or Selection
           if (isHovered) {
             ctx.strokeStyle = '#fbbf24';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 3.2;
             ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.moveTo(topV.x, topV.y);
+            ctx.lineTo(rightV.x, rightV.y);
+            ctx.lineTo(bottomV.x, bottomV.y);
+            ctx.lineTo(leftV.x, leftV.y);
+            ctx.closePath();
             ctx.stroke();
             ctx.shadowBlur = 0;
           } else {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(topV.x, topV.y);
+            ctx.lineTo(rightV.x, rightV.y);
+            ctx.lineTo(bottomV.x, bottomV.y);
+            ctx.lineTo(leftV.x, leftV.y);
+            ctx.closePath();
             ctx.stroke();
           }
 
+          // G. Render Plot Contents (Crop, Seedling, or Unlock Badge)
           drawPlotContents(ctx, plot, idx, xc, py, tileW, tileH, time);
         }
       }
 
-      // 9. BUTTERFLIES
+      // 13. BUTTERFLIES
       farmButterflies.forEach((b) => {
         b.angle += b.speed * 0.03;
         b.x += Math.cos(b.angle) * b.speed * 1.5;
@@ -5161,21 +5924,38 @@
         ctx.restore();
       });
 
-      // 10. RAIN WEATHER
+      // 14. FLOATING PETALS / BLOSSOMS (Drifting on the wind)
+      if (farmWeather === 'sunny') {
+        for (let pt = 0; pt < 7; pt++) {
+          const ptX = ((time * 0.04 + pt * 85) % (w + 60)) - 30;
+          const ptY = ((time * 0.025 + pt * 73) % (h * 0.8)) + h * 0.15;
+          const ptRot = time * 0.003 + pt;
+          ctx.save();
+          ctx.translate(ptX, ptY);
+          ctx.rotate(ptRot);
+          ctx.fillStyle = 'rgba(251, 146, 60, 0.6)';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 4, 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // 15. RAIN WEATHER (Animated raindrops + ground ripples)
       if (farmWeather === 'rain') {
-        ctx.strokeStyle = 'rgba(186, 230, 253, 0.6)';
-        ctx.lineWidth = 1.2;
-        for (let ri = 0; ri < 45; ri++) {
-          const rx = ((time * 0.6 + ri * 67) % w);
-          const ry = ((time * 0.9 + ri * 89) % h);
+        ctx.strokeStyle = 'rgba(186, 230, 253, 0.65)';
+        ctx.lineWidth = 1.3;
+        for (let ri = 0; ri < 55; ri++) {
+          const rx = ((time * 0.65 + ri * 59) % w);
+          const ry = ((time * 0.95 + ri * 73) % h);
           ctx.beginPath();
           ctx.moveTo(rx, ry);
-          ctx.lineTo(rx - 4, ry + 12);
+          ctx.lineTo(rx - 5, ry + 14);
           ctx.stroke();
         }
       }
 
-      // 11. FLOATING HARVEST PARTICLES
+      // 16. FLOATING HARVEST PARTICLES
       for (let fi = floatingFarmParticles.length - 1; fi >= 0; fi--) {
         const p = floatingFarmParticles[fi];
         p.y += p.vy;
@@ -5186,7 +5966,7 @@
         ctx.font = 'bold 13px Plus Jakarta Sans, sans-serif';
         ctx.fillStyle = p.color;
         ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowColor = 'rgba(0,0,0,0.85)';
         ctx.shadowBlur = 6;
         ctx.textAlign = 'center';
         ctx.fillText(p.text, p.x, p.y);
@@ -5205,12 +5985,28 @@
         const condition = PLOT_UNLOCK_CONDITIONS[idx];
         ctx.save();
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 15px sans-serif';
-        ctx.fillText('🔒', xc, py + 2);
-        ctx.font = 'bold 10px Plus Jakarta Sans, sans-serif';
+        
+        // Runic lock pedestal glow
+        ctx.shadowColor = 'rgba(251, 191, 36, 0.4)';
+        ctx.shadowBlur = 8;
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText('🔒', xc, py - 2);
+        ctx.shadowBlur = 0;
+
+        // Elegant level badge
+        const badgeW = 44;
+        const badgeH = 14;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(xc - badgeW / 2, py + 8, badgeW, badgeH, 7);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = 'bold 9px Plus Jakarta Sans, sans-serif';
         ctx.fillStyle = '#cbd5e1';
-        ctx.fillText(`Cấp ${condition.level}`, xc, py + 16);
+        ctx.fillText(`Cấp ${condition.level}`, xc, py + 18);
         ctx.restore();
         return;
       }
@@ -5220,15 +6016,28 @@
         ctx.textAlign = 'center';
         const isHovered = (hoveredPlotIdx === idx);
         if (isHovered) {
-          ctx.font = 'bold 16px sans-serif';
-          ctx.fillText('🌱', xc, py - 4);
-          ctx.fillStyle = '#fef08a';
+          const bounce = Math.sin(time / 160) * 3;
+          ctx.font = 'bold 20px sans-serif';
+          ctx.fillText('🌱', xc, py - 6 + bounce);
+          
+          const pillW = 66;
+          const pillH = 16;
+          ctx.fillStyle = '#10b981';
+          ctx.shadowColor = '#059669';
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.roundRect(xc - pillW / 2, py + 8, pillW, pillH, 8);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 10px Plus Jakarta Sans, sans-serif';
-          ctx.fillText('+ Gieo Hạt', xc, py + 12);
+          ctx.fillText('+ Gieo Hạt', xc, py + 19);
         } else {
-          ctx.fillStyle = 'rgba(254, 240, 138, 0.4)';
-          ctx.font = '12px sans-serif';
-          ctx.fillText('🌱', xc, py + 4);
+          // Subtle seedling outline inviting planting
+          ctx.fillStyle = 'rgba(254, 240, 138, 0.45)';
+          ctx.font = '14px sans-serif';
+          ctx.fillText('🌱', xc, py + 2);
         }
         ctx.restore();
         return;
@@ -5245,11 +6054,13 @@
         plot.status = 'mature';
       }
 
-      ctx.fillStyle = 'rgba(20, 10, 5, 0.4)';
+      // Crop Soil Mount Shadow
+      ctx.fillStyle = 'rgba(20, 10, 5, 0.45)';
       ctx.beginPath();
-      ctx.ellipse(xc, py + 2, 14, 6, 0, 0, Math.PI * 2);
+      ctx.ellipse(xc, py + 3, 16, 7, 0, 0, Math.PI * 2);
       ctx.fill();
 
+      // Swaying in the breeze
       const sway = Math.sin(time / 280 + idx * 1.6) * 0.08;
 
       ctx.save();
@@ -5258,81 +6069,105 @@
 
       if (plot.status === 'growing') {
         if (progress < 0.35) {
+          // Tender dual-leaf seedling
           ctx.font = '22px sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('🌱', 0, -4);
         } else if (progress < 0.7) {
+          // Lush vegetative bush
           ctx.font = '26px sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('🌿', 0, -6);
         } else {
+          // Budding & flowering stage
           ctx.font = '28px sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('🌸', 0, -8);
         }
       } else if (plot.status === 'mature') {
-        const pulse = 1 + Math.sin(time / 200) * 0.08;
+        // Juicy rhythmic bounce
+        const pulse = 1 + Math.sin(time / 180) * 0.09;
         ctx.scale(pulse, pulse);
 
-        ctx.fillStyle = 'rgba(251, 191, 36, 0.25)';
+        // Radiant Golden Harvest Aura
+        const auraGrad = ctx.createRadialGradient(0, -10, 4, 0, -10, 26);
+        auraGrad.addColorStop(0, 'rgba(253, 224, 71, 0.6)');
+        auraGrad.addColorStop(0.6, 'rgba(251, 191, 36, 0.25)');
+        auraGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        ctx.fillStyle = auraGrad;
         ctx.beginPath();
-        ctx.ellipse(0, 0, 18, 9, 0, 0, Math.PI * 2);
+        ctx.arc(0, -10, 26, 0, Math.PI * 2);
         ctx.fill();
 
-        const sparkPhase = (time / 400 + idx) % 1;
+        // Upward floating sparkle stars
+        const sparkPhase = (time / 380 + idx * 0.33) % 1;
         ctx.fillStyle = '#fde047';
-        ctx.font = '9px sans-serif';
-        ctx.fillText('✨', -14 + Math.sin(time / 250) * 4, -20 - sparkPhase * 16);
+        ctx.font = '10px sans-serif';
+        ctx.fillText('✨', -14 + Math.sin(time / 220) * 4, -22 - sparkPhase * 16);
+        ctx.fillText('⭐', 12 + Math.cos(time / 250) * 3, -18 - ((sparkPhase + 0.5) % 1) * 16);
 
-        ctx.font = '32px sans-serif';
+        // Plump mature crop
+        ctx.font = '34px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(crop.emoji, 0, -8);
       }
 
       ctx.restore();
 
-      // FLOATING PILL STATUS
+      // FLOATING STATUS PILL
       ctx.save();
-      ctx.translate(xc, py - tileH * 0.65);
+      ctx.translate(xc, py - tileH * 0.68);
 
       if (plot.status === 'growing') {
         const timeLeft = Math.max(1, Math.ceil(totalDuration - elapsed));
         const formatTime = (s) => (s > 60 ? `${Math.floor(s / 60)}m${s % 60}s` : `${s}s`);
 
-        const pillW = 46;
-        const pillH = 14;
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.strokeStyle = plot.isWatered ? '#38bdf8' : '#334155';
-        ctx.lineWidth = 1;
+        const pillW = 48;
+        const pillH = 15;
+        // Glassmorphism background
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.strokeStyle = plot.isWatered ? '#38bdf8' : 'rgba(148, 163, 184, 0.4)';
+        ctx.lineWidth = plot.isWatered ? 1.5 : 1;
         ctx.beginPath();
-        ctx.roundRect(-pillW / 2, -pillH / 2, pillW, pillH, 7);
+        ctx.roundRect(-pillW / 2, -pillH / 2, pillW, pillH, 7.5);
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = '#10b981';
+        // Smooth emerald progress bar fill
         const progW = (pillW - 4) * progress;
-        ctx.fillRect(-pillW / 2 + 2, -pillH / 2 + 2, progW, pillH - 4);
+        const progGrad = ctx.createLinearGradient(-pillW / 2 + 2, 0, pillW / 2 - 2, 0);
+        progGrad.addColorStop(0, '#059669');
+        progGrad.addColorStop(1, '#10b981');
+        ctx.fillStyle = progGrad;
+        ctx.beginPath();
+        ctx.roundRect(-pillW / 2 + 2, -pillH / 2 + 2, progW, pillH - 4, 5);
+        ctx.fill();
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 9px Plus Jakarta Sans, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(formatTime(timeLeft), 0, 3);
+        ctx.fillText(formatTime(timeLeft), 0, 3.5);
       } else if (plot.status === 'mature') {
-        const bounceY = Math.sin(time / 180) * 2;
-        const pillW = 68;
-        const pillH = 16;
-        ctx.fillStyle = '#f59e0b';
+        const bounceY = Math.sin(time / 160) * 2.5;
+        const pillW = 72;
+        const pillH = 17;
+        
+        // Golden glowing harvest button
+        const harvestGrad = ctx.createLinearGradient(0, -pillH / 2 + bounceY, 0, pillH / 2 + bounceY);
+        harvestGrad.addColorStop(0, '#fde047');
+        harvestGrad.addColorStop(1, '#f59e0b');
+        ctx.fillStyle = harvestGrad;
         ctx.shadowColor = '#fbbf24';
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.roundRect(-pillW / 2, -pillH / 2 + bounceY, pillW, pillH, 8);
+        ctx.roundRect(-pillW / 2, -pillH / 2 + bounceY, pillW, pillH, 8.5);
         ctx.fill();
         ctx.shadowBlur = 0;
 
         ctx.fillStyle = '#0f172a';
         ctx.font = '900 9px Plus Jakarta Sans, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('🧺 THU HOẠCH', 0, 3 + bounceY);
+        ctx.fillText('🧺 THU HOẠCH', 0, 3.5 + bounceY);
       }
 
       ctx.restore();
