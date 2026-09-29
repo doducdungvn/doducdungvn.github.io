@@ -562,7 +562,7 @@
         </div>
 
         <div id="epubContainerWrapper" class="w-full h-[calc(100vh-140px)] min-h-[640px] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0f0f0f]">
-          <iframe id="epubReaderIframe" src="./epub-reader.html" class="w-full h-full border-none"></iframe>
+          <iframe id="epubReaderIframe" src="./epub-reader.html?v=20260929_tts" class="w-full h-full border-none"></iframe>
         </div>
       </section>
 
@@ -1003,7 +1003,7 @@
           </div>
 
           <!-- HTML5 Canvas -->
-          <canvas id="farmIsometricCanvas" class="w-full block select-none cursor-pointer" style="min-height: 480px; max-height: 560px;"></canvas>
+          <canvas id="farmIsometricCanvas" class="w-full block select-none cursor-pointer" style="min-height: 540px; max-height: 640px;"></canvas>
 
 
         </div>
@@ -3822,6 +3822,28 @@
             osc.start(now + i * 0.1);
             osc.stop(now + i * 0.1 + 0.35);
           });
+        } else if (type === 'rooster') {
+          // Melodic Cock-a-doodle-doo synthesis (Ò - ó - o - o!)
+          const notes = [
+            { f: 523.25, start: 0, dur: 0.16, v: 0.22 },     // Ò
+            { f: 783.99, start: 0.16, dur: 0.18, v: 0.28 },   // ó
+            { f: 659.25, start: 0.34, dur: 0.22, v: 0.25 },   // o
+            { f: 587.33, start: 0.56, dur: 0.45, v: 0.28 }    // o...!
+          ];
+          notes.forEach(n => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(n.f, now + n.start);
+            osc.frequency.linearRampToValueAtTime(n.f * 1.05, now + n.start + n.dur * 0.5);
+            osc.frequency.linearRampToValueAtTime(n.f * 0.95, now + n.start + n.dur);
+            gain.gain.setValueAtTime(n.v, now + n.start);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + n.start);
+            osc.stop(now + n.start + n.dur);
+          });
         }
       } catch(e) {}
     }
@@ -4805,6 +4827,7 @@
           icon.textContent = '🌧️';
           text.textContent = 'Mưa Rào';
           showToast("🌧️ Cơn mưa rào tưới mát cả khu nông trại!", "info");
+          playFarmSound('water');
           waterAllPlots();
         } else {
           icon.textContent = '☀️';
@@ -4835,28 +4858,16 @@
       });
     }
 
+    let canvasRoosterBounds = null;
+
     function initIsometricCanvas() {
       const canvas = document.getElementById('farmIsometricCanvas');
       if (!canvas) return;
 
       initFarmButterflies();
 
-      const updateCanvasSize = () => {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        const displayWidth = Math.max(340, Math.floor(rect.width || canvas.parentElement.clientWidth || 800));
-        const displayHeight = Math.max(480, Math.min(560, Math.floor(displayWidth * 0.58)));
-
-        canvas.width = Math.floor(displayWidth * dpr);
-        canvas.height = Math.floor(displayHeight * dpr);
-        canvas.style.height = `${displayHeight}px`;
-
-        const ctx = canvas.getContext('2d');
-        ctx.scale(dpr, dpr);
-      };
-
-      updateCanvasSize();
-      window.addEventListener('resize', updateCanvasSize);
+      updateFarmCanvasDimensions();
+      window.addEventListener('resize', updateFarmCanvasDimensions);
 
       const getCanvasPos = (evt) => {
         const rect = canvas.getBoundingClientRect();
@@ -4881,7 +4892,18 @@
           }
         }
         hoveredPlotIdx = found;
-        canvas.style.cursor = (found !== -1) ? 'pointer' : 'default';
+
+        // Check if hovering on haystack / rooster
+        let isRoosterHover = false;
+        if (canvasRoosterBounds) {
+          const rdx = pos.x - canvasRoosterBounds.x;
+          const rdy = pos.y - canvasRoosterBounds.y;
+          if (Math.hypot(rdx, rdy) <= canvasRoosterBounds.r) {
+            isRoosterHover = true;
+          }
+        }
+
+        canvas.style.cursor = (found !== -1 || isRoosterHover) ? 'pointer' : 'default';
       });
 
       canvas.addEventListener('mouseleave', () => {
@@ -4890,6 +4912,24 @@
 
       canvas.addEventListener('click', (e) => {
         const pos = getCanvasPos(e);
+
+        // 1. Check if clicking on Rooster / Haystack to make it crow
+        if (canvasRoosterBounds) {
+          const rdx = pos.x - canvasRoosterBounds.x;
+          const rdy = pos.y - canvasRoosterBounds.y;
+          if (Math.hypot(rdx, rdy) <= canvasRoosterBounds.r) {
+            playFarmSound('rooster');
+            spawnHarvestTextParticle(canvasRoosterBounds.x, canvasRoosterBounds.y - 12, '🐓 Ò ó o o...! +5 EXP', '#fde047');
+            if (farmData) {
+              farmData.exp = (farmData.exp || 0) + 5;
+              checkFarmLevelUp();
+              updateFarmHeaderStats();
+            }
+            return;
+          }
+        }
+
+        // 2. Check if clicking on Plot
         for (let i = canvasPlotBounds.length - 1; i >= 0; i--) {
           const b = canvasPlotBounds[i];
           const dx = Math.abs(pos.x - b.xc);
@@ -4946,11 +4986,29 @@
       }
     }
 
+    function updateFarmCanvasDimensions() {
+      const canvas = document.getElementById('farmIsometricCanvas');
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = Math.max(340, Math.floor(rect.width || canvas.parentElement.clientWidth || 800));
+      const displayHeight = Math.max(540, Math.min(640, Math.floor(displayWidth * 0.62)));
+
+      canvas.width = Math.floor(displayWidth * dpr);
+      canvas.height = Math.floor(displayHeight * dpr);
+      canvas.style.height = `${displayHeight}px`;
+
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+    }
+
     function startIsometricCanvasLoop() {
       if (farmCanvasAnimId) cancelAnimationFrame(farmCanvasAnimId);
 
       const canvas = document.getElementById('farmIsometricCanvas');
       if (!canvas) return;
+      
+      updateFarmCanvasDimensions();
       const ctx = canvas.getContext('2d');
 
       const renderFrame = (timestamp) => {
@@ -5387,8 +5445,8 @@
       drawPineTree(w * 0.92, h * 0.38, 1.1);
       drawOrchardTree(w * 0.96, h * 0.42, 0.85, true);
 
-      // 10. WOODEN PICKET FENCE
-      const fenceY = h * 0.435;
+      // 10. WOODEN PICKET FENCE (Backdrop fence behind animals)
+      const fenceY = h * 0.36;
       ctx.strokeStyle = '#854d0e';
       ctx.lineWidth = 2.2;
       ctx.beginPath();
@@ -5414,8 +5472,8 @@
 
       // 11. ANIMATED FARM ANIMALS (Bò, Chó, Lợn, Gà, Cừu, Thỏ)
       // A. Chú Cừu Bông (Fluffy Sheep)
-      const sheepX = w * 0.18;
-      const sheepY = h * 0.42;
+      const sheepX = w * 0.16;
+      const sheepY = h * 0.41;
       const sheepBob = Math.sin(time * 0.003) * 1.5;
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
@@ -5429,8 +5487,8 @@
       ctx.restore();
 
       // B. Chú Lợn Hồng trong vũng bùn (Pink Mud Pig by the barn)
-      const pigX = w * 0.25;
-      const pigY = h * 0.44;
+      const pigX = w * 0.23;
+      const pigY = h * 0.42;
       const pigWiggle = Math.sin(time * 0.008) * 1.5;
       // Mud Puddle
       ctx.fillStyle = '#3d1d0c';
@@ -5449,8 +5507,8 @@
       ctx.restore();
 
       // C. Chú Chó Nông Trại Vui Vẻ (Faithful Farm Dog)
-      const dogX = w * 0.32;
-      const dogY = h * 0.435;
+      const dogX = w * 0.31;
+      const dogY = h * 0.415;
       const dogTail = Math.sin(time * 0.018) * 0.12;
       ctx.fillStyle = 'rgba(0,0,0,0.2)';
       ctx.beginPath();
@@ -5474,10 +5532,13 @@
       ctx.restore();
 
       // D. ĐỐNG RƠM VÀNG & CON GÀ TRỐNG ĐỨNG GÁY TRÊN ĐỈNH
-      const hsX = w * 0.375;
-      const hsY = h * 0.442;
-      const hsW = 20; // half-width
-      const hsH = 26; // height
+      const hsX = w * 0.40;
+      const hsY = h * 0.42;
+      const hsW = 24; // half-width
+      const hsH = 30; // height
+
+      // Record rooster click hitbox
+      canvasRoosterBounds = { x: hsX, y: hsY - hsH * 0.5, r: 28 };
 
       // 1. Haystack Ground Shadow
       ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
@@ -5540,7 +5601,7 @@
       ctx.translate(hsX, roosterY);
       ctx.rotate(crowTilt);
       ctx.scale(crowPuff, crowPuff);
-      ctx.font = '25px sans-serif';
+      ctx.font = '28px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('🐓', 0, 0);
       ctx.restore();
@@ -5555,7 +5616,7 @@
         ctx.globalAlpha = Math.max(0, soundAlpha);
 
         // Sound text with dark outline for high contrast
-        ctx.font = '900 11px Plus Jakarta Sans, sans-serif';
+        ctx.font = '900 12px Plus Jakarta Sans, sans-serif';
         ctx.textAlign = 'center';
         ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
         ctx.shadowBlur = 4;
@@ -5565,8 +5626,8 @@
       }
 
       // E. Gà Mái & Đàn Gà Con (Hen & Chicks scratching for seeds)
-      const henX = w * 0.425;
-      const henY = h * 0.438;
+      const henX = w * 0.465;
+      const henY = h * 0.42;
       const henPeck = (Math.sin(time * 0.007) > 0.3) ? 1.5 : 0;
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
@@ -5593,8 +5654,8 @@
       });
 
       // F. Chú Thỏ Trắng trong vườn cây (Bunny in orchard)
-      const bunnyX = w * 0.77;
-      const bunnyY = h * 0.435;
+      const bunnyX = w * 0.75;
+      const bunnyY = h * 0.415;
       const bunnyHop = Math.abs(Math.sin(time * 0.005)) * 2.5;
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
@@ -5608,8 +5669,8 @@
       ctx.restore();
 
       // G. Đàn Bò Sữa gặm cỏ trên đồi (Dairy Mother Cow & Baby Calf)
-      const cowX = w * 0.84;
-      const cowY = h * 0.43;
+      const cowX = w * 0.83;
+      const cowY = h * 0.41;
       const cowChew = Math.sin(time * 0.005) * 1.2;
       ctx.fillStyle = 'rgba(0,0,0,0.22)';
       ctx.beginPath();
@@ -5623,8 +5684,8 @@
       ctx.restore();
 
       // Baby Calf resting beside mother
-      const calfX = w * 0.905;
-      const calfY = h * 0.445;
+      const calfX = w * 0.90;
+      const calfY = h * 0.42;
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.beginPath();
       ctx.ellipse(calfX, calfY + 5, 11, 4, 0, 0, Math.PI * 2);
@@ -5650,11 +5711,11 @@
       canvasPlotBounds = [];
       const numRows = 3;
       const numCols = 4;
-      const tileW = Math.min(135, Math.max(76, w / 6.2));
-      const tileH = tileW * 0.52;
+      const tileW = Math.min(125, Math.max(74, w / 6.6));
+      const tileH = tileW * 0.50;
       const depth = Math.max(10, Math.floor(tileW * 0.12));
       const originX = w * 0.5;
-      const originY = h * 0.42;
+      const originY = h * 0.52;
 
       for (let r = 0; r < numRows; r++) {
         for (let c = 0; c < numCols; c++) {
@@ -6148,26 +6209,26 @@
         ctx.textAlign = 'center';
         ctx.fillText(formatTime(timeLeft), 0, 3.5);
       } else if (plot.status === 'mature') {
-        const bounceY = Math.sin(time / 160) * 2.5;
-        const pillW = 72;
-        const pillH = 17;
+        const bounceY = Math.sin(time / 160) * 2;
+        const pillW = 56;
+        const pillH = 14;
         
-        // Golden glowing harvest button
+        // Compact Golden glowing harvest button
         const harvestGrad = ctx.createLinearGradient(0, -pillH / 2 + bounceY, 0, pillH / 2 + bounceY);
         harvestGrad.addColorStop(0, '#fde047');
         harvestGrad.addColorStop(1, '#f59e0b');
         ctx.fillStyle = harvestGrad;
         ctx.shadowColor = '#fbbf24';
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 8;
         ctx.beginPath();
-        ctx.roundRect(-pillW / 2, -pillH / 2 + bounceY, pillW, pillH, 8.5);
+        ctx.roundRect(-pillW / 2, -pillH / 2 + bounceY, pillW, pillH, 7);
         ctx.fill();
         ctx.shadowBlur = 0;
 
         ctx.fillStyle = '#0f172a';
-        ctx.font = '900 9px Plus Jakarta Sans, sans-serif';
+        ctx.font = '900 8.5px Plus Jakarta Sans, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('🧺 THU HOẠCH', 0, 3.5 + bounceY);
+        ctx.fillText('🧺 THU HOẠCH', 0, 3 + bounceY);
       }
 
       ctx.restore();
